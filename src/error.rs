@@ -2,7 +2,7 @@
 
 use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq, Clone)]
 pub enum ConsensusError {
     #[error("Transaction validation failed: {0}")]
     TransactionValidation(String),

@@ -120,3 +120,4 @@ fn test_apply_transaction_coinbase() {
 
 
 
+

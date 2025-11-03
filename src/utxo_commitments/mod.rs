@@ -42,7 +42,7 @@ pub use data_structures::*;
 pub use merkle_tree::UtxoMerkleTree;
 pub use verification::*;
 pub use peer_consensus::*;
-pub use initial_sync::InitialSync;
+pub use initial_sync::{InitialSync, update_commitments_after_block};
 pub use spam_filter::*;
 pub use config::*;
 pub use network_integration::*;

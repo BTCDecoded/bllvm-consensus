@@ -2,8 +2,8 @@
 name = "consensus-proof"
 version = "0.1.0"
 edition = "2021"
-authors = ["BTCDecoded Team"]
-description = "Direct mathematical implementation of Bitcoin consensus rules from the Orange Paper"
+authors = ["Bitcoin Commons Team"]
+description = "Bitcoin Commons BLLVM: Direct mathematical implementation of Bitcoin consensus rules from the Orange Paper"
 license = "MIT"
 repository = "https://github.com/BTCDecoded/consensus-proof"
 homepage = "https://btcdecoded.org"
@@ -19,7 +19,10 @@ rustdoc-args = ["--cfg", "docsrs"]
 [dependencies]
 # Consensus-critical cryptography - EXACT VERSIONS
 secp256k1 = "=0.28.2"
-sha2 = "=0.10.9"
+# Pure Rust secp256k1 implementation (Phase 3.2 - migration in progress)
+k256 = { version = "0.13", optional = true, features = ["ecdsa", "sha256"] }
+# Enable SIMD optimizations for hashing
+sha2 = { version = "=0.10.9", features = ["asm"] }
 ripemd = "=0.1.3"
 bitcoin_hashes = "=0.11.0"
 
@@ -28,11 +31,23 @@ serde = { version = "=1.0.193", features = ["derive"] }
 serde_json = "=1.0.108"
 anyhow = "=1.0.93"
 thiserror = "=1.0.69"
+# Binary serialization (for transaction/block encoding in differential tests)
+bincode = "=1.3.3"
+# Hex encoding (for RPC communication)
+hex = "=0.4.3"
 
 
 [dev-dependencies]
 # Formal verification tools - EXACT VERSIONS for reproducibility
 proptest = "=1.5.0"
+# Fuzzing framework for better test coverage ergonomics
+bolero = "0.11"
+# HTTP client for differential fuzzing vs Bitcoin Core (Phase 2.2)
+reqwest = { version = "0.11", features = ["json"], default-features = false }
+# Async runtime for differential fuzzing tests
+tokio = { version = "1.35", features = ["rt", "macros"] }
+# Performance benchmarking framework
+criterion = "0.5"
 
 [dependencies.kani-verifier]
 version = "=0.41.0"
@@ -41,6 +56,11 @@ optional = true
 [features]
 # Enable formal verification tools
 verify = ["kani-verifier"]
+
+# Enable fuzzing tests (Bolero framework)
+# Note: bolero is a dev-dependency, this feature is just for conditional compilation
+# Users should use: cargo test --features bolero
+bolero = []
 
 # Production performance optimizations
 # This feature enables runtime optimizations like caching and context reuse
@@ -70,11 +90,50 @@ optional = true
 # Aggressive optimizations for production builds
 # Reference: Orange Paper Section 13.1 - Performance Considerations
 opt-level = 3
-lto = true
-codegen-units = 1
-strip = true
-panic = "abort"
+lto = "fat"  # Fat LTO for maximum optimization (slower build, better runtime)
+codegen-units = 1  # Single codegen unit maximizes LTO benefits
+strip = true  # Remove symbols for smaller binaries
+panic = "abort"  # Smaller binaries, no unwinding overhead
 
-# Additional optimizations
+# Additional optimizations - ensure all dependencies are optimized
 [profile.release.package."*"]
 opt-level = 3
+
+# Profile-guided optimization (PGO) setup instructions:
+# 1. Build with instrumentation: RUSTFLAGS="-C profile-generate=/tmp/pgo-data" cargo build --release
+# 2. Run benchmarks/tests to generate profile data
+# 3. Build optimized: RUSTFLAGS="-C profile-use=/tmp/pgo-data" cargo build --release
+# Note: PGO requires nightly Rust or specific LLVM versions
+
+# Benchmark profile (faster iteration during development)
+[profile.bench]
+opt-level = 3
+debug = false
+strip = false
+lto = "thin"  # Faster than "fat" for iterative benchmarking
+codegen-units = 16  # Faster compilation
+
+# Benchmark targets
+[[bench]]
+name = "transaction_validation"
+harness = false
+
+[[bench]]
+name = "hash_operations"
+harness = false
+
+[[bench]]
+name = "block_validation"
+harness = false
+
+[[bench]]
+name = "mempool_operations"
+harness = false
+
+[[bench]]
+name = "segwit_operations"
+harness = false
+
+[[bench]]
+name = "utxo_commitments"
+harness = false

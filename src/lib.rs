@@ -45,16 +45,29 @@ pub mod constants;
 pub mod transaction;
 pub mod transaction_hash;
 pub mod script;
+#[cfg(feature = "production")]
+pub use script::batch_verify_signatures;
+#[cfg(feature = "k256")]
+pub mod script_k256;
 pub mod block;
+pub mod bip113;
+pub mod locktime;
+pub mod witness;
 pub mod economic;
 pub mod pow;
 pub mod mempool;
+pub mod sigop;
+pub mod sequence_locks;
+
+#[cfg(kani)]
+pub mod integration_proofs;
 pub mod mining;
 pub mod reorganization;
 pub mod network;
 pub mod segwit;
 pub mod taproot;
 pub mod error;
+pub mod serialization;
 
 #[cfg(feature = "utxo-commitments")]
 pub mod utxo_commitments;
@@ -66,6 +79,29 @@ pub mod optimizations;
 pub use types::*;
 pub use constants::*;
 pub use error::{ConsensusError, Result};
+
+// Re-export shared utilities
+pub use locktime::{
+    decode_locktime_value,
+    get_locktime_type,
+    locktime_types_match,
+    extract_sequence_type_flag,
+    extract_sequence_locktime_value,
+    is_sequence_disabled,
+};
+
+pub use witness::{
+    Witness,
+    WitnessVersion,
+    validate_segwit_witness_structure,
+    validate_taproot_witness_structure,
+    calculate_transaction_weight_segwit,
+    weight_to_vsize,
+    extract_witness_version,
+    extract_witness_program,
+    validate_witness_program_length,
+    is_witness_empty,
+};
 
 /// Main consensus proof implementation
 /// 
@@ -232,7 +268,24 @@ impl ConsensusProof {
         utxo_set: UtxoSet,
         height: Natural
     ) -> Result<(ValidationResult, UtxoSet)> {
-        block::connect_block(block, utxo_set, height)
+        // Create empty witnesses for backward compatibility
+        // Callers should use validate_block_with_context for full witness support
+        let witnesses: Vec<segwit::Witness> = block.transactions.iter()
+            .map(|_| Vec::new())
+            .collect();
+        block::connect_block(block, &witnesses, utxo_set, height, None)
+    }
+    
+    /// Validate a complete block with witness data and recent headers
+    pub fn validate_block_with_context(
+        &self,
+        block: &Block,
+        witnesses: &[segwit::Witness],
+        utxo_set: UtxoSet,
+        height: Natural,
+        recent_headers: Option<&[BlockHeader]>,
+    ) -> Result<(ValidationResult, UtxoSet)> {
+        block::connect_block(block, witnesses, utxo_set, height, recent_headers)
     }
     
     /// Verify script execution
@@ -414,7 +467,7 @@ impl ConsensusProof {
         mempool: &mempool::Mempool,
         height: Natural
     ) -> Result<mempool::MempoolResult> {
-        mempool::accept_to_memory_pool(tx, utxo_set, mempool, height)
+        mempool::accept_to_memory_pool(tx, None, utxo_set, mempool, height)
     }
     
     /// Check if transaction is standard
@@ -488,16 +541,24 @@ impl ConsensusProof {
     ///     lock_time: 0,
     /// };
     /// 
-    /// let can_replace = consensus.replacement_checks(&new_tx, &existing_tx, &mempool).unwrap();
-    /// // Result depends on fee comparison and RBF rules
+    /// let utxo_set = UtxoSet::new();
+    /// // ... populate utxo_set with UTXOs for fee calculation ...
+    /// 
+    /// let can_replace = consensus.replacement_checks(&new_tx, &existing_tx, &utxo_set, &mempool).unwrap();
+    /// // Result depends on all 5 BIP125 requirements: RBF signaling, fee rate, absolute fee,
+    /// // conflict verification, and no new unconfirmed dependencies
     /// ```
+    /// Check if transaction can replace existing one (RBF)
+    /// 
+    /// Implements BIP125 Replace-by-Fee rules. Requires UTXO set for proper fee calculation.
     pub fn replacement_checks(
         &self,
         new_tx: &Transaction,
         existing_tx: &Transaction,
+        utxo_set: &UtxoSet,
         mempool: &mempool::Mempool
     ) -> Result<bool> {
-        mempool::replacement_checks(new_tx, existing_tx, mempool)
+        mempool::replacement_checks(new_tx, existing_tx, utxo_set, mempool)
     }
     
     /// Create new block from mempool transactions
@@ -813,11 +874,11 @@ impl ConsensusProof {
             ///     lock_time: 0,
             /// };
             /// 
-            /// let is_valid = consensus.validate_taproot_transaction(&tx).unwrap();
+            /// let is_valid = consensus.validate_taproot_transaction(&tx, None).unwrap();
             /// // Result depends on Taproot validation rules
             /// ```
-            pub fn validate_taproot_transaction(&self, tx: &Transaction) -> Result<bool> {
-                taproot::validate_taproot_transaction(tx)
+            pub fn validate_taproot_transaction(&self, tx: &Transaction, witness: Option<&Witness>) -> Result<bool> {
+                taproot::validate_taproot_transaction(tx, witness)
             }
             
             /// Check if transaction output is Taproot
@@ -1031,7 +1092,8 @@ mod tests {
             lock_time: 0,
         };
         let mempool = mempool::Mempool::new();
-        let result = consensus.replacement_checks(&new_tx, &existing_tx, &mempool);
+        let utxo_set = types::UtxoSet::new();
+        let result = consensus.replacement_checks(&new_tx, &existing_tx, &utxo_set, &mempool);
         assert!(result.is_ok());
     }
     
@@ -1187,7 +1249,7 @@ mod tests {
             outputs: vec![],
             lock_time: 0,
         };
-        let result = consensus.validate_taproot_transaction(&tx);
+        let result = consensus.validate_taproot_transaction(&tx, None);
         assert!(result.is_ok());
     }
     

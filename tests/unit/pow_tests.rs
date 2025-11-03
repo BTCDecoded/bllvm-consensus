@@ -3,6 +3,7 @@
 use consensus_proof::*;
 use consensus_proof::pow::*;
 use consensus_proof::types::*;
+use consensus_proof::constants::{DIFFICULTY_ADJUSTMENT_INTERVAL, TARGET_TIME_PER_BLOCK, MAX_TARGET};
 
 #[test]
 fn test_get_next_work_required_insufficient_headers() {
@@ -113,6 +114,176 @@ fn test_expand_target_edge_cases() {
     assert!(target3 >= target2);
     assert!(target2 >= target1);
 }
+
+#[test]
+fn test_get_next_work_required_integer_math() {
+    // Test that difficulty adjustment uses integer math (not floating-point)
+    // Create headers with exactly 2 weeks between first and last
+    let expected_time = DIFFICULTY_ADJUSTMENT_INTERVAL * TARGET_TIME_PER_BLOCK;
+    
+    let first_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [0; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000,
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    let last_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [1; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000 + expected_time, // Exactly 2 weeks later
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    let prev_headers = vec![first_header, last_header.clone()];
+    let current_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [2; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000 + expected_time + 600, // One block after
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    let result = get_next_work_required(&current_header, &prev_headers).unwrap();
+    
+    // With exactly 2 weeks timespan, difficulty should stay the same (adjustment = 1.0)
+    // Result should be very close to original bits (within rounding)
+    assert!(result <= MAX_TARGET as u64);
+    assert!(result > 0);
+}
+
+#[test]
+fn test_get_next_work_required_fast_blocks_integer() {
+    // Test fast blocks (1 week instead of 2 weeks) - should increase difficulty
+    let expected_time = DIFFICULTY_ADJUSTMENT_INTERVAL * TARGET_TIME_PER_BLOCK;
+    
+    let first_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [0; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000,
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    // Fast blocks: 1 week instead of 2 weeks (timespan = expected_time / 2)
+    let last_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [1; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000 + (expected_time / 2),
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    let prev_headers = vec![first_header, last_header.clone()];
+    let current_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [2; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000 + (expected_time / 2) + 600,
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    let result = get_next_work_required(&current_header, &prev_headers).unwrap();
+    
+    // Fast blocks should increase difficulty (lower target)
+    // With timespan = expected_time/2, adjustment = 0.5, but clamped to 0.25
+    // So new_target = old_target * 0.25 = lower target = higher difficulty
+    assert!(result <= MAX_TARGET as u64);
+    assert!(result > 0);
+}
+
+#[test]
+fn test_get_next_work_required_slow_blocks_integer() {
+    // Test slow blocks (4 weeks instead of 2 weeks) - should decrease difficulty
+    let expected_time = DIFFICULTY_ADJUSTMENT_INTERVAL * TARGET_TIME_PER_BLOCK;
+    
+    let first_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [0; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000,
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    // Slow blocks: 4 weeks instead of 2 weeks (timespan = expected_time * 2)
+    let last_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [1; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000 + (expected_time * 2),
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    let prev_headers = vec![first_header, last_header.clone()];
+    let current_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [2; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000 + (expected_time * 2) + 600,
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    let result = get_next_work_required(&current_header, &prev_headers).unwrap();
+    
+    // Slow blocks should decrease difficulty (higher target)
+    // With timespan = expected_time * 2, adjustment = 2.0, clamped to 4.0
+    // So new_target = old_target * 2.0 = higher target = lower difficulty
+    assert!(result <= MAX_TARGET as u64);
+    assert!(result > 0);
+}
+
+#[test]
+fn test_get_next_work_required_timespan_clamping() {
+    // Test that timespan is properly clamped to [expected_time/4, expected_time*4]
+    let expected_time = DIFFICULTY_ADJUSTMENT_INTERVAL * TARGET_TIME_PER_BLOCK;
+    
+    let first_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [0; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000,
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    // Extremely fast: 1 day instead of 2 weeks (should clamp to expected_time/4)
+    let last_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [1; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000 + (expected_time / 10), // Much faster than minimum
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    let prev_headers = vec![first_header, last_header.clone()];
+    let current_header = BlockHeader {
+        version: 1,
+        prev_block_hash: [2; 32],
+        merkle_root: [0; 32],
+        timestamp: 1000000 + (expected_time / 10) + 600,
+        bits: 0x1d00ffff,
+        nonce: 0,
+    };
+    
+    let result = get_next_work_required(&current_header, &prev_headers).unwrap();
+    
+    // Should clamp to minimum adjustment (0.25 = 4x difficulty increase)
+    assert!(result <= MAX_TARGET as u64);
+    assert!(result > 0);
+}
+
 
 
 

@@ -1,0 +1,8 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 719189d071b568e0c13299e189024fcc4e79ab13cf13ba298cacdb21658959f0 # shrinks to bits = 0
+cc 5a25b03cdee1f69f088382e28755087d7582145c28a22666c52e2249c642d808 # shrinks to chain = [Block { header: BlockHeader { version: 0, prev_block_hash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], merkle_root: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], timestamp: 0, bits: 2192190549786624, nonce: 0 }, transactions: [] }]

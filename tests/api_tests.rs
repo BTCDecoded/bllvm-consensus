@@ -337,7 +337,8 @@ fn test_replacement_checks() {
     };
     
     let mempool = Mempool::new();
-    let result = consensus.replacement_checks(&tx2, &tx1, &mempool).unwrap();
+    let utxo_set = UtxoSet::new();
+    let result = consensus.replacement_checks(&tx2, &tx1, &utxo_set, &mempool).unwrap();
     assert!(result == true || result == false);
 }
 
@@ -617,7 +618,7 @@ fn test_validate_taproot_transaction() {
         lock_time: 0,
     };
     
-    let result = consensus.validate_taproot_transaction(&tx).unwrap();
+    let result = consensus.validate_taproot_transaction(&tx, None).unwrap();
     assert!(result == true || result == false);
 }
 

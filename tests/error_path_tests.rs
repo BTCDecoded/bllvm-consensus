@@ -209,7 +209,7 @@ fn test_taproot_errors() {
         lock_time: 0,
     };
     
-    let result = consensus.validate_taproot_transaction(&invalid_tx);
+    let result = consensus.validate_taproot_transaction(&invalid_tx, None);
     assert!(result.is_ok());
     // Should be false due to invalid script
 }

@@ -201,6 +201,264 @@ pub mod dead_code_elimination {
     }
 }
 
+/// SIMD Vectorization: Batch hash operations
+/// 
+/// Phase 5: Comprehensive batch hash processing for parallel hash operations.
+/// Leverages existing SIMD in sha2 crate (asm feature) + Rayon for CPU-core parallelization.
+/// 
+/// Provides batch functions for:
+/// - SHA256 and double SHA256 (Bitcoin standard)
+/// - RIPEMD160 and HASH160 (OP_HASH160)
+/// 
+/// Uses chunked processing for better cache locality and parallelizes across CPU cores
+/// when batch size is large enough (≥8 items).
+#[cfg(feature = "production")]
+pub mod simd_vectorization {
+    use sha2::{Sha256, Digest};
+    use ripemd::Ripemd160;
+    
+    /// Minimum batch size for parallelization (overhead not worth it for smaller batches)
+    const PARALLEL_THRESHOLD: usize = 8;
+    
+    /// Chunk size for cache-friendly processing (fits in L1 cache: ~64KB)
+    const CHUNK_SIZE: usize = 16;
+    
+    /// Batch SHA256: Compute SHA256 for multiple independent inputs
+    /// 
+    /// # Arguments
+    /// * `inputs` - Slice of byte slices to hash
+    /// 
+    /// # Returns
+    /// Vector of 32-byte hashes, one per input (in same order)
+    /// 
+    /// # Performance
+    /// - Small batches (< 4 items): Sequential (overhead not worth parallelization)
+    /// - Medium batches (4-7 items): Chunked sequential
+    /// - Large batches (≥8 items): Parallelized across CPU cores using Rayon
+    pub fn batch_sha256(inputs: &[&[u8]]) -> Vec<[u8; 32]> {
+        if inputs.is_empty() {
+            return Vec::new();
+        }
+        
+        // Small batches: sequential processing (overhead not worth it)
+        if inputs.len() < 4 {
+            return inputs.iter()
+                .map(|input| {
+                    let hash = Sha256::digest(input);
+                    let mut result = [0u8; 32];
+                    result.copy_from_slice(&hash);
+                    result
+                })
+                .collect();
+        }
+        
+        // Medium batches: chunked sequential processing
+        if inputs.len() < PARALLEL_THRESHOLD {
+            let mut results = Vec::with_capacity(inputs.len());
+            for chunk in inputs.chunks(CHUNK_SIZE) {
+                for input in chunk {
+                    let hash = Sha256::digest(input);
+                    let mut result = [0u8; 32];
+                    result.copy_from_slice(&hash);
+                    results.push(result);
+                }
+            }
+            return results;
+        }
+        
+        // Large batches: parallelized processing using Rayon
+        // Rayon is enabled via the 'production' feature
+        use rayon::prelude::*;
+        
+        inputs.par_chunks(CHUNK_SIZE)
+            .map(|chunk| {
+                chunk.iter().map(|input| {
+                    let hash = Sha256::digest(input);
+                    let mut result = [0u8; 32];
+                    result.copy_from_slice(&hash);
+                    result
+                }).collect::<Vec<_>>()
+            })
+            .flatten()
+            .collect()
+    }
+    
+    /// Batch double SHA256: Compute SHA256(SHA256(x)) for multiple inputs
+    /// 
+    /// This is Bitcoin's standard hash function used for transaction IDs, block hashes, etc.
+    /// 
+    /// # Arguments
+    /// * `inputs` - Slice of byte slices to hash
+    /// 
+    /// # Returns
+    /// Vector of 32-byte hashes, one per input (in same order)
+    pub fn batch_double_sha256(inputs: &[&[u8]]) -> Vec<[u8; 32]> {
+        if inputs.is_empty() {
+            return Vec::new();
+        }
+        
+        // Small batches: sequential processing
+        if inputs.len() < 4 {
+            return inputs.iter()
+                .map(|input| {
+                    let hash1 = Sha256::digest(input);
+                    let hash2 = Sha256::digest(hash1);
+                    let mut result = [0u8; 32];
+                    result.copy_from_slice(&hash2);
+                    result
+                })
+                .collect();
+        }
+        
+        // Medium batches: chunked sequential processing
+        if inputs.len() < PARALLEL_THRESHOLD {
+            let mut results = Vec::with_capacity(inputs.len());
+            for chunk in inputs.chunks(CHUNK_SIZE) {
+                for input in chunk {
+                    let hash1 = Sha256::digest(input);
+                    let hash2 = Sha256::digest(hash1);
+                    let mut result = [0u8; 32];
+                    result.copy_from_slice(&hash2);
+                    results.push(result);
+                }
+            }
+            return results;
+        }
+        
+        // Large batches: parallelized processing
+        // Rayon is enabled via the 'production' feature
+        use rayon::prelude::*;
+        
+        inputs.par_chunks(CHUNK_SIZE)
+            .map(|chunk| {
+                chunk.iter().map(|input| {
+                    let hash1 = Sha256::digest(input);
+                    let hash2 = Sha256::digest(hash1);
+                    let mut result = [0u8; 32];
+                    result.copy_from_slice(&hash2);
+                    result
+                }).collect::<Vec<_>>()
+            })
+            .flatten()
+            .collect()
+    }
+    
+    /// Batch RIPEMD160: Compute RIPEMD160 for multiple inputs
+    /// 
+    /// # Arguments
+    /// * `inputs` - Slice of byte slices to hash
+    /// 
+    /// # Returns
+    /// Vector of 20-byte hashes, one per input (in same order)
+    pub fn batch_ripemd160(inputs: &[&[u8]]) -> Vec<[u8; 20]> {
+        if inputs.is_empty() {
+            return Vec::new();
+        }
+        
+        // Small batches: sequential processing
+        if inputs.len() < 4 {
+            return inputs.iter()
+                .map(|input| {
+                    let hash = Ripemd160::digest(input);
+                    let mut result = [0u8; 20];
+                    result.copy_from_slice(&hash);
+                    result
+                })
+                .collect();
+        }
+        
+        // Medium batches: chunked sequential processing
+        if inputs.len() < PARALLEL_THRESHOLD {
+            let mut results = Vec::with_capacity(inputs.len());
+            for chunk in inputs.chunks(CHUNK_SIZE) {
+                for input in chunk {
+                    let hash = Ripemd160::digest(input);
+                    let mut result = [0u8; 20];
+                    result.copy_from_slice(&hash);
+                    results.push(result);
+                }
+            }
+            return results;
+        }
+        
+        // Large batches: parallelized processing
+        // Rayon is enabled via the 'production' feature
+        use rayon::prelude::*;
+        
+        inputs.par_chunks(CHUNK_SIZE)
+            .map(|chunk| {
+                chunk.iter().map(|input| {
+                    let hash = Ripemd160::digest(input);
+                    let mut result = [0u8; 20];
+                    result.copy_from_slice(&hash);
+                    result
+                }).collect::<Vec<_>>()
+            })
+            .flatten()
+            .collect()
+    }
+    
+    /// Batch HASH160: Compute RIPEMD160(SHA256(x)) for multiple inputs
+    /// 
+    /// This is Bitcoin's HASH160 operation (OP_HASH160 in script).
+    /// 
+    /// # Arguments
+    /// * `inputs` - Slice of byte slices to hash
+    /// 
+    /// # Returns
+    /// Vector of 20-byte hashes, one per input (in same order)
+    pub fn batch_hash160(inputs: &[&[u8]]) -> Vec<[u8; 20]> {
+        if inputs.is_empty() {
+            return Vec::new();
+        }
+        
+        // Small batches: sequential processing
+        if inputs.len() < 4 {
+            return inputs.iter()
+                .map(|input| {
+                    let sha256_hash = Sha256::digest(input);
+                    let ripemd160_hash = Ripemd160::digest(sha256_hash);
+                    let mut result = [0u8; 20];
+                    result.copy_from_slice(&ripemd160_hash);
+                    result
+                })
+                .collect();
+        }
+        
+        // Medium batches: chunked sequential processing
+        if inputs.len() < PARALLEL_THRESHOLD {
+            let mut results = Vec::with_capacity(inputs.len());
+            for chunk in inputs.chunks(CHUNK_SIZE) {
+                for input in chunk {
+                    let sha256_hash = Sha256::digest(input);
+                    let ripemd160_hash = Ripemd160::digest(sha256_hash);
+                    let mut result = [0u8; 20];
+                    result.copy_from_slice(&ripemd160_hash);
+                    results.push(result);
+                }
+            }
+            return results;
+        }
+        
+        // Large batches: parallelized processing
+        // Rayon is enabled via the 'production' feature
+        use rayon::prelude::*;
+        
+        inputs.par_chunks(CHUNK_SIZE)
+            .map(|chunk| {
+                chunk.iter().map(|input| {
+                    let sha256_hash = Sha256::digest(input);
+                    let ripemd160_hash = Ripemd160::digest(sha256_hash);
+                    let mut result = [0u8; 20];
+                    result.copy_from_slice(&ripemd160_hash);
+                    result
+                }).collect::<Vec<_>>()
+            })
+            .flatten()
+            .collect()
+    }
+}
+
 pub use precomputed_constants::*;
 pub use bounds_optimization::*;
 pub use constant_folding::*;

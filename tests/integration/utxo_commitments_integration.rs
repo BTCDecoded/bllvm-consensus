@@ -88,6 +88,96 @@ mod tests {
     }
 
     #[test]
+    fn test_spam_transaction_removes_spent_inputs() {
+        use consensus_proof::utxo_commitments::initial_sync::InitialSync;
+        use consensus_proof::utxo_commitments::merkle_tree::UtxoMerkleTree;
+        use consensus_proof::utxo_commitments::peer_consensus::ConsensusConfig;
+        use consensus_proof::types::{Transaction, TransactionInput, TransactionOutput, OutPoint, UTXO};
+        
+        // Create initial sync manager
+        let config = ConsensusConfig {
+            min_peers: 2,
+            consensus_threshold: 0.8,
+            safety_margin: 6,
+        };
+        let initial_sync = InitialSync::new(config);
+        
+        // Create UTXO tree with a non-spam UTXO
+        let mut utxo_tree = UtxoMerkleTree::new().unwrap();
+        let non_spam_outpoint = OutPoint {
+            hash: [1u8; 32],
+            index: 0,
+        };
+        let non_spam_utxo = UTXO {
+            value: 100000, // 0.001 BTC
+            script_pubkey: vec![0x76, 0xa9, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0xac], // P2PKH
+            height: 100,
+        };
+        utxo_tree.insert(non_spam_outpoint.clone(), non_spam_utxo.clone()).unwrap();
+        
+        // Verify UTXO exists
+        assert!(utxo_tree.get(&non_spam_outpoint).unwrap().is_some());
+        let initial_supply = utxo_tree.total_supply();
+        assert_eq!(initial_supply, 100000);
+        
+        // Create a spam transaction that spends the non-spam UTXO
+        let spam_tx = Transaction {
+            version: 1,
+            inputs: vec![TransactionInput {
+                prevout: non_spam_outpoint.clone(),
+                script_sig: vec![0x51], // OP_1 (placeholder)
+                sequence: 0xffffffff,
+            }],
+            outputs: vec![TransactionOutput {
+                value: 50000,
+                script_pubkey: {
+                    // OP_RETURN with large data (spam pattern)
+                    let mut script = vec![0x6a]; // OP_RETURN
+                    script.extend(vec![0x00; 100]); // Large data
+                    script
+                },
+            }],
+            lock_time: 0,
+        };
+        
+        // Process the spam transaction
+        let (spam_summary, _root) = initial_sync.process_filtered_block(
+            &mut utxo_tree,
+            101,
+            &[spam_tx],
+        ).unwrap();
+        
+        // Verify spam was detected
+        assert_eq!(spam_summary.filtered_count, 1);
+        assert!(spam_summary.by_type.ordinals > 0 || spam_summary.by_type.dust > 0);
+        
+        // CRITICAL: Verify the spent input was removed (even though transaction is spam)
+        assert!(utxo_tree.get(&non_spam_outpoint).unwrap().is_none(), 
+            "Spam transaction must remove spent inputs from UTXO tree");
+        
+        // Verify supply was reduced (input was spent)
+        let final_supply = utxo_tree.total_supply();
+        assert!(final_supply < initial_supply, 
+            "Supply must decrease when UTXO is spent, even if transaction is spam");
+        
+        // Verify spam output was NOT added (bandwidth savings)
+        // Compute tx_id using the same method as process_filtered_block
+        use consensus_proof::serialization::transaction::serialize_transaction;
+        use sha2::{Sha256, Digest};
+        let serialized = serialize_transaction(&spam_tx);
+        let first_hash = Sha256::digest(&serialized);
+        let second_hash = Sha256::digest(first_hash);
+        let mut spam_tx_id = [0u8; 32];
+        spam_tx_id.copy_from_slice(&second_hash);
+        let spam_output_outpoint = OutPoint {
+            hash: spam_tx_id,
+            index: 0,
+        };
+        assert!(utxo_tree.get(&spam_output_outpoint).unwrap().is_none(),
+            "Spam transaction outputs should not be added to UTXO tree");
+    }
+    
+    #[test]
     fn test_spam_filtering_integration() {
         let filter = SpamFilter::new();
 

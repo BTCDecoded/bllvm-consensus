@@ -4,6 +4,15 @@ mod transaction_tests;
 mod script_tests;
 mod economic_tests;
 mod pow_tests;
+mod transaction_edge_cases;
+mod block_edge_cases;
+mod script_opcode_property_tests;
+mod mempool_edge_cases;
+mod difficulty_edge_cases;
+mod reorganization_edge_cases;
+mod utxo_edge_cases;
+mod segwit_taproot_property_tests;
+mod comprehensive_property_tests;
 
 // Production optimization tests (only compiled with production feature)
 #[cfg(feature = "production")]

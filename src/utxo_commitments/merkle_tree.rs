@@ -160,10 +160,19 @@ impl UtxoMerkleTree {
                 if value.to_h256() == H256::zero() || value.to_h256() == UtxoValue::zero().to_h256() {
                     Ok(None)
                 } else {
-                    // Need to extract data from value - we'll use H256 representation
-                    // For now, return None if we can't deserialize (would need store access)
-                    // TODO: Implement proper value retrieval from store
-                    Ok(None)
+                    // Extract serialized data from UtxoValue and deserialize
+                    let serialized_data = &value.data;
+                    
+                    // Deserialize the UTXO data
+                    match self.deserialize_utxo(serialized_data) {
+                        Ok(utxo) => Ok(Some(utxo)),
+                        Err(e) => {
+                            // Deserialization failed - this might indicate corrupted data
+                            Err(UtxoCommitmentError::InvalidUtxo(
+                                format!("Failed to deserialize UTXO: {}", e)
+                            ))
+                        }
+                    }
                 }
             }
             Err(_) => Ok(None),
