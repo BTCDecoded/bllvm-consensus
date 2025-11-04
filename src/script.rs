@@ -332,7 +332,7 @@ pub fn verify_script_with_context(
 /// 
 /// * `block_height` - Optional current block height (required for block-height CLTV)
 /// * `median_time_past` - Optional median time-past (required for timestamp CLTV per BIP113)
-#[allow(clippy::too-many-arguments)]
+#[allow(clippy::too_many_arguments)]
 pub fn verify_script_with_context_full(
     script_sig: &ByteString,
     script_pubkey: &ByteString,
@@ -390,7 +390,7 @@ fn eval_script_with_context(
 }
 
 /// EvalScript with full context including block height and median time-past
-#[allow(clippy::too-many-arguments)]
+#[allow(clippy::too_many_arguments)]
 fn eval_script_with_context_full(
     script: &ByteString, 
     stack: &mut Vec<ByteString>, 
@@ -894,7 +894,7 @@ fn execute_opcode_with_context(
 }
 
 /// Execute a single opcode with full context including block height and median time-past
-#[allow(clippy::too-many-arguments)]
+#[allow(clippy::too_many_arguments)]
 fn execute_opcode_with_context_full(
     opcode: u8, 
     stack: &mut Vec<ByteString>, 

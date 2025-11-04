@@ -10,7 +10,10 @@ homepage = "https://btcdecoded.org"
 documentation = "https://docs.rs/consensus-proof"
 keywords = ["bitcoin", "consensus", "blockchain", "cryptocurrency", "proof"]
 categories = ["cryptography::cryptocurrencies", "algorithms"]
-rust-version = "1.82"
+rust-version = "1.83"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(kani)'] }
 
 [package.metadata.docs.rs]
 all-features = true

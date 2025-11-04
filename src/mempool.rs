@@ -68,7 +68,7 @@ pub fn accept_to_memory_pool(
     if !is_coinbase(tx) {
         // Calculate script verification flags
         // Enable SegWit flag if transaction has witness data
-        let mut flags = calculate_script_flags(tx, witnesses);
+        let flags = calculate_script_flags(tx, witnesses);
         
         for (i, input) in tx.inputs.iter().enumerate() {
             if let Some(utxo) = utxo_set.get(&input.prevout) {

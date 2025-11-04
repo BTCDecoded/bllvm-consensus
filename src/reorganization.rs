@@ -51,7 +51,7 @@ pub fn reorganize_chain(
 /// * `current_height` - Current block height
 /// * `get_witnesses_for_block` - Optional callback to retrieve witnesses for a block (for current chain disconnection)
 /// * `get_headers_for_height` - Optional callback to retrieve headers for median time-past (for current chain disconnection)
-#[allow(clippy::too-many-arguments)]
+#[allow(clippy::too_many_arguments)]
 pub fn reorganize_chain_with_witnesses(
     new_chain: &[Block],
     new_chain_witnesses: &[Vec<Witness>],
