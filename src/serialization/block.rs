@@ -6,7 +6,7 @@
 use crate::types::*;
 use crate::error::{Result, ConsensusError};
 use crate::segwit::Witness;
-use super::varint::{encode_varint, decode_varint};
+use super::varint::decode_varint;
 use super::transaction::{serialize_transaction, deserialize_transaction};
 
 /// Error type for block parsing failures

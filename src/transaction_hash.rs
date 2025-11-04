@@ -304,7 +304,7 @@ pub fn batch_compute_sighashes(
 fn serialize_sighash_preimage(
     tx: &Transaction,
     input_index: usize,
-    prevouts: &[TransactionOutput],
+    _prevouts: &[TransactionOutput],
     sighash_type: SighashType,
 ) -> Vec<u8> {
     let mut preimage = Vec::new();

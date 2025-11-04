@@ -51,6 +51,7 @@ pub fn reorganize_chain(
 /// * `current_height` - Current block height
 /// * `get_witnesses_for_block` - Optional callback to retrieve witnesses for a block (for current chain disconnection)
 /// * `get_headers_for_height` - Optional callback to retrieve headers for median time-past (for current chain disconnection)
+#[allow(clippy::too-many-arguments)]
 pub fn reorganize_chain_with_witnesses(
     new_chain: &[Block],
     new_chain_witnesses: &[Vec<Witness>],
@@ -58,8 +59,8 @@ pub fn reorganize_chain_with_witnesses(
     current_chain: &[Block],
     current_utxo_set: UtxoSet,
     current_height: Natural,
-    get_witnesses_for_block: Option<impl Fn(&Block) -> Option<Vec<Witness>>>,
-    get_headers_for_height: Option<impl Fn(Natural) -> Option<Vec<BlockHeader>>>,
+    _get_witnesses_for_block: Option<impl Fn(&Block) -> Option<Vec<Witness>>>,
+    _get_headers_for_height: Option<impl Fn(Natural) -> Option<Vec<BlockHeader>>>,
 ) -> Result<ReorganizationResult> {
     // 1. Find common ancestor
     let common_ancestor = find_common_ancestor(new_chain, current_chain)?;
@@ -114,7 +115,7 @@ pub fn reorganize_chain_with_witnesses(
     Ok(ReorganizationResult {
         new_utxo_set: utxo_set,
         new_height,
-        common_ancestor: common_ancestor.clone(),
+        common_ancestor,
         disconnected_blocks: current_chain.to_vec(),
         connected_blocks,
         reorganization_depth: current_chain.len(),

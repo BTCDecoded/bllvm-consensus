@@ -166,6 +166,3 @@ fn test_witness_stack_vs_regular_stack() {
     // Should respect witness stack limit (100), not regular stack limit (1000)
     assert!(result.is_ok() || result.is_err());
 }
-
-
-

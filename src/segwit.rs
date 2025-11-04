@@ -197,7 +197,7 @@ pub fn validate_segwit_block(
     max_block_weight: Natural,
 ) -> Result<bool> {
     // Validate witness structure for all transactions using unified framework
-    for (i, tx) in block.transactions.iter().enumerate() {
+    for (i, _tx) in block.transactions.iter().enumerate() {
         if i < witnesses.len() {
             if !witness::validate_segwit_witness_structure(&witnesses[i])? {
                 return Ok(false);

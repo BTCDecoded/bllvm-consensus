@@ -119,7 +119,7 @@ pub fn extract_witness_version(script: &ByteString) -> Option<WitnessVersion> {
 ///
 /// For SegWit v0: Returns bytes after OP_0
 /// For Taproot v1: Returns bytes after OP_1
-pub fn extract_witness_program(script: &ByteString, version: WitnessVersion) -> Option<ByteString> {
+pub fn extract_witness_program(script: &ByteString, _version: WitnessVersion) -> Option<ByteString> {
     if script.len() < 2 {
         return None;
     }

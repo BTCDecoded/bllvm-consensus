@@ -10,7 +10,7 @@ homepage = "https://btcdecoded.org"
 documentation = "https://docs.rs/consensus-proof"
 keywords = ["bitcoin", "consensus", "blockchain", "cryptocurrency", "proof"]
 categories = ["cryptography::cryptocurrencies", "algorithms"]
-rust-version = "1.70"
+rust-version = "1.82"
 
 [package.metadata.docs.rs]
 all-features = true
