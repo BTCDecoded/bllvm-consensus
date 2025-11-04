@@ -1034,7 +1034,19 @@ mod tests {
 
     #[test]
     fn test_replacement_checks_no_conflict() {
-        let utxo_set = create_test_utxo_set();
+        let mut utxo_set = create_test_utxo_set();
+        // Add UTXO for the new transaction's input
+        let new_outpoint = OutPoint {
+            hash: [2; 32],
+            index: 0,
+        };
+        let new_utxo = UTXO {
+            value: 10000,
+            script_pubkey: vec![0x51],
+            height: 0,
+        };
+        utxo_set.insert(new_outpoint, new_utxo);
+
         let mempool = Mempool::new();
 
         let mut existing_tx = create_valid_transaction();
@@ -1044,6 +1056,8 @@ mod tests {
         let mut new_tx = create_valid_transaction();
         new_tx.inputs[0].prevout.hash = [2; 32]; // Different input
         new_tx.inputs[0].sequence = SEQUENCE_RBF as u64;
+        // Ensure output value doesn't exceed input value to avoid negative fee
+        new_tx.outputs[0].value = 5000; // Less than input value of 10000
 
         // Should fail: no conflict (requirement #4)
         assert!(!replacement_checks(&new_tx, &existing_tx, &utxo_set, &mempool).unwrap());

@@ -565,7 +565,7 @@ mod property_tests {
     proptest! {
         #[test]
         fn prop_calculate_fee_coinbase(
-            tx in proptest::collection::vec(any::<Transaction>(), 1..1)
+            tx in proptest::collection::vec(any::<Transaction>(), 1..=1)
         ) {
             if let Some(tx) = tx.first() {
                 let utxo_set = UtxoSet::new();

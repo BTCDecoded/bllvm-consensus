@@ -2088,7 +2088,7 @@ mod tests {
                     hash: [0; 32],
                     index: 0xffffffff,
                 },
-                script_sig: vec![],
+                script_sig: vec![0x00, 0x01], // Coinbase scriptSig must be 2-100 bytes
                 sequence: 0xffffffff,
             }],
             outputs: vec![TransactionOutput {
