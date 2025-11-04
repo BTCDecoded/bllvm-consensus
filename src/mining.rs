@@ -52,8 +52,11 @@ pub fn create_new_block(
             MempoolResult::Accepted => {
                 selected_txs.push(tx.clone());
             }
-            MempoolResult::Rejected(_) => {
+            MempoolResult::Rejected(reason) => {
                 // Transaction is invalid, skip it
+                // In test mode, log the reason for debugging
+                #[cfg(test)]
+                eprintln!("Transaction rejected: {}", reason);
                 continue;
             }
         }
@@ -422,7 +425,20 @@ mod tests {
 
     #[test]
     fn test_create_new_block() {
-        let utxo_set = UtxoSet::new();
+        let mut utxo_set = UtxoSet::new();
+        // Add UTXO for the transaction input
+        let outpoint = OutPoint {
+            hash: [1; 32],
+            index: 0,
+        };
+        let utxo = UTXO {
+            value: 10000,
+            // Empty script_pubkey - script_sig (OP_1) will push 1, final stack [1] passes
+            script_pubkey: vec![],
+            height: 0,
+        };
+        utxo_set.insert(outpoint, utxo);
+
         let mempool_txs = vec![create_valid_transaction()];
         let height = 100;
         let prev_header = create_valid_block_header();
@@ -523,7 +539,20 @@ mod tests {
 
     #[test]
     fn test_create_block_template_comprehensive() {
-        let utxo_set = UtxoSet::new();
+        let mut utxo_set = UtxoSet::new();
+        // Add UTXO for the transaction input
+        let outpoint = OutPoint {
+            hash: [1; 32],
+            index: 0,
+        };
+        let utxo = UTXO {
+            value: 10000,
+            // Empty script_pubkey - script_sig (OP_1) will push 1, final stack [1] passes
+            script_pubkey: vec![],
+            height: 0,
+        };
+        utxo_set.insert(outpoint, utxo);
+
         let mempool_txs = vec![create_valid_transaction()];
         let height = 100;
         let prev_header = create_valid_block_header();
@@ -768,7 +797,20 @@ mod tests {
 
     #[test]
     fn test_block_template_fields() {
-        let utxo_set = UtxoSet::new();
+        let mut utxo_set = UtxoSet::new();
+        // Add UTXO for the transaction input
+        let outpoint = OutPoint {
+            hash: [1; 32],
+            index: 0,
+        };
+        let utxo = UTXO {
+            value: 10000,
+            // Empty script_pubkey - script_sig (OP_1) will push 1, final stack [1] passes
+            script_pubkey: vec![],
+            height: 0,
+        };
+        utxo_set.insert(outpoint, utxo);
+
         let mempool_txs = vec![create_valid_transaction()];
         let height = 100;
         let prev_header = create_valid_block_header();
@@ -811,12 +853,17 @@ mod tests {
                     hash: [1; 32],
                     index: 0,
                 },
-                script_sig: vec![0x51],
+                // Use OP_1 in script_sig to push 1, script_pubkey will be OP_1 which also pushes 1
+                // But wait, that gives [1, 1] which doesn't pass (needs exactly one value)
+                // Try: OP_1 script_sig + empty script_pubkey, or empty script_sig + OP_1 script_pubkey
+                // Actually, let's use OP_1 in script_sig and empty script_pubkey
+                script_sig: vec![0x51], // OP_1 pushes 1
                 sequence: 0xffffffff,
             }],
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
+                // Empty script_pubkey - script_sig already pushed 1, so final stack is [1]
+                script_pubkey: vec![],
             }],
             lock_time: 0,
         }
