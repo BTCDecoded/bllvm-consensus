@@ -671,8 +671,8 @@ mod kani_proofs {
     #[kani::proof]
     #[kani::unwind(unwind_bounds::POW_DIFFICULTY_ADJUSTMENT)]
     fn kani_get_next_work_required_bounds() {
-        use crate::kani_helpers::{unwind_bounds, assume_pow_bounds};
-        
+        use crate::kani_helpers::{assume_pow_bounds, unwind_bounds};
+
         let current_header: BlockHeader = kani::any();
         let prev_headers: Vec<BlockHeader> = kani::any();
 

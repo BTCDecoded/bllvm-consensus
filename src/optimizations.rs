@@ -306,9 +306,12 @@ pub mod simd_vectorization {
     /// Vector of 32-byte hashes, one per input (in same order)
     pub fn batch_double_sha256(inputs: &[&[u8]]) -> Vec<[u8; 32]> {
         // Use aligned version for better cache performance
-        batch_double_sha256_aligned(inputs).into_iter().map(|h| *h.as_bytes()).collect()
+        batch_double_sha256_aligned(inputs)
+            .into_iter()
+            .map(|h| *h.as_bytes())
+            .collect()
     }
-    
+
     /// Batch double SHA256 with cache-aligned output
     ///
     /// Returns cache-aligned hash structures for better memory performance.
@@ -505,7 +508,7 @@ pub use precomputed_constants::*;
 ///
 /// These bounds are proven by Kani formal verification and can be used
 /// for runtime optimizations without additional safety checks.
-/// 
+///
 /// Kani-proven runtime bounds for BLLVM optimizations
 ///
 /// These bounds have been formally proven by Kani and are used for runtime optimizations.
@@ -516,31 +519,31 @@ pub use precomputed_constants::*;
 #[cfg(feature = "production")]
 pub mod kani_proven_bounds {
     use crate::constants::{MAX_INPUTS, MAX_OUTPUTS};
-    
+
     /// Maximum transaction size (proven by Kani in transaction.rs)
     /// From Kani proofs: kani_check_transaction_size
     pub const MAX_TX_SIZE_PROVEN: usize = 100000; // Bytes
-    
+
     /// Maximum block size (proven by Kani in block.rs)
     /// From Kani proofs: kani_validate_block_size
     pub const MAX_BLOCK_SIZE_PROVEN: usize = 4000000; // Bytes (4MB)
-    
+
     /// Maximum inputs per transaction (proven by Kani)
     /// From multiple Kani proofs across transaction.rs, block.rs, mining.rs
     /// References actual Bitcoin limit from constants.rs
     pub const MAX_INPUTS_PROVEN: usize = MAX_INPUTS;
-    
+
     /// Maximum outputs per transaction (proven by Kani)
     /// From multiple Kani proofs across transaction.rs, block.rs, mining.rs
     /// References actual Bitcoin limit from constants.rs
     pub const MAX_OUTPUTS_PROVEN: usize = MAX_OUTPUTS;
-    
+
     /// Maximum transactions per block (proven by Kani)
     /// From Kani proofs in block.rs
     /// Note: Bitcoin limit is effectively unbounded by consensus rules, but practical limit
     /// is around 10,000 transactions per block based on block size limits.
     pub const MAX_TRANSACTIONS_PROVEN: usize = 10000;
-    
+
     /// Maximum previous headers for difficulty adjustment (proven by Kani)
     /// From Kani proofs in pow.rs: kani_get_next_work_required_bounds
     pub const MAX_PREV_HEADERS_PROVEN: usize = 5;
@@ -557,7 +560,7 @@ pub mod kani_proven_bounds {
 #[cfg(feature = "production")]
 pub mod kani_optimized_access {
     use super::kani_proven_bounds;
-    
+
     /// Get element with Kani-proven bounds check
     ///
     /// Uses proven maximum sizes to optimize bounds checking.
@@ -586,14 +589,12 @@ pub mod kani_optimized_access {
         // We can use unsafe access for proven-safe indices
         // This is safe because Kani proofs guarantee bounds
         if index < slice.len() {
-            unsafe {
-                Some(slice.get_unchecked(index))
-            }
+            unsafe { Some(slice.get_unchecked(index)) }
         } else {
             None
         }
     }
-    
+
     /// Pre-allocate buffer using Kani-proven maximum size
     ///
     /// Uses proven maximum sizes to avoid reallocation.
@@ -603,13 +604,13 @@ pub mod kani_optimized_access {
         // Pre-allocate to proven maximum to avoid reallocation
         Vec::with_capacity(max_size)
     }
-    
+
     /// Pre-allocate transaction buffer using proven maximum
     #[inline(always)]
     pub fn prealloc_tx_buffer() -> Vec<u8> {
         prealloc_proven::<u8>(kani_proven_bounds::MAX_TX_SIZE_PROVEN)
     }
-    
+
     /// Pre-allocate block buffer using proven maximum
     #[inline(always)]
     pub fn prealloc_block_buffer() -> Vec<u8> {
@@ -617,6 +618,6 @@ pub mod kani_optimized_access {
     }
 }
 
-pub use kani_proven_bounds::*;
 #[cfg(feature = "production")]
 pub use kani_optimized_access::*;
+pub use kani_proven_bounds::*;

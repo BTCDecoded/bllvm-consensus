@@ -293,8 +293,8 @@ mod kani_proofs {
     #[kani::proof]
     #[kani::unwind(unwind_bounds::TRANSACTION_VALIDATION)]
     fn kani_check_transaction_structure() {
-        use crate::kani_helpers::{unwind_bounds, assume_transaction_bounds_custom};
-        
+        use crate::kani_helpers::{assume_transaction_bounds_custom, unwind_bounds};
+
         let tx: Transaction = kani::any();
 
         // Bound for tractability using standardized helpers

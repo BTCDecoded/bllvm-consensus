@@ -60,7 +60,7 @@ pub fn serialize_transaction(tx: &Transaction) -> Vec<u8> {
         use crate::optimizations::prealloc_tx_buffer;
         prealloc_tx_buffer()
     };
-    
+
     #[cfg(not(feature = "production"))]
     let mut result = Vec::new();
 

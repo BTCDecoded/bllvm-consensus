@@ -244,7 +244,10 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
             let tx_data_refs: Vec<&[u8]> = serialized_txs.iter().map(|v| v.as_slice()).collect();
             let aligned_hashes = simd_vectorization::batch_double_sha256_aligned(&tx_data_refs);
             // Convert to regular hashes for compatibility
-            aligned_hashes.iter().map(|h| *h.as_bytes()).collect::<Vec<[u8; 32]>>()
+            aligned_hashes
+                .iter()
+                .map(|h| *h.as_bytes())
+                .collect::<Vec<[u8; 32]>>()
         }
 
         #[cfg(not(feature = "production"))]
@@ -266,7 +269,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
             use crate::optimizations::MAX_TRANSACTIONS_PROVEN;
             Vec::with_capacity(MAX_TRANSACTIONS_PROVEN.min(hashes.len() / 2 + 1))
         };
-        
+
         #[cfg(not(feature = "production"))]
         let mut next_level = Vec::with_capacity(hashes.len() / 2 + 1);
 
@@ -306,7 +309,7 @@ fn serialize_tx_for_hash(tx: &Transaction) -> Vec<u8> {
         use crate::optimizations::prealloc_tx_buffer;
         prealloc_tx_buffer()
     };
-    
+
     #[cfg(not(feature = "production"))]
     let mut data = Vec::new();
 

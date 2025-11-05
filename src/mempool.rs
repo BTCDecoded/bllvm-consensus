@@ -650,7 +650,7 @@ mod kani_proofs {
         let height: Natural = kani::any();
 
         // Bound for tractability
-        use crate::kani_helpers::{assume_transaction_bounds_custom, assume_mempool_bounds};
+        use crate::kani_helpers::{assume_mempool_bounds, assume_transaction_bounds_custom};
         assume_transaction_bounds_custom!(tx, 3, 3);
         assume_mempool_bounds!(mempool, 5);
 
@@ -687,7 +687,7 @@ mod kani_proofs {
         let height: Natural = kani::any();
 
         // Bound for tractability
-        use crate::kani_helpers::{assume_transaction_bounds_custom, assume_mempool_bounds};
+        use crate::kani_helpers::{assume_mempool_bounds, assume_transaction_bounds_custom};
         assume_transaction_bounds_custom!(tx, 3, 3);
         assume_mempool_bounds!(mempool, 5);
 

@@ -6,20 +6,23 @@
 //!
 //! Run with: cargo bench --bench bllvm_optimizations --features production
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
 use consensus_proof::{
     mining::calculate_merkle_root,
     optimizations::simd_vectorization,
     serialization::{block::serialize_block_header, transaction::serialize_transaction},
-    types::{Transaction, TransactionInput, TransactionOutput, OutPoint, BlockHeader},
+    types::{BlockHeader, OutPoint, Transaction, TransactionInput, TransactionOutput},
 };
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 
 /// Helper to create a test transaction
 fn create_test_transaction() -> Transaction {
     Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint {
+                hash: [1; 32],
+                index: 0,
+            },
             script_sig: vec![0x51], // OP_1
             sequence: 0xffffffff,
         }],
@@ -45,11 +48,13 @@ fn create_test_block_header() -> BlockHeader {
 
 /// Helper to create multiple test transactions
 fn create_test_transactions(count: usize) -> Vec<Transaction> {
-    (0..count).map(|i| {
-        let mut tx = create_test_transaction();
-        tx.inputs[0].prevout.index = i as u64;
-        tx
-    }).collect()
+    (0..count)
+        .map(|i| {
+            let mut tx = create_test_transaction();
+            tx.inputs[0].prevout.index = i as u64;
+            tx
+        })
+        .collect()
 }
 
 /// Benchmark transaction serialization with/without production optimizations
@@ -57,7 +62,7 @@ fn bench_transaction_serialization(c: &mut Criterion) {
     let tx = create_test_transaction();
 
     let mut group = c.benchmark_group("transaction_serialization");
-    
+
     group.bench_function("serialize_transaction", |b| {
         b.iter(|| {
             black_box(serialize_transaction(black_box(&tx)));
@@ -86,7 +91,9 @@ fn bench_batch_hashing(c: &mut Criterion) {
                 &tx_refs,
                 |b, refs| {
                     b.iter(|| {
-                        black_box(simd_vectorization::batch_double_sha256_aligned(black_box(refs)));
+                        black_box(simd_vectorization::batch_double_sha256_aligned(black_box(
+                            refs,
+                        )));
                     });
                 },
             );
@@ -132,7 +139,7 @@ fn bench_block_header_serialization(c: &mut Criterion) {
     let header = create_test_block_header();
 
     let mut group = c.benchmark_group("block_header_serialization");
-    
+
     group.bench_function("serialize_block_header", |b| {
         b.iter(|| {
             black_box(serialize_block_header(black_box(&header)));
@@ -145,7 +152,7 @@ fn bench_block_header_serialization(c: &mut Criterion) {
 /// Benchmark pre-allocation impact
 #[cfg(feature = "production")]
 fn bench_preallocation_impact(c: &mut Criterion) {
-    use consensus_proof::optimizations::{prealloc_tx_buffer, prealloc_block_buffer};
+    use consensus_proof::optimizations::{prealloc_block_buffer, prealloc_tx_buffer};
 
     let mut group = c.benchmark_group("preallocation");
 
@@ -173,10 +180,6 @@ criterion_group!(
 );
 
 #[cfg(feature = "production")]
-criterion_group!(
-    production_benches,
-    bench_preallocation_impact,
-);
+criterion_group!(production_benches, bench_preallocation_impact,);
 
 criterion_main!(benches);
-

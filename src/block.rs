@@ -452,7 +452,10 @@ pub fn connect_block(
             let tx_data_refs: Vec<&[u8]> = serialized_txs.iter().map(|v| v.as_slice()).collect();
             let aligned_hashes = simd_vectorization::batch_double_sha256_aligned(&tx_data_refs);
             // Convert to regular hashes for compatibility
-            aligned_hashes.iter().map(|h| *h.as_bytes()).collect::<Vec<[u8; 32]>>()
+            aligned_hashes
+                .iter()
+                .map(|h| *h.as_bytes())
+                .collect::<Vec<[u8; 32]>>()
         }
 
         #[cfg(not(feature = "production"))]
@@ -650,8 +653,8 @@ mod kani_proofs {
     #[kani::proof]
     #[kani::unwind(unwind_bounds::BLOCK_VALIDATION)]
     fn kani_apply_transaction_consistency() {
-        use crate::kani_helpers::{unwind_bounds, assume_transaction_bounds_custom};
-        
+        use crate::kani_helpers::{assume_transaction_bounds_custom, unwind_bounds};
+
         let tx: Transaction = kani::any();
         let utxo_set: UtxoSet = kani::any();
         let height: Natural = kani::any();
