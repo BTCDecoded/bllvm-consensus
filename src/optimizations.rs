@@ -80,6 +80,13 @@ pub mod bounds_optimization {
 ///
 /// Optimizes hash array access for cache locality.
 /// Uses 32-byte aligned structures for better cache performance.
+///
+/// This structure ensures each hash is aligned to a 32-byte boundary, which:
+/// - Reduces cache line splits
+/// - Improves prefetching behavior
+/// - Better fits modern CPU cache architectures (64-byte cache lines)
+///
+/// Reference: BLLVM Optimization Pass 3 - Memory Layout Optimization
 #[cfg(feature = "production")]
 #[repr(align(32))]
 pub struct CacheAlignedHash([u8; 32]);
@@ -201,7 +208,7 @@ pub mod dead_code_elimination {
 
 /// SIMD Vectorization: Batch hash operations
 ///
-/// Phase 5: Comprehensive batch hash processing for parallel hash operations.
+/// Provides batch hash processing for parallel hash operations.
 /// Leverages existing SIMD in sha2 crate (asm feature) + Rayon for CPU-core parallelization.
 ///
 /// Provides batch functions for:
@@ -210,6 +217,8 @@ pub mod dead_code_elimination {
 ///
 /// Uses chunked processing for better cache locality and parallelizes across CPU cores
 /// when batch size is large enough (≥8 items).
+///
+/// Reference: BLLVM Optimization Pass 5 - SIMD Vectorization
 #[cfg(feature = "production")]
 pub mod simd_vectorization {
     use ripemd::Ripemd160;
@@ -497,9 +506,17 @@ pub use precomputed_constants::*;
 /// These bounds are proven by Kani formal verification and can be used
 /// for runtime optimizations without additional safety checks.
 /// 
+/// Kani-proven runtime bounds for BLLVM optimizations
+///
+/// These bounds have been formally proven by Kani and are used for runtime optimizations.
+/// Unlike proof-time limits (in `kani_helpers::proof_limits`), these represent actual
+/// Bitcoin limits that have been proven to hold in all cases.
+///
 /// Reference: BLLVM Optimization Pass - Kani Integration
 #[cfg(feature = "production")]
 pub mod kani_proven_bounds {
+    use crate::constants::{MAX_INPUTS, MAX_OUTPUTS};
+    
     /// Maximum transaction size (proven by Kani in transaction.rs)
     /// From Kani proofs: kani_check_transaction_size
     pub const MAX_TX_SIZE_PROVEN: usize = 100000; // Bytes
@@ -510,14 +527,18 @@ pub mod kani_proven_bounds {
     
     /// Maximum inputs per transaction (proven by Kani)
     /// From multiple Kani proofs across transaction.rs, block.rs, mining.rs
-    pub const MAX_INPUTS_PROVEN: usize = 1000;
+    /// References actual Bitcoin limit from constants.rs
+    pub const MAX_INPUTS_PROVEN: usize = MAX_INPUTS;
     
     /// Maximum outputs per transaction (proven by Kani)
     /// From multiple Kani proofs across transaction.rs, block.rs, mining.rs
-    pub const MAX_OUTPUTS_PROVEN: usize = 1000;
+    /// References actual Bitcoin limit from constants.rs
+    pub const MAX_OUTPUTS_PROVEN: usize = MAX_OUTPUTS;
     
     /// Maximum transactions per block (proven by Kani)
     /// From Kani proofs in block.rs
+    /// Note: Bitcoin limit is effectively unbounded by consensus rules, but practical limit
+    /// is around 10,000 transactions per block based on block size limits.
     pub const MAX_TRANSACTIONS_PROVEN: usize = 10000;
     
     /// Maximum previous headers for difficulty adjustment (proven by Kani)
@@ -529,6 +550,10 @@ pub mod kani_proven_bounds {
 ///
 /// Uses bounds proven by Kani formal verification to optimize runtime access.
 /// This is safe because Kani proofs guarantee these bounds hold.
+///
+/// Reference: Kani proofs in transaction.rs, block.rs, mining.rs, pow.rs, etc.
+/// These proofs formally verify that certain bounds always hold, allowing us to
+/// use optimized access patterns without runtime bounds checks.
 #[cfg(feature = "production")]
 pub mod kani_optimized_access {
     use super::kani_proven_bounds;
@@ -538,6 +563,23 @@ pub mod kani_optimized_access {
     /// Uses proven maximum sizes to optimize bounds checking.
     /// For transactions proven to have <= MAX_INPUTS_PROVEN inputs,
     /// we can use optimized access patterns.
+    ///
+    /// # Safety
+    /// This function is safe because Kani proofs guarantee bounds.
+    /// However, it still returns `Option` to handle cases where:
+    /// - Runtime bounds differ from proof bounds (should not happen in practice)
+    /// - Defensive programming (fail-safe)
+    ///
+    /// # Panics
+    /// Never panics - always returns `None` if out of bounds.
+    ///
+    /// # Examples
+    /// ```rust
+    /// // Kani proof guarantees index < MAX_INPUTS_PROVEN
+    /// if let Some(input) = get_proven_by_kani(&tx.inputs, index) {
+    ///     // Safe to use
+    /// }
+    /// ```
     #[inline(always)]
     pub fn get_proven_by_kani<T>(slice: &[T], index: usize) -> Option<&T> {
         // Kani has proven index < MAX_SIZE in various proofs

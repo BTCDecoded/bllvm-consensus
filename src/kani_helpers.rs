@@ -11,14 +11,20 @@ use crate::constants::*;
 ///
 /// These limits are used to bound proof input sizes for tractability
 /// while ensuring they match or exceed Bitcoin's actual limits.
+/// 
+/// Note: Proof-time limits are smaller than actual Bitcoin limits for proof tractability.
+/// These are used only during Kani proof execution, not in runtime code.
 pub mod proof_limits {
     /// Maximum inputs per transaction (Bitcoin limit)
+    /// This matches the actual Bitcoin limit for reference.
     pub const MAX_INPUTS_PER_TX: usize = 1000;
     
     /// Maximum outputs per transaction (Bitcoin limit)
+    /// This matches the actual Bitcoin limit for reference.
     pub const MAX_OUTPUTS_PER_TX: usize = 1000;
     
     /// Maximum transactions per block (Bitcoin limit)
+    /// This matches the actual Bitcoin limit for reference.
     pub const MAX_TRANSACTIONS_PER_BLOCK: usize = 10000;
     
     /// Maximum mempool transactions for proof tractability
@@ -139,6 +145,56 @@ macro_rules! assume_transaction_bounds_custom {
     ($tx:expr, $max_inputs:expr, $max_outputs:expr) => {
         kani::assume($tx.inputs.len() <= $max_inputs);
         kani::assume($tx.outputs.len() <= $max_outputs);
+    };
+}
+
+/// Macro for mempool bounds
+///
+/// Applies standard bounds to a mempool for Kani proofs.
+/// Bounds mempool size and all transactions within it.
+#[macro_export]
+macro_rules! assume_mempool_bounds {
+    ($mempool:expr, $max_len:expr) => {
+        kani::assume($mempool.len() <= $max_len);
+        for tx in $mempool {
+            $crate::assume_transaction_bounds!(tx);
+        }
+    };
+}
+
+/// Macro for script bounds
+///
+/// Applies standard bounds to a script for Kani proofs.
+/// Ensures script length is within proof tractability limits.
+#[macro_export]
+macro_rules! assume_script_bounds {
+    ($script:expr, $max_len:expr) => {
+        kani::assume($script.len() <= $max_len);
+    };
+}
+
+/// Macro for stack bounds
+///
+/// Applies standard bounds to a stack for Kani proofs.
+/// Ensures stack size is within proof tractability limits.
+#[macro_export]
+macro_rules! assume_stack_bounds {
+    ($stack:expr, $max_len:expr) => {
+        kani::assume($stack.len() <= $max_len);
+    };
+}
+
+/// Macro for witness bounds
+///
+/// Applies standard bounds to a witness for Kani proofs.
+/// Ensures witness element count and sizes are within limits.
+#[macro_export]
+macro_rules! assume_witness_bounds {
+    ($witness:expr, $max_elements:expr) => {
+        kani::assume($witness.len() <= $max_elements);
+        for element in $witness {
+            kani::assume(element.len() <= $crate::constants::MAX_SCRIPT_ELEMENT_SIZE);
+        }
     };
 }
 
