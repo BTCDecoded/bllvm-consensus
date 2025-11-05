@@ -159,13 +159,37 @@ pub fn reorganize_chain_with_witnesses(
 /// use consensus_proof::reorganization::{reorganize_chain_with_witnesses, update_mempool_after_reorg};
 /// use consensus_proof::mempool::Mempool;
 ///
-/// let reorg_result = reorganize_chain_with_witnesses(...)?;
-/// let removed = update_mempool_after_reorg(
-///     &mut mempool,
-///     &reorg_result,
-///     &reorg_result.new_utxo_set,
-///     None, // No transaction lookup available
-/// )?;
+/// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+/// # use consensus_proof::types::*;
+/// # use consensus_proof::mempool::Mempool;
+/// # let new_chain = vec![];
+/// # let new_witnesses = vec![];
+/// # let current_chain = vec![];
+/// # let current_utxo_set = UtxoSet::new();
+/// # let current_height = 0;
+/// # let mut mempool = Mempool::new();
+/// // Note: This is a simplified example. In practice, chains must have at least one block
+/// // and share a common ancestor. The result may be an error for empty chains.
+/// let reorg_result = reorganize_chain_with_witnesses(
+///     &new_chain,
+///     &new_witnesses,
+///     None,
+///     &current_chain,
+///     current_utxo_set,
+///     current_height,
+///     None::<fn(&Block) -> Option<Vec<consensus_proof::segwit::Witness>>>,
+///     None::<fn(Natural) -> Option<Vec<BlockHeader>>>,
+/// );
+/// if let Ok(reorg_result) = reorg_result {
+///     let _removed = update_mempool_after_reorg(
+///         &mut mempool,
+///         &reorg_result,
+///         &reorg_result.new_utxo_set,
+///         None::<fn(&Hash) -> Option<Transaction>>, // No transaction lookup available
+///     )?;
+/// }
+/// # Ok(())
+/// # }
 /// ```
 pub fn update_mempool_after_reorg<F>(
     mempool: &mut crate::mempool::Mempool,
@@ -592,7 +616,6 @@ mod property_tests {
             match (work1, work2) {
                 (Ok(w1), Ok(w2)) => {
                     prop_assert_eq!(w1, w2, "Chain work calculation must be deterministic");
-                    prop_assert!(w1 >= 0, "Chain work must be non-negative");
                 },
                 (Err(_), Err(_)) => {
                     // Both failed - this is acceptable for invalid blocks
@@ -615,7 +638,6 @@ mod property_tests {
             match result {
                 Ok(target) => {
                     // Target can be zero for bits=0, which is valid
-                    prop_assert!(target >= 0, "Target must be non-negative");
                     prop_assert!(target <= u128::MAX, "Target must fit in u128");
                 },
                 Err(_) => {

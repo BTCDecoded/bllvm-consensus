@@ -2101,7 +2101,7 @@ mod tests {
         use crate::mining::calculate_merkle_root;
 
         // Calculate actual merkle root for the block
-        let merkle_root = calculate_merkle_root(&vec![coinbase_tx.clone()]).unwrap();
+        let merkle_root = calculate_merkle_root(&[coinbase_tx.clone()]).unwrap();
 
         let block = Block {
             header: BlockHeader {

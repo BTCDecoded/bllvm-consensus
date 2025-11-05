@@ -292,11 +292,38 @@ pub enum MempoolResult {
 /// use consensus_proof::mempool::{Mempool, update_mempool_after_block};
 /// use consensus_proof::block::connect_block;
 ///
+/// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+/// # use consensus_proof::types::*;
+/// # use consensus_proof::mining::calculate_merkle_root;
+/// # let coinbase_tx = Transaction {
+/// #     version: 1,
+/// #     inputs: vec![TransactionInput {
+/// #         prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+/// #         script_sig: vec![],
+/// #         sequence: 0xffffffff,
+/// #     }],
+/// #     outputs: vec![TransactionOutput { value: 5000000000, script_pubkey: vec![] }],
+/// #     lock_time: 0,
+/// # };
+/// # let merkle_root = calculate_merkle_root(&[coinbase_tx.clone()]).unwrap();
+/// # let block = Block {
+/// #     header: BlockHeader {
+/// #         version: 1, prev_block_hash: [0; 32], merkle_root,
+/// #         timestamp: 1234567890, bits: 0x1d00ffff, nonce: 0,
+/// #     },
+/// #     transactions: vec![coinbase_tx],
+/// # };
+/// # let witnesses = vec![];
+/// # let mut utxo_set = UtxoSet::new();
+/// # let height = 0;
+/// # let mut mempool = Mempool::new();
 /// let (result, new_utxo_set) = connect_block(&block, &witnesses, utxo_set, height, None)?;
-/// if matches!(result, ValidationResult::Valid) {
+/// if matches!(result, consensus_proof::ValidationResult::Valid) {
 ///     let removed = update_mempool_after_block(&mut mempool, &block, &new_utxo_set)?;
 ///     println!("Removed {} transactions from mempool", removed.len());
 /// }
+/// # Ok(())
+/// # }
 /// ```
 pub fn update_mempool_after_block(
     mempool: &mut Mempool,

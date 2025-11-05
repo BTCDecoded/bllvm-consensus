@@ -78,14 +78,14 @@ pub fn encode_varint(value: u64) -> Vec<u8> {
 /// # Examples
 ///
 /// ```
-/// use consensus_proof::serialization::varint::{decode_varint, VarIntError};
+/// use consensus_proof::serialization::varint::decode_varint;
 ///
 /// assert_eq!(decode_varint(&[0]), Ok((0, 1)));
 /// assert_eq!(decode_varint(&[252]), Ok((252, 1)));
 /// assert_eq!(decode_varint(&[0xfd, 253, 0]), Ok((253, 3)));
 /// assert_eq!(decode_varint(&[0xfd, 255, 255]), Ok((65535, 3)));
 /// assert_eq!(decode_varint(&[0xfe, 0, 0, 1, 0]), Ok((65536, 5)));
-/// assert_eq!(decode_varint(&[]), Err(VarIntError::InsufficientBytes));
+/// assert!(decode_varint(&[]).is_err());
 /// ```
 pub fn decode_varint(data: &[u8]) -> Result<(u64, usize)> {
     if data.is_empty() {

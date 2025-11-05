@@ -36,9 +36,9 @@ pub const MEDIAN_TIME_BLOCKS: usize = 11;
 /// use consensus_proof::types::BlockHeader;
 ///
 /// let headers = vec![
-///     BlockHeader { timestamp: 1000, ..Default::default() },
-///     BlockHeader { timestamp: 2000, ..Default::default() },
-///     BlockHeader { timestamp: 3000, ..Default::default() },
+///     BlockHeader { version: 1, prev_block_hash: [0; 32], merkle_root: [0; 32], timestamp: 1000, bits: 0, nonce: 0 },
+///     BlockHeader { version: 1, prev_block_hash: [0; 32], merkle_root: [0; 32], timestamp: 2000, bits: 0, nonce: 0 },
+///     BlockHeader { version: 1, prev_block_hash: [0; 32], merkle_root: [0; 32], timestamp: 3000, bits: 0, nonce: 0 },
 /// ];
 /// let median = get_median_time_past(&headers);
 /// ```
