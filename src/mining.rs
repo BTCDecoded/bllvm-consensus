@@ -52,11 +52,11 @@ pub fn create_new_block(
             MempoolResult::Accepted => {
                 selected_txs.push(tx.clone());
             }
-            MempoolResult::Rejected(reason) => {
+            MempoolResult::Rejected(_reason) => {
                 // Transaction is invalid, skip it
                 // In test mode, log the reason for debugging
                 #[cfg(test)]
-                eprintln!("Transaction rejected: {}", reason);
+                eprintln!("Transaction rejected: {}", _reason);
                 continue;
             }
         }

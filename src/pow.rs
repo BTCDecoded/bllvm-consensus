@@ -464,7 +464,7 @@ fn compress_target(target: &U256) -> Result<Natural> {
     // Calculate size in bytes: nSize = (bits + 7) / 8 (ceiling division)
     // This is the number of bytes needed to represent the target
     #[allow(clippy::manual_div_ceil)]
-    let n_size = ((highest_bit + 1 + 7) / 8) as u32;
+    let n_size = (highest_bit + 1 + 7) / 8;
 
     // Calculate compact representation (following Bitcoin Core's GetCompact)
     // nCompact is computed as uint64 first, then converted to uint32
@@ -506,7 +506,7 @@ fn compress_target(target: &U256) -> Result<Natural> {
     }
 
     // Combine exponent and mantissa: (nSize << 24) | mantissa
-    let bits = ((n_size_final as u32) << 24) | mantissa;
+    let bits = (n_size_final << 24) | mantissa;
 
     Ok(bits as Natural)
 }
