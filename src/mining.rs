@@ -1312,13 +1312,11 @@ mod kani_proofs {
             let first_tx = &block.transactions[0];
             if !first_tx.inputs.is_empty() {
                 assert_eq!(
-                    first_tx.inputs[0].prevout.hash,
-                    [0u8; 32],
+                    first_tx.inputs[0].prevout.hash, [0u8; 32],
                     "CreateNewBlock: first transaction must be coinbase (null prevout hash)"
                 );
                 assert_eq!(
-                    first_tx.inputs[0].prevout.index,
-                    0xffffffff,
+                    first_tx.inputs[0].prevout.index, 0xffffffff,
                     "CreateNewBlock: first transaction must be coinbase (null prevout index)"
                 );
             }
@@ -1346,8 +1344,7 @@ mod kani_proofs {
             // Critical invariant: prev_block_hash must match previous header hash
             let prev_hash = calculate_block_hash(&prev_header);
             assert_eq!(
-                block.header.prev_block_hash,
-                prev_hash,
+                block.header.prev_block_hash, prev_hash,
                 "CreateNewBlock: block prev_block_hash must match previous header hash"
             );
         }
@@ -1409,18 +1406,15 @@ mod kani_proofs {
                 "MineBlock: Block transactions must be preserved"
             );
             assert_eq!(
-                mined_block.header.version,
-                block.header.version,
+                mined_block.header.version, block.header.version,
                 "MineBlock: Block version must be preserved"
             );
             assert_eq!(
-                mined_block.header.prev_block_hash,
-                block.header.prev_block_hash,
+                mined_block.header.prev_block_hash, block.header.prev_block_hash,
                 "MineBlock: Block prev_block_hash must be preserved"
             );
             assert_eq!(
-                mined_block.header.merkle_root,
-                block.header.merkle_root,
+                mined_block.header.merkle_root, block.header.merkle_root,
                 "MineBlock: Block merkle_root must be preserved"
             );
         }
@@ -1476,20 +1470,17 @@ mod kani_proofs {
 
             // Critical invariant: coinbase must have null prevout
             assert_eq!(
-                template.coinbase_tx.inputs[0].prevout.hash,
-                [0u8; 32],
+                template.coinbase_tx.inputs[0].prevout.hash, [0u8; 32],
                 "CreateBlockTemplate: coinbase must have null prevout hash"
             );
             assert_eq!(
-                template.coinbase_tx.inputs[0].prevout.index,
-                0xffffffff,
+                template.coinbase_tx.inputs[0].prevout.index, 0xffffffff,
                 "CreateBlockTemplate: coinbase must have null prevout index"
             );
 
             // Critical invariant: template height must match provided height
             assert_eq!(
-                template.height,
-                height,
+                template.height, height,
                 "CreateBlockTemplate: template height must match provided height"
             );
 
