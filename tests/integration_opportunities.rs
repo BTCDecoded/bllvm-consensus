@@ -25,7 +25,8 @@ fn test_mempool_to_block_integration() {
     // 3. Create block from mempool (even with rejected tx, should create coinbase-only block)
     let prev_header = create_valid_block_header();
     let prev_headers = vec![prev_header.clone(), prev_header.clone()];
-    let coinbase_script = vec![0x51];
+    // Coinbase script_sig must be between 2 and 100 bytes (Orange Paper Section 5.1, rule 8)
+    let coinbase_script = vec![0x51, 0x51]; // At least 2 bytes
     let coinbase_address = vec![0x51];
 
     let block = consensus
@@ -63,7 +64,8 @@ fn test_economic_mining_integration() {
         let total_supply = consensus.total_supply(height);
 
         // 2. Create coinbase transaction with calculated subsidy
-        let coinbase_script = vec![0x51];
+        // Coinbase script_sig must be between 2 and 100 bytes (Orange Paper Section 5.1, rule 8)
+        let coinbase_script = vec![0x51, 0x51]; // At least 2 bytes
         let coinbase_address = vec![0x51];
 
         let block = consensus
