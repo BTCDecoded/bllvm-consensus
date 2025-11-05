@@ -66,8 +66,8 @@ pub fn serialize_transaction(tx: &Transaction) -> Vec<u8> {
         // Previous output hash (32 bytes)
         result.extend_from_slice(&input.prevout.hash);
 
-        // Previous output index (4 bytes, little-endian)
-        result.extend_from_slice(&input.prevout.index.to_le_bytes());
+        // Previous output index (4 bytes, little-endian) - Bitcoin uses u32 in wire format
+        result.extend_from_slice(&(input.prevout.index as u32).to_le_bytes());
 
         // Script length (VarInt)
         result.extend_from_slice(&encode_varint(input.script_sig.len() as u64));
@@ -75,8 +75,8 @@ pub fn serialize_transaction(tx: &Transaction) -> Vec<u8> {
         // Script bytes
         result.extend_from_slice(&input.script_sig);
 
-        // Sequence (4 bytes, little-endian)
-        result.extend_from_slice(&input.sequence.to_le_bytes());
+        // Sequence (4 bytes, little-endian) - Bitcoin uses u32 in wire format
+        result.extend_from_slice(&(input.sequence as u32).to_le_bytes());
     }
 
     // Output count (VarInt)
@@ -94,8 +94,8 @@ pub fn serialize_transaction(tx: &Transaction) -> Vec<u8> {
         result.extend_from_slice(&output.script_pubkey);
     }
 
-    // Lock time (4 bytes, little-endian)
-    result.extend_from_slice(&(tx.lock_time as u32).to_le_bytes());
+        // Lock time (4 bytes, little-endian) - Bitcoin uses u32 in wire format
+        result.extend_from_slice(&(tx.lock_time as u32).to_le_bytes());
 
     result
 }

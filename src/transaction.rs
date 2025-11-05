@@ -1708,10 +1708,16 @@ mod tests {
     fn test_check_transaction_max_inputs() {
         let mut inputs = Vec::new();
         for i in 0..MAX_INPUTS {
+            let mut hash = [0u8; 32];
+            // Use unique hash for each input to avoid duplicates
+            hash[0] = (i & 0xff) as u8;
+            hash[1] = ((i >> 8) & 0xff) as u8;
+            hash[2] = ((i >> 16) & 0xff) as u8;
+            hash[3] = ((i >> 24) & 0xff) as u8;
             inputs.push(TransactionInput {
                 prevout: OutPoint {
-                    hash: [i as u8; 32],
-                    index: 0,
+                    hash,
+                    index: i as u64,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
