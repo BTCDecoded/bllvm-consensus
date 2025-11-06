@@ -6,9 +6,11 @@
 //!
 //! Run with: cargo bench --bench bllvm_optimizations --features production
 
+#[cfg(feature = "production")]
+use consensus_proof::optimizations;
+
 use consensus_proof::{
     mining::calculate_merkle_root,
-    optimizations::simd_vectorization,
     serialization::{block::serialize_block_header, transaction::serialize_transaction},
     types::{BlockHeader, OutPoint, Transaction, TransactionInput, TransactionOutput},
 };
@@ -91,9 +93,11 @@ fn bench_batch_hashing(c: &mut Criterion) {
                 &tx_refs,
                 |b, refs| {
                     b.iter(|| {
-                        black_box(simd_vectorization::batch_double_sha256_aligned(black_box(
-                            refs,
-                        )));
+                        black_box(
+                            optimizations::simd_vectorization::batch_double_sha256_aligned(
+                                black_box(refs),
+                            ),
+                        );
                     });
                 },
             );
@@ -103,7 +107,9 @@ fn bench_batch_hashing(c: &mut Criterion) {
                 &tx_refs,
                 |b, refs| {
                     b.iter(|| {
-                        black_box(simd_vectorization::batch_double_sha256(black_box(refs)));
+                        black_box(optimizations::simd_vectorization::batch_double_sha256(
+                            black_box(refs),
+                        ));
                     });
                 },
             );

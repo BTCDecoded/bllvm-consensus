@@ -336,7 +336,7 @@ pub fn update_mempool_after_block(
 
     // 1. Remove transactions that were included in the block
     for tx in &block.transactions {
-        let tx_id = calculate_tx_id(tx);
+        let tx_id = crate::block::calculate_tx_id(tx);
         if mempool.remove(&tx_id) {
             removed.push(tx_id);
         }
@@ -380,7 +380,7 @@ where
 
     // 1. Remove transactions that were included in the block
     for tx in &block.transactions {
-        let tx_id = calculate_tx_id(tx);
+        let tx_id = crate::block::calculate_tx_id(tx);
         if mempool.remove(&tx_id) {
             removed.push(tx_id);
         }
@@ -654,7 +654,7 @@ mod kani_proofs {
         assume_transaction_bounds_custom!(tx, 3, 3);
         assume_mempool_bounds!(mempool, 5);
 
-        let tx_id = calculate_tx_id(&tx);
+        let tx_id = crate::block::calculate_tx_id(&tx);
 
         // If transaction is already in mempool, it should be rejected
         if mempool.contains(&tx_id) {
@@ -890,7 +890,7 @@ mod kani_proofs {
         let block_tx_ids: Vec<Hash> = block
             .transactions
             .iter()
-            .map(|tx| calculate_tx_id(tx))
+            .map(|tx| crate::block::calculate_tx_id(tx))
             .collect();
 
         // Add some block transaction IDs to mempool (simulating they were in mempool)
@@ -1000,7 +1000,7 @@ mod tests {
         let tx = create_valid_transaction();
         let utxo_set = create_test_utxo_set();
         let mut mempool = Mempool::new();
-        mempool.insert(calculate_tx_id(&tx));
+        mempool.insert(crate::block::calculate_tx_id(&tx));
 
         let result = accept_to_memory_pool(&tx, None, &utxo_set, &mempool, 100).unwrap();
         assert!(matches!(result, MempoolResult::Rejected(_)));
@@ -1375,13 +1375,13 @@ mod tests {
     #[test]
     fn test_calculate_tx_id() {
         let tx = create_valid_transaction();
-        let tx_id = calculate_tx_id(&tx);
+        let tx_id = crate::block::calculate_tx_id(&tx);
 
         // Should be a 32-byte hash
         assert_eq!(tx_id.len(), 32);
 
         // Same transaction should produce same ID
-        let tx_id2 = calculate_tx_id(&tx);
+        let tx_id2 = crate::block::calculate_tx_id(&tx);
         assert_eq!(tx_id, tx_id2);
     }
 
@@ -1391,8 +1391,8 @@ mod tests {
         let mut tx2 = tx1.clone();
         tx2.version = 2; // Different version
 
-        let id1 = calculate_tx_id(&tx1);
-        let id2 = calculate_tx_id(&tx2);
+        let id1 = crate::block::calculate_tx_id(&tx1);
+        let id2 = crate::block::calculate_tx_id(&tx2);
 
         assert_ne!(id1, id2);
     }

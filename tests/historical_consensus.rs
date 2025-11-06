@@ -180,7 +180,7 @@ fn test_historical_block_subsidy() {
         let subsidy = get_block_subsidy(height);
 
         // Verify subsidy is non-negative and within expected bounds
-        assert!(subsidy >= 0);
+        // subsidy is u64, always non-negative
         assert!(subsidy <= 50_0000_0000); // 50 BTC in satoshis
     }
 

@@ -99,8 +99,7 @@ fn test_segwit_weight_discount() {
     let weight_with = weight_with_witness.unwrap();
 
     // Weights may be equal if witness is empty, but calculation method differs
-    assert!(weight_no >= 0);
-    assert!(weight_with >= 0);
+    // weight_no and weight_with are u64 (Natural), always non-negative
 }
 
 /// Test weight calculation with mixed witness/non-witness transactions

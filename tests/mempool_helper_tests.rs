@@ -1,5 +1,6 @@
 //! Tests for mempool helper functions
 
+use consensus_proof::block::calculate_tx_id;
 use consensus_proof::mempool::*;
 use consensus_proof::transaction::is_coinbase;
 use consensus_proof::*;
