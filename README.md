@@ -2,6 +2,8 @@
 
 **Direct mathematical implementation of Bitcoin consensus rules from the Orange Paper.**
 
+> **For verified system status**: See [SYSTEM_STATUS.md](https://github.com/BTCDecoded/.github/blob/main/SYSTEM_STATUS.md) in the BTCDecoded organization repository.
+
 [![Verification Status](https://github.com/BTCDecoded/bllvm-consensus/workflows/Verify%20Consensus%20(Formal%20Verification)/badge.svg)](https://github.com/BTCDecoded/bllvm-consensus/actions/workflows/verify.yml)
 [![Kani Verification](https://img.shields.io/badge/Kani-Verified-green)](https://model-checking.github.io/kani/)
 [![Property Tests](https://img.shields.io/badge/Proptest-Covered-blue)](https://docs.rs/proptest/)
