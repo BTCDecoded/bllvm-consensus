@@ -25,6 +25,7 @@ secp256k1 = "=0.28.2"
 # Pure Rust secp256k1 implementation (Phase 3.2 - migration in progress)
 k256 = { version = "0.13", optional = true, features = ["ecdsa", "sha256"] }
 # Enable SIMD optimizations for hashing
+# The "asm" feature enables optimized assembly implementations
 sha2 = { version = "=0.10.9", features = ["asm"] }
 ripemd = "=0.1.3"
 bitcoin_hashes = "=0.11.0"
@@ -151,4 +152,8 @@ harness = false
 
 [[bench]]
 name = "bllvm_optimizations"
+harness = false
+
+[[bench]]
+name = "performance_focused"
 harness = false
