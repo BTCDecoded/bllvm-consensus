@@ -241,13 +241,19 @@ pub mod simd_vectorization {
     /// # Performance
     /// - Small batches (< 4 items): Sequential (overhead not worth parallelization)
     /// - Medium batches (4-7 items): Chunked sequential
-    /// - Large batches (≥8 items): Parallelized across CPU cores using Rayon
+    /// - Large batches (≥8 items): Multi-core parallelization with Rayon
+    /// 
+    /// # Optimizations
+    /// - Uses sha2 crate with "asm" feature for optimized assembly
+    /// - For large batches, leverages Rayon for multi-core parallelization
+    /// - AVX2 batch optimization available via `crypto::avx2_batch` module
     pub fn batch_sha256(inputs: &[&[u8]]) -> Vec<[u8; 32]> {
         if inputs.is_empty() {
             return Vec::new();
         }
 
         // Small batches: sequential processing (overhead not worth it)
+        // Use sha2 crate which already has asm optimizations
         if inputs.len() < 4 {
             return inputs
                 .iter()
@@ -274,8 +280,20 @@ pub mod simd_vectorization {
             return results;
         }
 
-        // Large batches: parallelized processing using Rayon
+        // Large batches: Try AVX2 first, then fallback to multi-core parallelization
+        #[cfg(target_arch = "x86_64")]
+        {
+            use crate::crypto::sha256_avx2;
+            if sha256_avx2::is_avx2_available() {
+                // Use AVX2 batch processing for chunks of 8
+                use crate::crypto::avx2_batch;
+                return avx2_batch::batch_sha256_avx2(inputs);
+            }
+        }
+        
+        // Fallback: Multi-core parallelization using Rayon
         // Rayon is enabled via the 'production' feature
+        // This leverages multiple CPU cores for parallel hashing
         use rayon::prelude::*;
 
         inputs

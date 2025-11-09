@@ -1,0 +1,856 @@
+   Compiling proc-macro2 v1.0.101
+   Compiling unicode-ident v1.0.19
+   Compiling libc v0.2.175
+   Compiling cfg-if v1.0.3
+   Compiling stable_deref_trait v1.2.1
+   Compiling zerocopy v0.8.27
+   Compiling serde v1.0.193
+   Compiling find-msvc-tools v0.1.2
+   Compiling itoa v1.0.15
+   Compiling shlex v1.3.0
+   Compiling once_cell v1.21.3
+   Compiling typenum v1.18.0
+   Compiling version_check v0.9.5
+   Compiling writeable v0.6.2
+   Compiling pin-project-lite v0.2.16
+   Compiling either v1.15.0
+   Compiling cc v1.2.38
+   Compiling litemap v0.8.1
+   Compiling crossbeam-utils v0.8.21
+   Compiling icu_properties_data v2.1.1
+   Compiling hashbrown v0.16.0
+   Compiling fnv v1.0.7
+   Compiling icu_normalizer_data v2.1.1
+   Compiling bytes v1.10.1
+   Compiling equivalent v1.0.2
+   Compiling futures-core v0.3.31
+   Compiling winnow v0.5.40
+   Compiling serde_json v1.0.108
+   Compiling syn v1.0.109
+   Compiling toml_datetime v0.6.3
+   Compiling indexmap v2.12.0
+   Compiling ryu v1.0.20
+   Compiling libm v0.2.15
+   Compiling autocfg v1.5.0
+   Compiling quote v1.0.40
+   Compiling generic-array v0.14.7
+   Compiling crossbeam-epoch v0.9.18
+   Compiling syn v2.0.106
+   Compiling getrandom v0.2.16
+   Compiling mio v1.1.0
+   Compiling socket2 v0.6.1
+   Compiling rand_core v0.6.4
+   Compiling anyhow v1.0.93
+   Compiling object v0.37.3
+   Compiling getrandom v0.3.4
+   Compiling smallvec v1.15.1
+   Compiling rayon-core v1.13.0
+   Compiling rustix v1.1.2
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.6
+   Compiling crossbeam-deque v0.8.6
+   Compiling http v0.2.12
+   Compiling tracing-core v0.1.34
+   Compiling toml_edit v0.20.2
+   Compiling regex-syntax v0.8.8
+   Compiling num-traits v0.2.19
+   Compiling gimli v0.32.3
+   Compiling pin-utils v0.1.0
+   Compiling percent-encoding v2.3.2
+   Compiling futures-task v0.3.31
+   Compiling adler2 v2.0.1
+   Compiling memchr v2.7.6
+   Compiling bitflags v2.10.0
+   Compiling futures-sink v0.3.31
+   Compiling linux-raw-sys v0.11.0
+   Compiling httparse v1.10.1
+   Compiling proc-macro-crate v2.0.2
+   Compiling miniz_oxide v0.8.9
+   Compiling futures-util v0.3.31
+   Compiling form_urlencoded v1.2.2
+   Compiling tracing v0.1.41
+   Compiling addr2line v0.25.1
+   Compiling digest v0.10.7
+   Compiling plotters-backend v0.3.7
+   Compiling thiserror v1.0.69
+   Compiling synstructure v0.13.2
+   Compiling allocator-api2 v0.2.21
+   Compiling clap_lex v0.7.6
+   Compiling foldhash v0.1.5
+   Compiling fastrand v2.3.0
+   Compiling try-lock v0.2.5
+   Compiling slab v0.4.11
+   Compiling ciborium-io v0.2.2
+   Compiling lazy_static v1.5.0
+   Compiling utf8_iter v1.0.4
+   Compiling anstyle v1.0.13
+   Compiling rustc-demangle v0.1.26
+   Compiling tempfile v3.23.0
+   Compiling hashbrown v0.15.5
+   Compiling want v0.3.1
+   Compiling clap_builder v4.5.51
+   Compiling plotters-svg v0.3.7
+   Compiling rayon v1.11.0
+   Compiling secp256k1-sys v0.9.2
+   Compiling sha2-asm v0.6.4
+   Compiling backtrace v0.3.76
+   Compiling regex-automata v0.4.13
+   Compiling http-body v0.4.6
+   Compiling rand_xoshiro v0.6.0
+   Compiling wait-timeout v0.2.1
+   Compiling socket2 v0.5.10
+   Compiling futures-channel v0.3.31
+   Compiling itertools v0.10.5
+   Compiling httpdate v1.0.3
+   Compiling cast v0.3.0
+   Compiling cpufeatures v0.2.17
+   Compiling quick-error v1.2.3
+   Compiling tower-service v0.3.3
+   Compiling pretty-hex v0.4.1
+   Compiling bit-vec v0.6.3
+   Compiling same-file v1.0.6
+   Compiling bit-set v0.5.3
+   Compiling walkdir v2.5.0
+   Compiling regex v1.12.2
+   Compiling rusty-fork v0.3.1
+   Compiling criterion-plot v0.5.0
+   Compiling clap v4.5.51
+   Compiling sha2 v0.10.9
+   Compiling lru v0.12.5
+   Compiling plotters v0.3.7
+   Compiling ripemd v0.1.3
+   Compiling rand_xorshift v0.3.0
+   Compiling is-terminal v0.4.17
+   Compiling encoding_rs v0.8.35
+   Compiling oorandom v11.1.5
+   Compiling bitcoin_hashes v0.11.0
+   Compiling hex v0.4.3
+   Compiling mime v0.3.17
+   Compiling base64 v0.21.7
+   Compiling ipnet v2.11.0
+   Compiling anes v0.1.6
+   Compiling log v0.4.28
+   Compiling unarray v0.1.4
+   Compiling sync_wrapper v0.1.2
+   Compiling bolero-generator-derive v0.11.0
+   Compiling secp256k1 v0.28.2
+   Compiling zerofrom-derive v0.1.6
+   Compiling yoke-derive v0.8.1
+   Compiling zerovec-derive v0.11.2
+   Compiling zerocopy-derive v0.8.27
+   Compiling displaydoc v0.2.5
+   Compiling serde_derive v1.0.193
+   Compiling tokio-macros v2.6.0
+   Compiling thiserror-impl v1.0.69
+   Compiling bolero-generator v0.11.1
+   Compiling tokio v1.48.0
+   Compiling tokio-util v0.7.17
+   Compiling h2 v0.3.27
+   Compiling zerofrom v0.1.6
+   Compiling yoke v0.8.1
+   Compiling zerovec v0.11.5
+   Compiling zerotrie v0.2.3
+   Compiling tinystr v0.8.2
+   Compiling potential_utf v0.1.4
+   Compiling icu_collections v2.1.1
+   Compiling icu_locale_core v2.1.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling half v2.7.1
+   Compiling ciborium-ll v0.2.2
+   Compiling rand_chacha v0.3.1
+   Compiling rand v0.8.5
+   Compiling icu_provider v2.1.1
+   Compiling icu_normalizer v2.1.1
+   Compiling icu_properties v2.1.1
+   Compiling bolero-engine v0.11.2
+   Compiling proptest v1.5.0
+   Compiling bolero v0.11.1
+   Compiling hyper v0.14.32
+   Compiling idna_adapter v1.2.1
+   Compiling idna v1.1.0
+   Compiling ciborium v0.2.2
+   Compiling bincode v1.3.3
+   Compiling serde_urlencoded v0.7.1
+   Compiling url v2.5.7
+   Compiling tinytemplate v1.2.1
+   Compiling bllvm-consensus v0.1.0 (/home/acolyte/src/node-comparison/commons/bllvm-consensus)
+   Compiling criterion v0.5.1
+warning: unused import: `super::*`
+  --> src/optimizations.rs:45:9
+   |
+45 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `Digest` and `Sha256`
+   --> src/optimizations.rs:147:16
+    |
+147 |     use sha2::{Digest, Sha256};
+    |                ^^^^^^  ^^^^^^
+
+warning: unused import: `std::arch::x86_64::*`
+  --> src/crypto/avx2_batch.rs:12:5
+   |
+12 | use std::arch::x86_64::*;
+   |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `HashEngine`
+    --> src/crypto/sha256_avx2.rs:1009:56
+     |
+1009 |     use bitcoin_hashes::{sha256d, Hash as BitcoinHash, HashEngine};
+     |                                                        ^^^^^^^^^^
+
+warning: unused variable: `e`
+   --> src/pow.rs:175:17
+    |
+175 |             Err(e) => {
+    |                 ^ help: if this is intentional, prefix it with an underscore: `_e`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `c_old_16`
+   --> src/crypto/sha256_avx2.rs:799:9
+    |
+799 |     let c_old_16 = c;
+    |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_c_old_16`
+
+warning: unused variable: `d_old_16`
+   --> src/crypto/sha256_avx2.rs:800:9
+    |
+800 |     let d_old_16 = d;
+    |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_d_old_16`
+
+   Compiling reqwest v0.11.27
+warning: function `calculate_tx_hash` is never used
+   --> src/mining.rs:359:4
+    |
+359 | fn calculate_tx_hash(tx: &Transaction) -> Hash {
+    |    ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` on by default
+
+warning: `bllvm-consensus` (lib) generated 8 warnings (run `cargo fix --lib -p bllvm-consensus` to apply 4 suggestions)
+warning: unused imports: `OptimizedSha256` and `cpu_features`
+ --> benches/hash_operations.rs:3:31
+  |
+3 | use bllvm_consensus::crypto::{cpu_features, OptimizedSha256};
+  |                               ^^^^^^^^^^^^  ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: `bllvm-consensus` (bench "hash_operations") generated 1 warning (run `cargo fix --bench "hash_operations"` to apply 1 suggestion)
+    Finished `bench` profile [optimized] target(s) in 42.68s
+     Running benches/hash_operations.rs (target/release/deps/hash_operations-75b1a1b5cffdfc39)
+Gnuplot not found, using plotters backend
+Benchmarking sha256_1kb
+Benchmarking sha256_1kb: Warming up for 3.0000 s
+Benchmarking sha256_1kb: Collecting 100 samples in estimated 5.0171 s (1.4M iterations)
+Benchmarking sha256_1kb: Analyzing
+sha256_1kb              time:   [3.6407 µs 3.6553 µs 3.6741 µs]
+Found 8 outliers among 100 measurements (8.00%)
+  4 (4.00%) high mild
+  4 (4.00%) high severe
+
+Benchmarking double_sha256_1kb
+Benchmarking double_sha256_1kb: Warming up for 3.0000 s
+Benchmarking double_sha256_1kb: Collecting 100 samples in estimated 5.0122 s (1.3M iterations)
+Benchmarking double_sha256_1kb: Analyzing
+double_sha256_1kb       time:   [3.8489 µs 3.8543 µs 3.8608 µs]
+Found 5 outliers among 100 measurements (5.00%)
+  2 (2.00%) high mild
+  3 (3.00%) high severe
+
+Benchmarking batch_sha256_4
+Benchmarking batch_sha256_4: Warming up for 3.0000 s
+Benchmarking batch_sha256_4: Collecting 100 samples in estimated 5.0455 s (343k iterations)
+Benchmarking batch_sha256_4: Analyzing
+batch_sha256_4          time:   [14.474 µs 14.494 µs 14.515 µs]
+Found 4 outliers among 100 measurements (4.00%)
+  3 (3.00%) high mild
+  1 (1.00%) high severe
+
+Benchmarking sequential_sha256_4
+Benchmarking sequential_sha256_4: Warming up for 3.0000 s
+Benchmarking sequential_sha256_4: Collecting 100 samples in estimated 5.0509 s (348k iterations)
+Benchmarking sequential_sha256_4: Analyzing
+sequential_sha256_4     time:   [14.514 µs 14.535 µs 14.557 µs]
+Found 9 outliers among 100 measurements (9.00%)
+  1 (1.00%) low severe
+  3 (3.00%) low mild
+  3 (3.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking batch_sha256_8
+Benchmarking batch_sha256_8: Warming up for 3.0000 s
+Benchmarking batch_sha256_8: Collecting 100 samples in estimated 5.0112 s (182k iterations)
+Benchmarking batch_sha256_8: Analyzing
+batch_sha256_8          time:   [26.677 µs 26.697 µs 26.720 µs]
+Found 10 outliers among 100 measurements (10.00%)
+  2 (2.00%) low mild
+  2 (2.00%) high mild
+  6 (6.00%) high severe
+
+Benchmarking sequential_sha256_8
+Benchmarking sequential_sha256_8: Warming up for 3.0000 s
+Benchmarking sequential_sha256_8: Collecting 100 samples in estimated 5.1386 s (177k iterations)
+Benchmarking sequential_sha256_8: Analyzing
+sequential_sha256_8     time:   [28.947 µs 29.007 µs 29.084 µs]
+Found 17 outliers among 100 measurements (17.00%)
+  2 (2.00%) high mild
+  15 (15.00%) high severe
+
+Benchmarking batch_sha256_16
+Benchmarking batch_sha256_16: Warming up for 3.0000 s
+Benchmarking batch_sha256_16: Collecting 100 samples in estimated 5.1427 s (96k iterations)
+Benchmarking batch_sha256_16: Analyzing
+batch_sha256_16         time:   [53.520 µs 53.691 µs 53.935 µs]
+Found 14 outliers among 100 measurements (14.00%)
+  4 (4.00%) high mild
+  10 (10.00%) high severe
+
+Benchmarking sequential_sha256_16
+Benchmarking sequential_sha256_16: Warming up for 3.0000 s
+Benchmarking sequential_sha256_16: Collecting 100 samples in estimated 5.2633 s (91k iterations)
+Benchmarking sequential_sha256_16: Analyzing
+sequential_sha256_16    time:   [57.839 µs 57.897 µs 57.970 µs]
+Found 9 outliers among 100 measurements (9.00%)
+  3 (3.00%) high mild
+  6 (6.00%) high severe
+
+Benchmarking batch_sha256_32
+Benchmarking batch_sha256_32: Warming up for 3.0000 s
+Benchmarking batch_sha256_32: Collecting 100 samples in estimated 5.4546 s (50k iterations)
+Benchmarking batch_sha256_32: Analyzing
+batch_sha256_32         time:   [107.19 µs 107.28 µs 107.40 µs]
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking sequential_sha256_32
+Benchmarking sequential_sha256_32: Warming up for 3.0000 s
+Benchmarking sequential_sha256_32: Collecting 100 samples in estimated 5.2674 s (45k iterations)
+Benchmarking sequential_sha256_32: Analyzing
+sequential_sha256_32    time:   [116.24 µs 116.41 µs 116.59 µs]
+Found 6 outliers among 100 measurements (6.00%)
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+
+Benchmarking batch_sha256_64
+Benchmarking batch_sha256_64: Warming up for 3.0000 s
+Benchmarking batch_sha256_64: Collecting 100 samples in estimated 5.4018 s (25k iterations)
+Benchmarking batch_sha256_64: Analyzing
+batch_sha256_64         time:   [215.82 µs 218.13 µs 221.41 µs]
+Found 16 outliers among 100 measurements (16.00%)
+  6 (6.00%) high mild
+  10 (10.00%) high severe
+
+Benchmarking sequential_sha256_64
+Benchmarking sequential_sha256_64: Warming up for 3.0000 s
+Benchmarking sequential_sha256_64: Collecting 100 samples in estimated 5.8890 s (25k iterations)
+Benchmarking sequential_sha256_64: Analyzing
+sequential_sha256_64    time:   [231.22 µs 231.43 µs 231.69 µs]
+Found 11 outliers among 100 measurements (11.00%)
+  5 (5.00%) high mild
+  6 (6.00%) high severe
+
+Benchmarking batch_sha256_128
+Benchmarking batch_sha256_128: Warming up for 3.0000 s
+Benchmarking batch_sha256_128: Collecting 100 samples in estimated 6.5514 s (15k iterations)
+Benchmarking batch_sha256_128: Analyzing
+batch_sha256_128        time:   [428.11 µs 428.51 µs 428.99 µs]
+Found 11 outliers among 100 measurements (11.00%)
+  1 (1.00%) low mild
+  8 (8.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking sequential_sha256_128
+Benchmarking sequential_sha256_128: Warming up for 3.0000 s
+Benchmarking sequential_sha256_128: Collecting 100 samples in estimated 7.0274 s (15k iterations)
+Benchmarking sequential_sha256_128: Analyzing
+sequential_sha256_128   time:   [461.71 µs 462.10 µs 462.51 µs]
+Found 23 outliers among 100 measurements (23.00%)
+  9 (9.00%) low severe
+  7 (7.00%) low mild
+  3 (3.00%) high mild
+  4 (4.00%) high severe
+
+Benchmarking batch_double_sha256_4
+Benchmarking batch_double_sha256_4: Warming up for 3.0000 s
+Benchmarking batch_double_sha256_4: Collecting 100 samples in estimated 5.0582 s (328k iterations)
+Benchmarking batch_double_sha256_4: Analyzing
+batch_double_sha256_4   time:   [15.431 µs 15.451 µs 15.484 µs]
+Found 16 outliers among 100 measurements (16.00%)
+  2 (2.00%) low mild
+  4 (4.00%) high mild
+  10 (10.00%) high severe
+
+Benchmarking sequential_double_sha256_4
+Benchmarking sequential_double_sha256_4: Warming up for 3.0000 s
+Benchmarking sequential_double_sha256_4: Collecting 100 samples in estimated 5.0368 s (328k iterations)
+Benchmarking sequential_double_sha256_4: Analyzing
+sequential_double_sha256_4
+                        time:   [15.322 µs 15.335 µs 15.353 µs]
+Found 11 outliers among 100 measurements (11.00%)
+  4 (4.00%) high mild
+  7 (7.00%) high severe
+
+Benchmarking batch_double_sha256_8
+Benchmarking batch_double_sha256_8: Warming up for 3.0000 s
+Benchmarking batch_double_sha256_8: Collecting 100 samples in estimated 5.3431 s (61k iterations)
+Benchmarking batch_double_sha256_8: Analyzing
+batch_double_sha256_8   time:   [85.922 µs 86.169 µs 86.495 µs]
+Found 16 outliers among 100 measurements (16.00%)
+  2 (2.00%) low mild
+  4 (4.00%) high mild
+  10 (10.00%) high severe
+
+Benchmarking sequential_double_sha256_8
+Benchmarking sequential_double_sha256_8: Warming up for 3.0000 s
+Benchmarking sequential_double_sha256_8: Collecting 100 samples in estimated 5.1042 s (167k iterations)
+Benchmarking sequential_double_sha256_8: Analyzing
+sequential_double_sha256_8
+                        time:   [30.592 µs 30.614 µs 30.647 µs]
+Found 9 outliers among 100 measurements (9.00%)
+  4 (4.00%) high mild
+  5 (5.00%) high severe
+
+Benchmarking batch_double_sha256_16
+Benchmarking batch_double_sha256_16: Warming up for 3.0000 s
+Benchmarking batch_double_sha256_16: Collecting 100 samples in estimated 5.2412 s (40k iterations)
+Benchmarking batch_double_sha256_16: Analyzing
+batch_double_sha256_16  time:   [129.79 µs 133.34 µs 138.47 µs]
+Found 14 outliers among 100 measurements (14.00%)
+  2 (2.00%) low mild
+  1 (1.00%) high mild
+  11 (11.00%) high severe
+
+Benchmarking sequential_double_sha256_16
+Benchmarking sequential_double_sha256_16: Warming up for 3.0000 s
+Benchmarking sequential_double_sha256_16: Collecting 100 samples in estimated 5.2914 s (86k iterations)
+Benchmarking sequential_double_sha256_16: Analyzing
+sequential_double_sha256_16
+                        time:   [61.244 µs 61.356 µs 61.505 µs]
+Found 5 outliers among 100 measurements (5.00%)
+  2 (2.00%) high mild
+  3 (3.00%) high severe
+
+Benchmarking batch_double_sha256_32
+Benchmarking batch_double_sha256_32: Warming up for 3.0000 s
+Benchmarking batch_double_sha256_32: Collecting 100 samples in estimated 5.5887 s (45k iterations)
+Benchmarking batch_double_sha256_32: Analyzing
+batch_double_sha256_32  time:   [122.65 µs 123.01 µs 123.44 µs]
+Found 10 outliers among 100 measurements (10.00%)
+  2 (2.00%) low mild
+  4 (4.00%) high mild
+  4 (4.00%) high severe
+
+Benchmarking sequential_double_sha256_32
+Benchmarking sequential_double_sha256_32: Warming up for 3.0000 s
+Benchmarking sequential_double_sha256_32: Collecting 100 samples in estimated 5.5692 s (45k iterations)
+Benchmarking sequential_double_sha256_32: Analyzing
+sequential_double_sha256_32
+                        time:   [122.26 µs 122.42 µs 122.61 µs]
+Found 23 outliers among 100 measurements (23.00%)
+  7 (7.00%) low mild
+  5 (5.00%) high mild
+  11 (11.00%) high severe
+
+Benchmarking batch_double_sha256_64
+Benchmarking batch_double_sha256_64: Warming up for 3.0000 s
+Benchmarking batch_double_sha256_64: Collecting 100 samples in estimated 5.5418 s (35k iterations)
+Benchmarking batch_double_sha256_64: Analyzing
+batch_double_sha256_64  time:   [141.09 µs 141.61 µs 142.26 µs]
+Found 15 outliers among 100 measurements (15.00%)
+  4 (4.00%) high mild
+  11 (11.00%) high severe
+
+Benchmarking sequential_double_sha256_64
+Benchmarking sequential_double_sha256_64: Warming up for 3.0000 s
+Benchmarking sequential_double_sha256_64: Collecting 100 samples in estimated 6.2268 s (25k iterations)
+Benchmarking sequential_double_sha256_64: Analyzing
+sequential_double_sha256_64
+                        time:   [244.89 µs 245.19 µs 245.57 µs]
+Found 10 outliers among 100 measurements (10.00%)
+  4 (4.00%) high mild
+  6 (6.00%) high severe
+
+Benchmarking batch_double_sha256_128
+Benchmarking batch_double_sha256_128: Warming up for 3.0000 s
+Benchmarking batch_double_sha256_128: Collecting 100 samples in estimated 5.2344 s (30k iterations)
+Benchmarking batch_double_sha256_128: Analyzing
+batch_double_sha256_128 time:   [171.51 µs 172.39 µs 173.41 µs]
+Found 11 outliers among 100 measurements (11.00%)
+  5 (5.00%) high mild
+  6 (6.00%) high severe
+
+Benchmarking sequential_double_sha256_128
+Benchmarking sequential_double_sha256_128: Warming up for 3.0000 s
+Benchmarking sequential_double_sha256_128: Collecting 100 samples in estimated 7.4301 s (15k iterations)
+Benchmarking sequential_double_sha256_128: Analyzing
+sequential_double_sha256_128
+                        time:   [488.70 µs 489.16 µs 489.67 µs]
+Found 10 outliers among 100 measurements (10.00%)
+  1 (1.00%) low severe
+  5 (5.00%) low mild
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking batch_hash160_4
+Benchmarking batch_hash160_4: Warming up for 3.0000 s
+Benchmarking batch_hash160_4: Collecting 100 samples in estimated 5.0060 s (328k iterations)
+Benchmarking batch_hash160_4: Analyzing
+batch_hash160_4         time:   [15.249 µs 15.281 µs 15.321 µs]
+Found 22 outliers among 100 measurements (22.00%)
+  6 (6.00%) low severe
+  4 (4.00%) low mild
+  5 (5.00%) high mild
+  7 (7.00%) high severe
+
+Benchmarking sequential_hash160_4
+Benchmarking sequential_hash160_4: Warming up for 3.0000 s
+Benchmarking sequential_hash160_4: Collecting 100 samples in estimated 5.0494 s (328k iterations)
+Benchmarking sequential_hash160_4: Analyzing
+sequential_hash160_4    time:   [15.538 µs 15.945 µs 16.439 µs]
+Found 16 outliers among 100 measurements (16.00%)
+  1 (1.00%) low mild
+  3 (3.00%) high mild
+  12 (12.00%) high severe
+
+Benchmarking batch_hash160_8
+Benchmarking batch_hash160_8: Warming up for 3.0000 s
+Benchmarking batch_hash160_8: Collecting 100 samples in estimated 5.1013 s (61k iterations)
+Benchmarking batch_hash160_8: Analyzing
+batch_hash160_8         time:   [83.771 µs 83.994 µs 84.314 µs]
+Found 12 outliers among 100 measurements (12.00%)
+  2 (2.00%) low mild
+  3 (3.00%) high mild
+  7 (7.00%) high severe
+
+Benchmarking sequential_hash160_8
+Benchmarking sequential_hash160_8: Warming up for 3.0000 s
+Benchmarking sequential_hash160_8: Collecting 100 samples in estimated 5.1300 s (167k iterations)
+Benchmarking sequential_hash160_8: Analyzing
+sequential_hash160_8    time:   [30.609 µs 30.656 µs 30.705 µs]
+Found 33 outliers among 100 measurements (33.00%)
+  7 (7.00%) low severe
+  7 (7.00%) low mild
+  4 (4.00%) high mild
+  15 (15.00%) high severe
+
+Benchmarking batch_hash160_16
+Benchmarking batch_hash160_16: Warming up for 3.0000 s
+Benchmarking batch_hash160_16: Collecting 100 samples in estimated 5.1657 s (40k iterations)
+Benchmarking batch_hash160_16: Analyzing
+batch_hash160_16        time:   [127.39 µs 127.72 µs 128.15 µs]
+Found 11 outliers among 100 measurements (11.00%)
+  2 (2.00%) high mild
+  9 (9.00%) high severe
+
+Benchmarking sequential_hash160_16
+Benchmarking sequential_hash160_16: Warming up for 3.0000 s
+Benchmarking sequential_hash160_16: Collecting 100 samples in estimated 5.2793 s (86k iterations)
+Benchmarking sequential_hash160_16: Analyzing
+sequential_hash160_16   time:   [61.459 µs 61.496 µs 61.543 µs]
+Found 10 outliers among 100 measurements (10.00%)
+  5 (5.00%) high mild
+  5 (5.00%) high severe
+
+Benchmarking batch_hash160_32
+Benchmarking batch_hash160_32: Warming up for 3.0000 s
+Benchmarking batch_hash160_32: Collecting 100 samples in estimated 5.4228 s (45k iterations)
+Benchmarking batch_hash160_32: Analyzing
+batch_hash160_32        time:   [118.77 µs 119.16 µs 119.72 µs]
+Found 9 outliers among 100 measurements (9.00%)
+  1 (1.00%) low severe
+  1 (1.00%) low mild
+  5 (5.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking sequential_hash160_32
+Benchmarking sequential_hash160_32: Warming up for 3.0000 s
+Benchmarking sequential_hash160_32: Collecting 100 samples in estimated 5.5905 s (45k iterations)
+Benchmarking sequential_hash160_32: Analyzing
+sequential_hash160_32   time:   [123.97 µs 125.96 µs 128.42 µs]
+Found 21 outliers among 100 measurements (21.00%)
+  6 (6.00%) low mild
+  3 (3.00%) high mild
+  12 (12.00%) high severe
+
+Benchmarking batch_hash160_64
+Benchmarking batch_hash160_64: Warming up for 3.0000 s
+Benchmarking batch_hash160_64: Collecting 100 samples in estimated 5.4469 s (40k iterations)
+Benchmarking batch_hash160_64: Analyzing
+batch_hash160_64        time:   [134.08 µs 134.52 µs 135.14 µs]
+Found 10 outliers among 100 measurements (10.00%)
+  2 (2.00%) low mild
+  4 (4.00%) high mild
+  4 (4.00%) high severe
+
+Benchmarking sequential_hash160_64
+Benchmarking sequential_hash160_64: Warming up for 3.0000 s
+Benchmarking sequential_hash160_64: Collecting 100 samples in estimated 6.2063 s (25k iterations)
+Benchmarking sequential_hash160_64: Analyzing
+sequential_hash160_64   time:   [245.64 µs 246.08 µs 246.57 µs]
+Found 6 outliers among 100 measurements (6.00%)
+  5 (5.00%) high mild
+  1 (1.00%) high severe
+
+Benchmarking merkle_root_10tx
+Benchmarking merkle_root_10tx: Warming up for 3.0000 s
+Benchmarking merkle_root_10tx: Collecting 100 samples in estimated 5.1645 s (86k iterations)
+Benchmarking merkle_root_10tx: Analyzing
+merkle_root_10tx        time:   [58.726 µs 59.469 µs 60.173 µs]
+Found 3 outliers among 100 measurements (3.00%)
+  3 (3.00%) low mild
+
+Benchmarking merkle_root_100tx
+Benchmarking merkle_root_100tx: Warming up for 3.0000 s
+Benchmarking merkle_root_100tx: Collecting 100 samples in estimated 5.3153 s (30k iterations)
+Benchmarking merkle_root_100tx: Analyzing
+merkle_root_100tx       time:   [174.87 µs 175.29 µs 175.82 µs]
+Found 14 outliers among 100 measurements (14.00%)
+  5 (5.00%) high mild
+  9 (9.00%) high severe
+
+Benchmarking merkle_root_1000tx
+Benchmarking merkle_root_1000tx: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 6.5s, enable flat sampling, or reduce sample count to 60.
+Benchmarking merkle_root_1000tx: Collecting 100 samples in estimated 6.4820 s (5050 iterations)
+Benchmarking merkle_root_1000tx: Analyzing
+merkle_root_1000tx      time:   [1.2758 ms 1.2795 ms 1.2835 ms]
+Found 10 outliers among 100 measurements (10.00%)
+  1 (1.00%) high mild
+  9 (9.00%) high severe
+
+Benchmarking batch_tx_id_10tx
+Benchmarking batch_tx_id_10tx: Warming up for 3.0000 s
+Benchmarking batch_tx_id_10tx: Collecting 100 samples in estimated 5.1980 s (126k iterations)
+Benchmarking batch_tx_id_10tx: Analyzing
+batch_tx_id_10tx        time:   [39.554 µs 39.998 µs 40.433 µs]
+
+Benchmarking batch_tx_id_100tx
+Benchmarking batch_tx_id_100tx: Warming up for 3.0000 s
+Benchmarking batch_tx_id_100tx: Collecting 100 samples in estimated 5.0146 s (15k iterations)
+Benchmarking batch_tx_id_100tx: Analyzing
+batch_tx_id_100tx       time:   [329.99 µs 330.91 µs 331.89 µs]
+Found 6 outliers among 100 measurements (6.00%)
+  3 (3.00%) low mild
+  3 (3.00%) high mild
+
+Benchmarking batch_sighash_2inputs
+Benchmarking batch_sighash_2inputs: Warming up for 3.0000 s
+Benchmarking batch_sighash_2inputs: Collecting 100 samples in estimated 5.0149 s (338k iterations)
+Benchmarking batch_sighash_2inputs: Analyzing
+batch_sighash_2inputs   time:   [14.391 µs 14.458 µs 14.516 µs]
+Found 5 outliers among 100 measurements (5.00%)
+  1 (1.00%) low severe
+  1 (1.00%) low mild
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+
+Benchmarking batch_sighash_5inputs
+Benchmarking batch_sighash_5inputs: Warming up for 3.0000 s
+Benchmarking batch_sighash_5inputs: Collecting 100 samples in estimated 5.0133 s (167k iterations)
+Benchmarking batch_sighash_5inputs: Analyzing
+batch_sighash_5inputs   time:   [29.844 µs 30.016 µs 30.198 µs]
+Found 7 outliers among 100 measurements (7.00%)
+  2 (2.00%) low severe
+  5 (5.00%) high mild
+
+Benchmarking batch_sighash_10inputs
+Benchmarking batch_sighash_10inputs: Warming up for 3.0000 s
+Benchmarking batch_sighash_10inputs: Collecting 100 samples in estimated 5.0142 s (61k iterations)
+Benchmarking batch_sighash_10inputs: Analyzing
+batch_sighash_10inputs  time:   [80.985 µs 81.728 µs 82.448 µs]
+Found 8 outliers among 100 measurements (8.00%)
+  1 (1.00%) low severe
+  6 (6.00%) high mild
+  1 (1.00%) high severe
+
+Benchmarking batch_sighash_20inputs
+Benchmarking batch_sighash_20inputs: Warming up for 3.0000 s
+Benchmarking batch_sighash_20inputs: Collecting 100 samples in estimated 5.3756 s (40k iterations)
+Benchmarking batch_sighash_20inputs: Analyzing
+batch_sighash_20inputs  time:   [132.22 µs 132.66 µs 133.20 µs]
+Found 14 outliers among 100 measurements (14.00%)
+  1 (1.00%) low severe
+  3 (3.00%) high mild
+  10 (10.00%) high severe
+
+Benchmarking batch_pow_8headers
+Benchmarking batch_pow_8headers: Warming up for 3.0000 s
+Benchmarking batch_pow_8headers: Collecting 100 samples in estimated 5.1734 s (131k iterations)
+Benchmarking batch_pow_8headers: Analyzing
+batch_pow_8headers      time:   [37.712 µs 38.047 µs 38.367 µs]
+
+Benchmarking batch_pow_16headers
+Benchmarking batch_pow_16headers: Warming up for 3.0000 s
+Benchmarking batch_pow_16headers: Collecting 100 samples in estimated 5.0786 s (86k iterations)
+Benchmarking batch_pow_16headers: Analyzing
+batch_pow_16headers     time:   [56.528 µs 57.465 µs 58.328 µs]
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) low severe
+
+Benchmarking batch_pow_32headers
+Benchmarking batch_pow_32headers: Warming up for 3.0000 s
+Benchmarking batch_pow_32headers: Collecting 100 samples in estimated 5.1968 s (86k iterations)
+Benchmarking batch_pow_32headers: Analyzing
+batch_pow_32headers     time:   [60.269 µs 60.810 µs 61.375 µs]
+Found 6 outliers among 100 measurements (6.00%)
+  4 (4.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking batch_pow_64headers
+Benchmarking batch_pow_64headers: Warming up for 3.0000 s
+Benchmarking batch_pow_64headers: Collecting 100 samples in estimated 5.2590 s (66k iterations)
+Benchmarking batch_pow_64headers: Analyzing
+batch_pow_64headers     time:   [79.048 µs 79.678 µs 80.366 µs]
+Found 7 outliers among 100 measurements (7.00%)
+  4 (4.00%) high mild
+  3 (3.00%) high severe
+
+Benchmarking batch_pow_128headers
+Benchmarking batch_pow_128headers: Warming up for 3.0000 s
+Benchmarking batch_pow_128headers: Collecting 100 samples in estimated 5.5330 s (50k iterations)
+Benchmarking batch_pow_128headers: Analyzing
+batch_pow_128headers    time:   [108.14 µs 113.16 µs 121.52 µs]
+Found 8 outliers among 100 measurements (8.00%)
+  4 (4.00%) high mild
+  4 (4.00%) high severe
+
+Benchmarking batch_verify_signatures_2
+Benchmarking batch_verify_signatures_2: Warming up for 3.0000 s
+Benchmarking batch_verify_signatures_2: Collecting 100 samples in estimated 5.0347 s (722k iterations)
+Benchmarking batch_verify_signatures_2: Analyzing
+batch_verify_signatures_2
+                        time:   [6.9450 µs 6.9578 µs 6.9742 µs]
+Found 9 outliers among 100 measurements (9.00%)
+  1 (1.00%) low mild
+  3 (3.00%) high mild
+  5 (5.00%) high severe
+
+Benchmarking sequential_verify_signatures_2
+Benchmarking sequential_verify_signatures_2: Warming up for 3.0000 s
+Benchmarking sequential_verify_signatures_2: Collecting 100 samples in estimated 5.0025 s (641k iterations)
+Benchmarking sequential_verify_signatures_2: Analyzing
+sequential_verify_signatures_2
+                        time:   [7.4985 µs 7.5258 µs 7.5584 µs]
+Found 10 outliers among 100 measurements (10.00%)
+  6 (6.00%) high mild
+  4 (4.00%) high severe
+
+Benchmarking batch_verify_signatures_5
+Benchmarking batch_verify_signatures_5: Warming up for 3.0000 s
+Benchmarking batch_verify_signatures_5: Collecting 100 samples in estimated 5.0203 s (263k iterations)
+Benchmarking batch_verify_signatures_5: Analyzing
+batch_verify_signatures_5
+                        time:   [19.128 µs 19.233 µs 19.354 µs]
+Found 8 outliers among 100 measurements (8.00%)
+  6 (6.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking sequential_verify_signatures_5
+Benchmarking sequential_verify_signatures_5: Warming up for 3.0000 s
+Benchmarking sequential_verify_signatures_5: Collecting 100 samples in estimated 5.0830 s (283k iterations)
+Benchmarking sequential_verify_signatures_5: Analyzing
+sequential_verify_signatures_5
+                        time:   [17.939 µs 17.959 µs 17.985 µs]
+Found 7 outliers among 100 measurements (7.00%)
+  4 (4.00%) high mild
+  3 (3.00%) high severe
+
+Benchmarking batch_verify_signatures_10
+Benchmarking batch_verify_signatures_10: Warming up for 3.0000 s
+Benchmarking batch_verify_signatures_10: Collecting 100 samples in estimated 5.0878 s (263k iterations)
+Benchmarking batch_verify_signatures_10: Analyzing
+batch_verify_signatures_10
+                        time:   [18.972 µs 19.172 µs 19.385 µs]
+Found 5 outliers among 100 measurements (5.00%)
+  3 (3.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking sequential_verify_signatures_10
+Benchmarking sequential_verify_signatures_10: Warming up for 3.0000 s
+Benchmarking sequential_verify_signatures_10: Collecting 100 samples in estimated 5.0364 s (141k iterations)
+Benchmarking sequential_verify_signatures_10: Analyzing
+sequential_verify_signatures_10
+                        time:   [35.486 µs 35.520 µs 35.560 µs]
+Found 13 outliers among 100 measurements (13.00%)
+  1 (1.00%) low severe
+  2 (2.00%) low mild
+  5 (5.00%) high mild
+  5 (5.00%) high severe
+
+Benchmarking batch_verify_signatures_20
+Benchmarking batch_verify_signatures_20: Warming up for 3.0000 s
+Benchmarking batch_verify_signatures_20: Collecting 100 samples in estimated 5.0462 s (172k iterations)
+Benchmarking batch_verify_signatures_20: Analyzing
+batch_verify_signatures_20
+                        time:   [29.088 µs 29.581 µs 30.073 µs]
+Found 4 outliers among 100 measurements (4.00%)
+  1 (1.00%) low mild
+  3 (3.00%) high mild
+
+Benchmarking sequential_verify_signatures_20
+Benchmarking sequential_verify_signatures_20: Warming up for 3.0000 s
+Benchmarking sequential_verify_signatures_20: Collecting 100 samples in estimated 5.1496 s (71k iterations)
+Benchmarking sequential_verify_signatures_20: Analyzing
+sequential_verify_signatures_20
+                        time:   [70.052 µs 70.110 µs 70.184 µs]
+Found 10 outliers among 100 measurements (10.00%)
+  5 (5.00%) high mild
+  5 (5.00%) high severe
+
+Benchmarking batch_verify_signatures_50
+Benchmarking batch_verify_signatures_50: Warming up for 3.0000 s
+Benchmarking batch_verify_signatures_50: Collecting 100 samples in estimated 5.2356 s (101k iterations)
+Benchmarking batch_verify_signatures_50: Analyzing
+batch_verify_signatures_50
+                        time:   [50.957 µs 52.072 µs 53.202 µs]
+Found 4 outliers among 100 measurements (4.00%)
+  3 (3.00%) high mild
+  1 (1.00%) high severe
+
+Benchmarking sequential_verify_signatures_50
+Benchmarking sequential_verify_signatures_50: Warming up for 3.0000 s
+Benchmarking sequential_verify_signatures_50: Collecting 100 samples in estimated 5.3166 s (30k iterations)
+Benchmarking sequential_verify_signatures_50: Analyzing
+sequential_verify_signatures_50
+                        time:   [174.32 µs 174.64 µs 175.04 µs]
+Found 11 outliers among 100 measurements (11.00%)
+  6 (6.00%) high mild
+  5 (5.00%) high severe
+
+Benchmarking sighash_with_template_check
+Benchmarking sighash_with_template_check: Warming up for 3.0000 s
+Benchmarking sighash_with_template_check: Collecting 100 samples in estimated 5.0005 s (5.5M iterations)
+Benchmarking sighash_with_template_check: Analyzing
+sighash_with_template_check
+                        time:   [896.85 ns 898.46 ns 900.15 ns]
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking check_transaction_invalid_fast_path
+Benchmarking check_transaction_invalid_fast_path: Warming up for 3.0000 s
+Benchmarking check_transaction_invalid_fast_path: Collecting 100 samples in estimated 5.0000 s (352M iterations)
+Benchmarking check_transaction_invalid_fast_path: Analyzing
+check_transaction_invalid_fast_path
+                        time:   [14.272 ns 14.310 ns 14.348 ns]
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+
+Benchmarking check_transaction_valid_full
+Benchmarking check_transaction_valid_full: Warming up for 3.0000 s
+Benchmarking check_transaction_valid_full: Collecting 100 samples in estimated 5.0000 s (518M iterations)
+Benchmarking check_transaction_valid_full: Analyzing
+check_transaction_valid_full
+                        time:   [9.6326 ns 9.6471 ns 9.6661 ns]
+Found 11 outliers among 100 measurements (11.00%)
+  1 (1.00%) low mild
+  5 (5.00%) high mild
+  5 (5.00%) high severe
+
