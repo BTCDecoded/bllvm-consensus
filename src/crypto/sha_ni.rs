@@ -301,17 +301,35 @@ unsafe fn sha256_ni_impl(data: &[u8]) -> [u8; 32] {
     }
 
     // Combine state0 and state1 into final hash
-    // state0 contains h0,h1,h4,h5 and state1 contains h2,h3,h6,h7
+    // After _mm_sha256rnds2_epu32, the state layout is:
+    // state0: [h0, h1, h4, h5]
+    // state1: [h2, h3, h6, h7]
     // Need to reorder to h0,h1,h2,h3,h4,h5,h6,h7
+    
+    // Extract 32-bit words from state
+    let mut state0_words = [0u32; 4];
+    let mut state1_words = [0u32; 4];
+    _mm_storeu_si128(state0_words.as_mut_ptr() as *mut __m128i, state0);
+    _mm_storeu_si128(state1_words.as_mut_ptr() as *mut __m128i, state1);
+    
+    // Reorder: h0, h1 from state0[0,1], h2, h3 from state1[0,1], h4, h5 from state0[2,3], h6, h7 from state1[2,3]
+    let hash_words = [
+        state0_words[0].to_be(), // h0
+        state0_words[1].to_be(), // h1
+        state1_words[0].to_be(), // h2
+        state1_words[1].to_be(), // h3
+        state0_words[2].to_be(), // h4
+        state0_words[3].to_be(), // h5
+        state1_words[2].to_be(), // h6
+        state1_words[3].to_be(), // h7
+    ];
+    
+    // Convert to byte array
     let mut result = [0u8; 32];
-
-    // Extract and byte-swap each 32-bit word
-    let state0_swapped = _mm_shuffle_epi8(state0, shuf_mask);
-    let state1_swapped = _mm_shuffle_epi8(state1, shuf_mask);
-
-    _mm_storeu_si128(result.as_mut_ptr() as *mut __m128i, state0_swapped);
-    _mm_storeu_si128(result.as_mut_ptr().add(16) as *mut __m128i, state1_swapped);
-
+    for (i, word) in hash_words.iter().enumerate() {
+        result[i * 4..(i + 1) * 4].copy_from_slice(&word.to_be_bytes());
+    }
+    
     result
 }
 
