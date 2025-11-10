@@ -1215,7 +1215,8 @@ mod tests {
         // This should work with the valid target
         let result = check_proof_of_work(&header).unwrap();
         // Result depends on the hash, but should not panic
-        assert!(result || !result);
+        // Just test it returns a boolean (result is either true or false)
+        let _ = result;
     }
 
     // ============================================================================
@@ -1413,7 +1414,8 @@ mod tests {
         };
 
         let result = check_proof_of_work(&header).unwrap();
-        assert!(result || !result);
+        // Just test it returns a boolean (result is either true or false)
+        let _ = result;
     }
 
     #[test]

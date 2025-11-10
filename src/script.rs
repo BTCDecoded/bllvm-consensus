@@ -3157,7 +3157,8 @@ mod property_tests {
             // Should not panic and return valid boolean
             assert!(result.is_ok());
             let success = result.unwrap();
-            assert!(success || !success);
+            // Just test it returns a boolean (success is either true or false)
+            let _ = success;
 
             // Stack should remain within bounds
             assert!(stack.len() <= MAX_STACK_SIZE);
