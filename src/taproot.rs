@@ -1065,7 +1065,8 @@ mod property_tests {
             output in create_output_strategy()
         ) {
             let is_taproot = is_taproot_output(&output);
-            assert!(is_taproot || !is_taproot);
+            // Just test it returns a boolean (is_taproot is either true or false)
+            let _ = is_taproot;
         }
     }
 

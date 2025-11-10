@@ -227,7 +227,8 @@ fn test_eval_script_simple() {
     let mut stack = Vec::new();
     let result = eval_script(&script, &mut stack, 0).unwrap();
     // The result is a boolean indicating success/failure
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -251,7 +252,8 @@ fn test_verify_script_simple() {
     let result = verify_script(&script_sig, &script_pubkey, None, 0).unwrap();
     // The result depends on the simplified script logic
     // For now, we just ensure it doesn't panic
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -262,7 +264,8 @@ fn test_verify_script_with_witness() {
 
     let result = verify_script(&script_sig, &script_pubkey, witness.as_ref(), 0).unwrap();
     // The result depends on the simplified script logic
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -271,7 +274,8 @@ fn test_verify_script_empty() {
     let script_pubkey = vec![];
 
     let result = verify_script(&script_sig, &script_pubkey, None, 0).unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -531,7 +535,8 @@ fn test_check_proof_of_work_genesis() {
     // This should work with the valid target
     let result = check_proof_of_work(&header).unwrap();
     // Result depends on the hash, but should not panic
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 // expand_target is not a public function, so we test it indirectly through check_proof_of_work
@@ -710,7 +715,8 @@ fn test_script_operation_limits() {
     }
 
     let result = verify_script(&script, &script, None, 0).unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 
     // Test script exceeding operation limit
     let mut large_script = Vec::new();

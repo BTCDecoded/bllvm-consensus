@@ -147,9 +147,7 @@ fn test_validate_block() {
         ValidationResult::Invalid(reason) => {
             // Block may be invalid due to missing proof of work, etc.
             // This is acceptable for a unit test
-            eprintln!(
-                "Block validation failed (expected in some cases): {reason}"
-            );
+            eprintln!("Block validation failed (expected in some cases): {reason}");
         }
     }
 }
@@ -164,14 +162,16 @@ fn test_verify_script() {
     let result = consensus
         .verify_script(&script_sig, &script_pubkey, None, 0)
         .unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 
     // Test with witness
     let witness = Some(vec![0x52]); // OP_2
     let result = consensus
         .verify_script(&script_sig, &script_pubkey, witness.as_ref(), 0)
         .unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -188,7 +188,8 @@ fn test_check_proof_of_work() {
     };
 
     let result = consensus.check_proof_of_work(&header).unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 
     // Test invalid header
     let invalid_header = BlockHeader {
@@ -347,7 +348,8 @@ fn test_is_standard_tx() {
     };
 
     let result = consensus.is_standard_tx(&tx).unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -393,7 +395,8 @@ fn test_replacement_checks() {
     let result = consensus
         .replacement_checks(&tx2, &tx1, &utxo_set, &mempool)
         .unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -577,7 +580,8 @@ fn test_should_reorganize() {
     let result = consensus
         .should_reorganize(&new_chain, &current_chain)
         .unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -684,7 +688,8 @@ fn test_validate_segwit_block() {
     let result = consensus
         .validate_segwit_block(&block, &witnesses, 4000000)
         .unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -706,7 +711,8 @@ fn test_validate_taproot_transaction() {
     };
 
     let result = consensus.validate_taproot_transaction(&tx, None).unwrap();
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }
 
 #[test]
@@ -723,7 +729,8 @@ fn test_is_taproot_output() {
     };
 
     let result = consensus.is_taproot_output(&taproot_output);
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 
     let non_taproot_output = TransactionOutput {
         value: 1000,
@@ -731,5 +738,6 @@ fn test_is_taproot_output() {
     };
 
     let result = consensus.is_taproot_output(&non_taproot_output);
-    assert!(result || !result);
+    // Just test it returns a boolean (result is either true or false)
+    let _ = result;
 }

@@ -80,10 +80,7 @@ fn bench_batch_hashing(c: &mut Criterion) {
 
     for size in [10, 100, 1000, 2000].iter() {
         let transactions = create_test_transactions(*size);
-        let serialized: Vec<Vec<u8>> = transactions
-            .iter()
-            .map(serialize_transaction)
-            .collect();
+        let serialized: Vec<Vec<u8>> = transactions.iter().map(serialize_transaction).collect();
         let tx_refs: Vec<&[u8]> = serialized.iter().map(|v| v.as_slice()).collect();
 
         #[cfg(feature = "production")]

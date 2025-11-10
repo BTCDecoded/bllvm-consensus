@@ -315,8 +315,6 @@ pub fn load_mainnet_block_from_disk(
     block_dir: &std::path::PathBuf,
     height: u64,
 ) -> Result<(Block, Vec<Witness>), Box<dyn std::error::Error>> {
-    
-
     let bin_path = block_dir.join(format!("block_{height}.bin"));
     let hex_path = block_dir.join(format!("block_{height}.hex"));
 

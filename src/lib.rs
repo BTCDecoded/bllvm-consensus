@@ -946,14 +946,14 @@ mod tests {
     fn test_consensus_proof_new() {
         let _consensus = ConsensusProof::new();
         // Just test that it creates successfully
-        assert!(true);
+        // Test passes if no panic occurs
     }
 
     #[test]
     fn test_consensus_proof_default() {
         let _consensus = ConsensusProof;
         // Just test that it creates successfully
-        assert!(true);
+        // Test passes if no panic occurs
     }
 
     #[test]
@@ -1293,6 +1293,7 @@ mod tests {
             script_pubkey: vec![0x51],
         };
         let result = consensus.is_taproot_output(&output);
-        assert!(!result || result); // Just test it returns a boolean
+        // Just test it returns a boolean (result is either true or false)
+        let _ = result;
     }
 }
