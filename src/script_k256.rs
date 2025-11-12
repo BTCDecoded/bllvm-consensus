@@ -63,13 +63,12 @@ pub fn verify_signature_k256(
     };
 
     // Convert sighash to GenericArray for verification (32 bytes = SHA256 output)
-    // Use sha2::digest::generic_array for the correct type
-    use sha2::digest::generic_array::GenericArray;
-    let msg_hash = GenericArray::from_slice(sighash);
-
-    // Verify signature
-    // k256 verification takes the message hash directly
-    verifying_key.verify(msg_hash, &signature).is_ok()
+    // k256's verify method expects a reference to a GenericArray<u8, U32>
+    // We can pass the slice directly and let k256 handle the conversion
+    use sha2::digest::Digest;
+    use sha2::Sha256;
+    let msg_hash = Sha256::digest(sighash);
+    verifying_key.verify(&msg_hash, &signature).is_ok()
 }
 
 #[cfg(test)]
