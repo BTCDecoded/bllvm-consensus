@@ -184,8 +184,7 @@ impl ConsensusProof {
     /// # Examples
     ///
     /// ```
-    /// use consensus_proof::ConsensusProof;
-    /// use consensus_proof::types::*;
+    /// use bllvm_consensus::{ConsensusProof, UtxoSet, OutPoint, UTXO, Transaction, TransactionInput, TransactionOutput, ValidationResult};
     ///
     /// let consensus = ConsensusProof::new();
     /// let mut utxo_set = UtxoSet::new();
