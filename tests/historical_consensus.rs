@@ -49,7 +49,7 @@ fn test_cve_2012_2459_merkle_duplicate_hash() {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     };
 
     // Verify block structure is valid
@@ -79,7 +79,7 @@ fn test_pre_segwit_block_validation() {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     };
 
     let utxo_set = UtxoSet::new();
@@ -112,7 +112,7 @@ fn test_post_segwit_block_validation() {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     };
 
     let utxo_set = UtxoSet::new();
@@ -144,7 +144,7 @@ fn test_post_taproot_block_validation() {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     };
 
     let utxo_set = UtxoSet::new();

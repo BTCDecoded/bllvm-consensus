@@ -1009,7 +1009,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![],
+            transactions: vec![].into_boxed_slice(),
         };
         let utxo_set = UtxoSet::new();
         let result = consensus.validate_block(&block, utxo_set, 0);
@@ -1169,7 +1169,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![],
+            transactions: vec![].into_boxed_slice(),
         };
         let result = consensus.mine_block(block, 100);
         // Result may be Ok or Err depending on mining difficulty
@@ -1279,7 +1279,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![],
+            transactions: vec![].into_boxed_slice(),
         };
         let witnesses = vec![];
         let result = consensus.validate_segwit_block(&block, &witnesses, 4000000);

@@ -107,7 +107,7 @@ fn test_process_block_message() {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     };
 
     let message = NetworkMessage::Block(block);
@@ -171,7 +171,7 @@ fn test_chain_state_methods() {
     // Test process_block
     let block = Block {
         header: header.clone(),
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     };
     assert!(chain_state.process_block(&block).is_ok());
 
@@ -200,7 +200,7 @@ fn test_chain_object_methods() {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     };
 
     let tx = Transaction {

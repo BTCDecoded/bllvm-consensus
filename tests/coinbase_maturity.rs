@@ -6,9 +6,7 @@
 //! Consensus-critical: Spending coinbase too early causes consensus violation.
 
 use bllvm_consensus::block::connect_block;
-use bllvm_consensus::types::Block;
-use bllvm_consensus::types::{BlockHeader, UtxoSet};
-use bllvm_consensus::types::{OutPoint, Transaction, TransactionInput, TransactionOutput};
+use bllvm_consensus::types::{Block, BlockHeader, UtxoSet, OutPoint, Transaction, TransactionInput, TransactionOutput};
 
 use bllvm_consensus::constants::COINBASE_MATURITY;
 
@@ -18,7 +16,7 @@ fn test_coinbase_maturity_exact_boundary() {
     // Create a coinbase transaction at height 0
     let coinbase_tx = Transaction {
         version: 1,
-        inputs: vec![TransactionInput {
+        inputs: bllvm_consensus::tx_inputs![TransactionInput {
             prevout: OutPoint {
                 hash: [0; 32],
                 index: 0xffffffff,
@@ -26,7 +24,7 @@ fn test_coinbase_maturity_exact_boundary() {
             script_sig: vec![0x04, 0x00, 0x00, 0x00, 0x00], // Height encoding
             sequence: 0xffffffff,
         }],
-        outputs: vec![TransactionOutput {
+        outputs: bllvm_consensus::tx_outputs![TransactionOutput {
             value: 50_0000_0000,       // 50 BTC
             script_pubkey: vec![0x51], // OP_1
         }],
@@ -188,7 +186,7 @@ fn test_coinbase_maturity_block_validation() {
             // Coinbase transaction
             Transaction {
                 version: 1,
-                inputs: vec![TransactionInput {
+                inputs: bllvm_consensus::tx_inputs![TransactionInput {
                     prevout: OutPoint {
                         hash: [0; 32],
                         index: 0xffffffff,
@@ -196,7 +194,7 @@ fn test_coinbase_maturity_block_validation() {
                     script_sig: vec![0x04, 0x64, 0x00, 0x00, 0x00], // Height 100
                     sequence: 0xffffffff,
                 }],
-                outputs: vec![TransactionOutput {
+                outputs: bllvm_consensus::tx_outputs![TransactionOutput {
                     value: 50_0000_0000,
                     script_pubkey: vec![0x51],
                 }],
@@ -205,7 +203,7 @@ fn test_coinbase_maturity_block_validation() {
             // Transaction attempting to spend coinbase from height 0
             Transaction {
                 version: 1,
-                inputs: vec![TransactionInput {
+                inputs: bllvm_consensus::tx_inputs![TransactionInput {
                     prevout: OutPoint {
                         hash: [1; 32], // Coinbase from height 0
                         index: 0,
@@ -213,13 +211,13 @@ fn test_coinbase_maturity_block_validation() {
                     script_sig: vec![],
                     sequence: 0xffffffff,
                 }],
-                outputs: vec![TransactionOutput {
+                outputs: bllvm_consensus::tx_outputs![TransactionOutput {
                     value: 25_0000_0000,
                     script_pubkey: vec![0x51],
                 }],
                 lock_time: 0,
             },
-        ],
+        ].into_boxed_slice(),
     };
 
     let utxo_set = UtxoSet::new();

@@ -359,7 +359,7 @@ fn create_valid_block() -> Block {
         header: create_valid_block_header(),
         transactions: vec![Transaction {
             version: 1,
-            inputs: vec![TransactionInput {
+            inputs: tx_inputs![TransactionInput {
                 prevout: OutPoint {
                     hash: [0; 32],
                     index: 0xffffffff,
@@ -367,11 +367,11 @@ fn create_valid_block() -> Block {
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
             }],
-            outputs: vec![TransactionOutput {
+            outputs: tx_outputs![TransactionOutput {
                 value: INITIAL_SUBSIDY,
                 script_pubkey: vec![0x51],
             }],
             lock_time: 0,
-        }],
+        }].into_boxed_slice(),
     }
 }

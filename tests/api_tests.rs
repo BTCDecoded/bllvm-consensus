@@ -132,7 +132,7 @@ fn test_validate_block() {
             bits: 0x0300ffff,
             nonce: 0,
         },
-        transactions: vec![coinbase_tx],
+        transactions: vec![coinbase_tx].into_boxed_slice(),
     };
 
     let utxo_set = UtxoSet::new();
@@ -459,7 +459,7 @@ fn test_mine_block() {
                 script_pubkey: vec![0x51],
             }],
             lock_time: 0,
-        }],
+        }].into_boxed_slice(),
     };
 
     let (_mined_block, result) = consensus.mine_block(block, 1000).unwrap();
@@ -520,7 +520,7 @@ fn test_reorganize_chain() {
             bits: 0x0300ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     }];
 
     let current_chain = vec![Block {
@@ -532,7 +532,7 @@ fn test_reorganize_chain() {
             bits: 0x0300ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     }];
 
     let utxo_set = UtxoSet::new();
@@ -562,7 +562,7 @@ fn test_should_reorganize() {
             bits: 0x0300ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     }];
 
     let current_chain = vec![Block {
@@ -574,7 +574,7 @@ fn test_should_reorganize() {
             bits: 0x0300ffff,
             nonce: 0,
         },
-        transactions: vec![],
+        transactions: vec![].into_boxed_slice(),
     }];
 
     let result = consensus
@@ -681,7 +681,7 @@ fn test_validate_segwit_block() {
                 ],
             }],
             lock_time: 0,
-        }],
+        }].into_boxed_slice(),
     };
 
     let witnesses = vec![Witness::new()];

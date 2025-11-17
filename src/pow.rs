@@ -1257,6 +1257,7 @@ mod property_tests {
     /// - word_shift < 4, bit_shift < 64
     ///
     /// This proves that the shift operations are safe from array bounds violations.
+    #[cfg(kani)]
     #[kani::proof]
     fn kani_u256_shift_array_bounds_safety() {
         let shift: u32 = kani::any();

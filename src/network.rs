@@ -770,7 +770,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![],
+            transactions: vec![].into_boxed_slice(),
         };
         let message = NetworkMessage::Block(block);
 
@@ -837,7 +837,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![],
+            transactions: vec![].into_boxed_slice(),
         };
         chain_state.blocks.insert(hash, block);
         assert!(chain_state.has_object(&hash));
@@ -875,7 +875,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![],
+            transactions: vec![].into_boxed_slice(),
         };
         chain_state.blocks.insert(hash, block.clone());
 
@@ -948,7 +948,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![],
+            transactions: vec![].into_boxed_slice(),
         };
 
         // Should always succeed in simplified implementation
@@ -1002,7 +1002,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![],
+            transactions: vec![].into_boxed_slice(),
         };
 
         let obj = ChainObject::Block(block.clone());
@@ -1044,7 +1044,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![],
+            transactions: vec![].into_boxed_slice(),
         });
         assert!(block_obj.as_transaction().is_none());
     }

@@ -28,7 +28,7 @@ fn test_witness_commitment_segwit_block() {
             // Coinbase transaction with witness commitment
             Transaction {
                 version: 1,
-                inputs: vec![TransactionInput {
+                inputs: bllvm_consensus::tx_inputs![TransactionInput {
                     prevout: OutPoint {
                         hash: [0; 32],
                         index: 0xffffffff,
@@ -36,7 +36,7 @@ fn test_witness_commitment_segwit_block() {
                     script_sig: vec![0x04, 0x00, 0x00, 0x00, 0x00], // Height encoding
                     sequence: 0xffffffff,
                 }],
-                outputs: vec![
+                outputs: bllvm_consensus::tx_outputs![
                     TransactionOutput {
                         value: 12_5000_0000,       // 12.5 BTC
                         script_pubkey: vec![0x51], // Regular output
@@ -45,7 +45,7 @@ fn test_witness_commitment_segwit_block() {
                 ],
                 lock_time: 0,
             },
-        ],
+        ].into_boxed_slice(),
     };
 
     // Create witness data
@@ -75,7 +75,7 @@ fn test_witness_commitment_activation_height() {
         },
         transactions: vec![Transaction {
             version: 1,
-            inputs: vec![TransactionInput {
+            inputs: bllvm_consensus::tx_inputs![TransactionInput {
                 prevout: OutPoint {
                     hash: [0; 32],
                     index: 0xffffffff,
@@ -83,12 +83,12 @@ fn test_witness_commitment_activation_height() {
                 script_sig: vec![0x04, 0x00, 0x00, 0x00, 0x00],
                 sequence: 0xffffffff,
             }],
-            outputs: vec![TransactionOutput {
+            outputs: bllvm_consensus::tx_outputs![TransactionOutput {
                 value: 12_5000_0000,
                 script_pubkey: vec![],
             }],
             lock_time: 0,
-        }],
+        }].into_boxed_slice(),
     };
 
     let witnesses = vec![Witness::new()];
@@ -114,7 +114,7 @@ fn test_witness_commitment_no_witness_txs() {
         },
         transactions: vec![Transaction {
             version: 1,
-            inputs: vec![TransactionInput {
+            inputs: bllvm_consensus::tx_inputs![TransactionInput {
                 prevout: OutPoint {
                     hash: [0; 32],
                     index: 0xffffffff,
@@ -122,12 +122,12 @@ fn test_witness_commitment_no_witness_txs() {
                 script_sig: vec![],
                 sequence: 0xffffffff,
             }],
-            outputs: vec![TransactionOutput {
+            outputs: bllvm_consensus::tx_outputs![TransactionOutput {
                 value: 12_5000_0000,
                 script_pubkey: vec![],
             }],
             lock_time: 0,
-        }],
+        }].into_boxed_slice(),
     };
 
     // All witnesses are empty (no witness transactions)
@@ -153,7 +153,7 @@ fn test_invalid_witness_commitment_rejection() {
         },
         transactions: vec![Transaction {
             version: 1,
-            inputs: vec![TransactionInput {
+            inputs: bllvm_consensus::tx_inputs![TransactionInput {
                 prevout: OutPoint {
                     hash: [0; 32],
                     index: 0xffffffff,
@@ -161,12 +161,12 @@ fn test_invalid_witness_commitment_rejection() {
                 script_sig: vec![],
                 sequence: 0xffffffff,
             }],
-            outputs: vec![TransactionOutput {
+            outputs: bllvm_consensus::tx_outputs![TransactionOutput {
                 value: 12_5000_0000,
                 script_pubkey: vec![], // Would contain wrong commitment
             }],
             lock_time: 0,
-        }],
+        }].into_boxed_slice(),
     };
 
     let witnesses = vec![Witness::new()];

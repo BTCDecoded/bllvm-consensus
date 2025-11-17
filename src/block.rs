@@ -1737,7 +1737,7 @@ mod property_tests {
             )
                 .prop_map(|(header, transactions)| Block {
                     header,
-                    transactions,
+                    transactions: transactions.into_boxed_slice(),
                 })
                 .boxed()
         }
@@ -1837,7 +1837,9 @@ mod property_tests {
             // Bound for tractability
             let mut bounded_block = block;
             if bounded_block.transactions.len() > 3 {
-                bounded_block.transactions.truncate(3);
+                let mut transactions_vec: Vec<_> = bounded_block.transactions.into();
+                transactions_vec.truncate(3);
+                bounded_block.transactions = transactions_vec.into_boxed_slice();
             }
             for tx in &mut bounded_block.transactions {
                 if tx.inputs.len() > 3 {
@@ -2444,7 +2446,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 2083236893,
             },
-            transactions: vec![coinbase_tx],
+            transactions: vec![coinbase_tx].into_boxed_slice(),
         };
 
         let utxo_set = UtxoSet::new();
@@ -2512,7 +2514,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![coinbase_tx],
+            transactions: vec![coinbase_tx].into_boxed_slice(),
         };
 
         let utxo_set = UtxoSet::new();
@@ -2571,7 +2573,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![regular_tx], // First tx is not coinbase
+            transactions: vec![regular_tx].into_boxed_slice(), // First tx is not coinbase
         };
 
         let utxo_set = UtxoSet::new();
@@ -2609,7 +2611,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![coinbase_tx],
+            transactions: vec![coinbase_tx].into_boxed_slice(),
         };
 
         let utxo_set = UtxoSet::new();
@@ -2944,7 +2946,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![invalid_coinbase],
+            transactions: vec![invalid_coinbase].into_boxed_slice(),
         };
 
         let utxo_set = UtxoSet::new();
@@ -3088,7 +3090,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![coinbase_tx],
+            transactions: vec![coinbase_tx].into_boxed_slice(),
         };
 
         let utxo_set = UtxoSet::new();
@@ -3128,7 +3130,7 @@ mod tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions: vec![regular_tx], // First tx is not coinbase
+            transactions: vec![regular_tx].into_boxed_slice(), // First tx is not coinbase
         };
 
         let utxo_set = UtxoSet::new();

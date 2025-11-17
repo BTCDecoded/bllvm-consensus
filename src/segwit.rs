@@ -1120,7 +1120,7 @@ mod property_tests {
                 bits: 0x1d00ffff,
                 nonce: 0,
             },
-            transactions,
+            transactions: transactions.into_boxed_slice(),
         })
     }
 

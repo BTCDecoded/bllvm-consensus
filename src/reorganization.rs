@@ -937,7 +937,7 @@ mod tests {
                     script_pubkey: vec![0x51],
                 }],
                 lock_time: 0,
-            }],
+            }].into_boxed_slice(),
         }
     }
 }
