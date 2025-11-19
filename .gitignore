@@ -1,8 +1,13 @@
 # Rust build artifacts
 /target/
+fuzz/target/
 **/*.rs.bk
 *.pdb
 **/*.rmeta
+
+# Cargo.lock for libraries (should not be committed)
+Cargo.lock
+fuzz/Cargo.lock
 
 # Coverage reports and profiling
 /coverage/
