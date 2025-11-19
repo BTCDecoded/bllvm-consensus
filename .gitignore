@@ -64,6 +64,7 @@ Desktop.ini
 # Benchmark results
 /target/criterion/
 /benches/*.txt
+benchmark_results.txt
 
 # Flamegraph and profiling
 flamegraph.svg
