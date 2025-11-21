@@ -116,16 +116,16 @@ fn test_transaction_size_limit_boundary() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: large_script.clone(),
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey: large_script.clone(),
-        }],
+        }].into(),
         lock_time: 0,
     };
     
@@ -152,16 +152,16 @@ fn test_coinbase_scriptsig_boundary() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![0x51, 0x52], // Exactly 2 bytes
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -176,16 +176,16 @@ fn test_coinbase_scriptsig_minimum_boundary() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![0x51], // Only 1 byte - should fail
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -201,16 +201,16 @@ fn test_coinbase_scriptsig_maximum_boundary() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![0x51; 100], // Exactly 100 bytes
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -225,16 +225,16 @@ fn test_coinbase_scriptsig_over_maximum() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![0x51; 101], // 101 bytes - should fail
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -259,11 +259,11 @@ fn test_input_count_limit_boundary() {
     
     let tx = Transaction {
         version: 1,
-        inputs,
+            inputs: inputs.into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -288,11 +288,11 @@ fn test_input_count_over_limit() {
     
     let tx = Transaction {
         version: 1,
-        inputs,
+            inputs: inputs.into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -315,13 +315,13 @@ fn test_output_count_limit_boundary() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0,
-        }],
-        outputs,
+        }].into(),
+            outputs: outputs.into(),
         lock_time: 0,
     };
     
@@ -344,13 +344,13 @@ fn test_output_count_over_limit() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0,
-        }],
-        outputs,
+        }].into(),
+            outputs: outputs.into(),
         lock_time: 0,
     };
     

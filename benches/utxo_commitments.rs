@@ -1,17 +1,20 @@
 #[cfg(feature = "utxo-commitments")]
-use bllvm_consensus::utxo_commitments::data_structures::UtxoCommitment;
-#[cfg(feature = "utxo-commitments")]
-use bllvm_consensus::utxo_commitments::verification::{verify_header_chain, verify_supply};
-use criterion::{criterion_group, criterion_main, Criterion};
+use bllvm_consensus::{
+    types::Natural,
+    utxo_commitments::data_structures::UtxoCommitment,
+    utxo_commitments::verification::{verify_header_chain, verify_supply},
+    BlockHeader,
+};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 #[cfg(feature = "utxo-commitments")]
 fn create_test_commitment(height: Natural) -> UtxoCommitment {
     UtxoCommitment {
+        merkle_root: [0u8; 32],
+        total_supply: 50_0000_0000 * height as u64, // Simplified
+        utxo_count: 0,
         block_height: height,
         block_hash: [0u8; 32],
-        total_supply: 50_0000_0000 * height as u64, // Simplified
-        merkle_root: [0u8; 32],
-        commitment_hash: [0u8; 32],
     }
 }
 

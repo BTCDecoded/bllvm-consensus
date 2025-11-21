@@ -442,8 +442,9 @@ mod kani_proofs {
             inputs: tx1_inputs_vec,
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -469,8 +470,9 @@ mod kani_proofs {
             inputs: tx2_inputs_vec,
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -531,11 +533,12 @@ mod kani_proofs {
 
         let tx = Transaction {
             version: 1,
-            inputs,
+            inputs: inputs.into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 

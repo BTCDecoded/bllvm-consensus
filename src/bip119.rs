@@ -412,16 +412,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51], // OP_1 (not included in template)
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x76, 0xa9, 0x14, 0x00, 0x87], // P2PKH
-            }],
+                script_pubkey: vec![0x76, 0xa9, 0x14, 0x00, 0x87].into(), // P2PKH
+            }].into(),
             lock_time: 0,
         };
 
@@ -442,16 +442,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x52, 0x53], // Different scriptSig
                 sequence: 0,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 5000,
-                script_pubkey: vec![0x51], // OP_1
-            }],
+                script_pubkey: vec![0x51].into(), // OP_1
+            }].into(),
             lock_time: 100,
         };
 
@@ -472,7 +472,7 @@ mod tests {
             inputs: vec![
                 TransactionInput {
                     prevout: OutPoint {
-                        hash: [1; 32],
+                        hash: [1; 32].into(),
                         index: 0,
                     },
                     script_sig: vec![],
@@ -486,11 +486,11 @@ mod tests {
                     script_sig: vec![],
                     sequence: 0,
                 },
-            ],
+            ].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         };
 
@@ -508,16 +508,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51], // OP_1
                 sequence: 0,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
 
@@ -525,16 +525,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x52, 0x53], // Different scriptSig
                 sequence: 0,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
 
@@ -551,16 +551,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         };
 
@@ -584,11 +584,11 @@ mod tests {
         // Empty inputs
         let tx_no_inputs = Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         };
         assert!(calculate_template_hash(&tx_no_inputs, 0).is_err());
@@ -598,13 +598,13 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0,
-            }],
-            outputs: vec![],
+            }].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         assert!(calculate_template_hash(&tx_no_outputs, 0).is_err());
@@ -614,16 +614,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         };
         assert!(calculate_template_hash(&tx, 1).is_err()); // Index 1, but only 1 input (index 0)

@@ -87,7 +87,8 @@ pub fn reorganize_chain_with_witnesses(
                 "Witness count {} does not match block count {}",
                 new_chain_witnesses.len(),
                 new_chain.len()
-            ).into(),
+            )
+            .into(),
         ));
     }
 
@@ -351,39 +352,22 @@ fn calculate_chain_work(chain: &[Block]) -> Result<u128> {
                 // Use checked_div to avoid panic, fallback to 0 on overflow
                 u128::MAX.checked_div(target + 1).unwrap_or(0)
             };
-            
-            // Runtime assertion: Work contribution must be non-negative
-            // Note: u128 is always >= 0, but this documents the invariant
-            // and helps catch logic errors if the type changes
-            debug_assert!(
-                true, // u128 is always non-negative
-                "Work contribution ({}) must be non-negative (target: {})",
-                work_contribution,
-                target
-            );
-            
+
+            // u128 is always non-negative - no assertion needed
+
             let old_total = total_work;
             total_work = total_work.saturating_add(work_contribution);
-            
+
             // Runtime assertion: Total work must be non-decreasing
             debug_assert!(
                 total_work >= old_total,
-                "Total work ({}) must be >= previous total ({})",
-                total_work,
-                old_total
+                "Total work ({total_work}) must be >= previous total ({old_total})"
             );
         }
         // Zero target means infinite difficulty - skip this block (work = 0)
     }
 
-    // Runtime assertion: Total work must be non-negative
-    // Note: u128 is always >= 0, but this documents the invariant
-    // and helps catch logic errors if the type changes
-    debug_assert!(
-        true, // u128 is always non-negative
-        "Total chain work ({}) must be non-negative",
-        total_work
-    );
+    // u128 is always non-negative - no assertion needed
 
     Ok(total_work)
 }
@@ -409,9 +393,7 @@ fn expand_target(bits: Natural) -> Result<u128> {
         // Use checked shift to avoid overflow
         let mantissa_u128 = mantissa as u128;
         let expanded = mantissa_u128.checked_shl(shift as u32).ok_or_else(|| {
-            crate::error::ConsensusError::InvalidProofOfWork(
-                "Target expansion overflow".into(),
-            )
+            crate::error::ConsensusError::InvalidProofOfWork("Target expansion overflow".into())
         })?;
         Ok(expanded)
     }
@@ -893,15 +875,15 @@ mod tests {
     fn test_calculate_tx_id_different_transactions() {
         let tx1 = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
 
         let tx2 = Transaction {
             version: 2,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
 
@@ -926,18 +908,21 @@ mod tests {
                 version: 1,
                 inputs: vec![TransactionInput {
                     prevout: OutPoint {
-                        hash: [0; 32],
+                        hash: [0; 32].into(),
                         index: 0xffffffff,
                     },
                     script_sig: vec![0x51],
                     sequence: 0xffffffff,
-                }],
+                }]
+                .into(),
                 outputs: vec![TransactionOutput {
                     value: 50_000_000_000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }]
+                .into(),
                 lock_time: 0,
-            }].into_boxed_slice(),
+            }]
+            .into_boxed_slice(),
         }
     }
 }

@@ -16,6 +16,7 @@ use sha2::{Digest, Sha256};
 
 // Cold error construction helpers - these paths are rarely taken
 #[cold]
+#[allow(dead_code)]
 fn make_operation_limit_error() -> ConsensusError {
     ConsensusError::ScriptExecution("Operation limit exceeded".into())
 }
@@ -254,6 +255,7 @@ fn eval_script_impl(script: &ByteString, stack: &mut Vec<ByteString>, flags: u32
 }
 
 #[cfg(not(feature = "production"))]
+#[allow(dead_code)]
 fn eval_script_impl(script: &ByteString, stack: &mut Vec<ByteString>, flags: u32) -> Result<bool> {
     eval_script_inner(script, stack, flags)
 }
@@ -269,20 +271,18 @@ fn eval_script_inner(script: &ByteString, stack: &mut Vec<ByteString>, flags: u3
                 "Operation limit exceeded".into(),
             ));
         }
-        
+
         // Runtime assertion: Operation count must be within bounds
         debug_assert!(
             op_count <= MAX_SCRIPT_OPS,
-            "Operation count ({}) must not exceed MAX_SCRIPT_OPS ({})",
-            op_count,
-            MAX_SCRIPT_OPS
+            "Operation count ({op_count}) must not exceed MAX_SCRIPT_OPS ({MAX_SCRIPT_OPS})"
         );
 
         // Check stack size
         if stack.len() > MAX_STACK_SIZE {
             return Err(make_stack_overflow_error());
         }
-        
+
         // Runtime assertion: Stack size must be within bounds
         debug_assert!(
             stack.len() <= MAX_STACK_SIZE,
@@ -295,7 +295,7 @@ fn eval_script_inner(script: &ByteString, stack: &mut Vec<ByteString>, flags: u3
         if !execute_opcode(*opcode, stack, flags)? {
             return Ok(false);
         }
-        
+
         // Runtime assertion: Stack size must remain within bounds after opcode execution
         debug_assert!(
             stack.len() <= MAX_STACK_SIZE,
@@ -414,7 +414,6 @@ pub fn verify_script(
         Ok(stack.len() == 1 && !stack[0].is_empty() && stack[0][0] != 0)
     }
 }
-
 
 /// VerifyScript with transaction context for signature verification
 ///
@@ -571,7 +570,7 @@ fn eval_script_with_context_full(
         if stack.len() > MAX_STACK_SIZE {
             return Err(make_stack_overflow_error());
         }
-        
+
         // Runtime assertion: Stack size must be within bounds
         debug_assert!(
             stack.len() <= MAX_STACK_SIZE,
@@ -2275,7 +2274,7 @@ mod kani_proofs {
     /// ∀ tx ∈ Transaction, locktime_value ∈ u32, stack ∈ Vec<ByteString>:
     /// if tx.lock_time type ≠ locktime_value type then CLTV fails
     #[kani::proof]
-    #[kani::unwind(5)]  // Add unwind bound for performance
+    #[kani::unwind(5)] // Add unwind bound for performance
     fn kani_bip65_cltv_type_mismatch_fails() {
         let tx_locktime: u32 = kani::any();
         let locktime_value: u32 = kani::any();
@@ -2283,7 +2282,7 @@ mod kani_proofs {
         // Ensure types are different - constrain input space for faster verification
         kani::assume(tx_locktime < LOCKTIME_THRESHOLD && locktime_value >= LOCKTIME_THRESHOLD);
         // Bound values to reasonable ranges
-        kani::assume(tx_locktime < 500_000_000);  // Block height limit
+        kani::assume(tx_locktime < 500_000_000); // Block height limit
         kani::assume(locktime_value >= LOCKTIME_THRESHOLD && locktime_value < 0xffffffff);
 
         // Create minimal transaction and stack for CLTV validation
@@ -2291,16 +2290,18 @@ mod kani_proofs {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: tx_locktime as u64,
         };
 
@@ -2336,16 +2337,18 @@ mod kani_proofs {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0, // Zero locktime
         };
 
@@ -2384,16 +2387,18 @@ mod kani_proofs {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: disabled_sequence as u64,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2586,16 +2591,18 @@ mod kani_proofs {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0u8; 32],
+                    hash: [0u8; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51; MAX_SCRIPT_SIZE], // Exactly MAX_SCRIPT_SIZE
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51; MAX_SCRIPT_SIZE], // Exactly MAX_SCRIPT_SIZE
-            }],
+                script_pubkey: vec![0x51; MAX_SCRIPT_SIZE].into(), // Exactly MAX_SCRIPT_SIZE
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2615,16 +2622,18 @@ mod kani_proofs {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0u8; 32],
+                    hash: [0u8; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51; MAX_SCRIPT_SIZE + 1], // Exceeds MAX_SCRIPT_SIZE
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![], // Empty to focus on script_sig
-            }],
+                script_pubkey: vec![].into(), // Empty to focus on script_sig
+            }]
+            .into(),
             lock_time: 0,
         };
 

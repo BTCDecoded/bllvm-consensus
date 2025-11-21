@@ -64,26 +64,21 @@ pub fn get_median_time_past(headers: &[BlockHeader]) -> u64 {
         let mid = timestamps.len() / 2;
         let lower = timestamps[mid - 1];
         let upper = timestamps[mid];
-        
+
         // Runtime assertion: Lower must be <= upper (timestamps should be sorted)
         debug_assert!(
             lower <= upper,
-            "Lower median timestamp ({}) must be <= upper ({})",
-            lower,
-            upper
+            "Lower median timestamp ({lower}) must be <= upper ({upper})"
         );
-        
+
         let median = (lower + upper) / 2;
-        
+
         // Runtime assertion: Median must be between lower and upper
         debug_assert!(
             median >= lower && median <= upper,
-            "Median ({}) must be between lower ({}) and upper ({})",
-            median,
-            lower,
-            upper
+            "Median ({median}) must be between lower ({lower}) and upper ({upper})"
         );
-        
+
         median
     } else {
         // Odd number: middle value

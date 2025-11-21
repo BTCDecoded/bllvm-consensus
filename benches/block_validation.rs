@@ -15,10 +15,11 @@ fn create_test_block() -> Block {
         },
         transactions: vec![Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
-        }],
+        }]
+        .into(),
     }
 }
 
@@ -44,8 +45,8 @@ fn benchmark_connect_block(c: &mut Criterion) {
 fn benchmark_connect_block_multi_tx(c: &mut Criterion) {
     let mut transactions = vec![Transaction {
         version: 1,
-        inputs: vec![],
-        outputs: vec![],
+        inputs: vec![].into(),
+        outputs: vec![].into(),
         lock_time: 0,
     }];
 
@@ -53,8 +54,8 @@ fn benchmark_connect_block_multi_tx(c: &mut Criterion) {
     for _ in 0..10 {
         transactions.push(Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         });
     }
@@ -68,7 +69,7 @@ fn benchmark_connect_block_multi_tx(c: &mut Criterion) {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions,
+        transactions: transactions.into(),
     };
 
     let utxo_set = UtxoSet::new();

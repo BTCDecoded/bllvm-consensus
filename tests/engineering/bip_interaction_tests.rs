@@ -14,20 +14,20 @@ fn test_segwit_with_cltv() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x00], // SegWit marker
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey: {
                 // ScriptPubkey with CLTV: OP_1 <locktime> OP_CHECKLOCKTIMEVERIFY
-                let mut script = vec![0x51]; // OP_1
+                let mut script = vec![0x51].into(); // OP_1
                 script.extend_from_slice(&encode_script_int(400000));
                 script.push(0xb1); // OP_CHECKLOCKTIMEVERIFY
                 script
             },
-        }],
+        }].into(),
         lock_time: 500000, // >= required locktime
     };
     
@@ -74,20 +74,20 @@ fn test_segwit_with_csv() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x00], // SegWit marker
             sequence: 0x00050000, // 5 blocks relative locktime
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey: {
                 // ScriptPubkey with CSV: OP_1 <sequence> OP_CHECKSEQUENCEVERIFY
-                let mut script = vec![0x51]; // OP_1
+                let mut script = vec![0x51].into(); // OP_1
                 script.extend_from_slice(&encode_script_int(0x00040000)); // 4 blocks required
                 script.push(0xb2); // OP_CHECKSEQUENCEVERIFY
                 script
             },
-        }],
+        }].into(),
         lock_time: 0,
     };
     
@@ -141,10 +141,10 @@ fn test_taproot_with_csv() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![], // Empty for Taproot
             sequence: 0x00060000, // 6 blocks relative locktime
-        }],
+        }].into(),
         outputs: vec![
             TransactionOutput {
                 value: 1000,
@@ -154,13 +154,13 @@ fn test_taproot_with_csv() {
                 value: 2000,
                 script_pubkey: {
                     // Output with CSV requirement
-                    let mut script = vec![0x51];
+                    let mut script = vec![0x51].into();
                     script.extend_from_slice(&encode_script_int(0x00050000)); // 5 blocks required
                     script.push(0xb2); // CSV
                     script
                 },
             },
-        ],
+        ].into(),
         lock_time: 0,
     };
     
@@ -209,39 +209,39 @@ fn test_mixed_block_segwit_and_taproot() {
         transactions: vec![
             Transaction {
                 version: 1,
-                inputs: vec![],
+                inputs: vec![].into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 // SegWit transaction
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [1; 32], index: 0 },
+                    prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                     script_sig: vec![0x00],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x00, 0x14], // P2WPKH
-                }],
+                    script_pubkey: vec![0x00, 0x14].into(), // P2WPKH
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 // Taproot transaction
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [2; 32], index: 0 },
+                    prevout: OutPoint { hash: [2; 32].into(), index: 0 },
                     script_sig: vec![],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: create_p2tr_script(&[1u8; 32]),
-                }],
+                    script_pubkey: create_p2tr_script(&[1u8; 32].into()),
+                }].into(),
                 lock_time: 0,
             },
         ],
@@ -275,14 +275,14 @@ fn test_segwit_taproot_cltv_combined() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x00], // SegWit marker
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![
             TransactionOutput {
                 value: 1000,
-                script_pubkey: create_p2tr_script(&[1u8; 32]), // Taproot output
+                script_pubkey: create_p2tr_script(&[1u8; 32].into()), // Taproot output
             },
             TransactionOutput {
                 value: 2000,
@@ -294,7 +294,7 @@ fn test_segwit_taproot_cltv_combined() {
                     script
                 },
             },
-        ],
+        ].into(),
         lock_time: 500000, // >= required for CLTV
     };
     
@@ -336,16 +336,16 @@ fn test_cltv_csv_combined() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0x00050000, // 5 blocks for CSV
-        }],
+        }].into(),
         outputs: vec![
             TransactionOutput {
                 value: 1000,
                 script_pubkey: {
                     // CLTV output
-                    let mut script = vec![0x51];
+                    let mut script = vec![0x51].into();
                     script.extend_from_slice(&encode_script_int(400000));
                     script.push(0xb1); // CLTV
                     script
@@ -361,7 +361,7 @@ fn test_cltv_csv_combined() {
                     script
                 },
             },
-        ],
+        ].into(),
         lock_time: 500000, // For CLTV
     };
     
@@ -421,39 +421,39 @@ fn test_block_weight_with_segwit_and_taproot() {
         transactions: vec![
             Transaction {
                 version: 1,
-                inputs: vec![],
+                inputs: vec![].into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 // SegWit transaction
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [1; 32], index: 0 },
+                    prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                     script_sig: vec![0x00],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x00, 0x14],
-                }],
+                    script_pubkey: vec![0x00, 0x14].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 // Taproot transaction
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [2; 32], index: 0 },
+                    prevout: OutPoint { hash: [2; 32].into(), index: 0 },
                     script_sig: vec![],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: create_p2tr_script(&[1u8; 32]),
-                }],
+                    script_pubkey: create_p2tr_script(&[1u8; 32].into()),
+                }].into(),
                 lock_time: 0,
             },
         ],

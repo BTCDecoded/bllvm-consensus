@@ -9,8 +9,8 @@ use crate::bip113::get_median_time_past;
 use crate::constants::*;
 use crate::economic::get_block_subsidy;
 use crate::error::{ConsensusError, Result};
-use std::borrow::Cow;
 use crate::script::verify_script_with_context_full;
+use std::borrow::Cow;
 
 // Cold error construction helpers - these paths are rarely taken
 #[cold]
@@ -260,9 +260,9 @@ pub fn connect_block(
                                     .map(|utxo| utxo.value)
                                     .unwrap_or(0);
                                 acc.checked_add(value).ok_or_else(|| {
-                                    ConsensusError::TransactionValidation(
-                                        "Input value overflow".to_string(),
-                                    )
+                                        ConsensusError::TransactionValidation(
+                                            "Input value overflow".into(),
+                                        )
                                 })
                             })
                             .map_err(|e| ConsensusError::TransactionValidation(Cow::Owned(e.to_string())))?;
@@ -273,7 +273,7 @@ pub fn connect_block(
                             .try_fold(0i64, |acc, output| {
                                 acc.checked_add(output.value).ok_or_else(|| {
                                     ConsensusError::TransactionValidation(
-                                        "Output value overflow".to_string(),
+                                        "Output value overflow".into(),
                                     )
                                 })
                             })
@@ -281,7 +281,7 @@ pub fn connect_block(
 
                         let fee = total_input.checked_sub(total_output).ok_or_else(|| {
                             ConsensusError::TransactionValidation(
-                                "Fee calculation underflow".to_string(),
+                                "Fee calculation underflow".into(),
                             )
                         })?;
 
@@ -350,7 +350,7 @@ pub fn connect_block(
                                         .ok_or_else(|| ConsensusError::TransactionValidation(
                                             format!("Input index {} out of bounds", j).into()
                                         ))?;
-                                    
+
                                     #[cfg(not(feature = "production"))]
                                     let input = &tx.inputs[*j];
                                     let witness_elem = witnesses.get(i).and_then(|w| w.get(*j));
@@ -401,9 +401,9 @@ pub fn connect_block(
                 }
 
                 // Use checked arithmetic to prevent fee overflow
-                total_fees = total_fees.checked_add(fee).ok_or_else(|| {
-                    make_fee_overflow_error(Some(i))
-                })?;
+                total_fees = total_fees
+                    .checked_add(fee)
+                    .ok_or_else(|| make_fee_overflow_error(Some(i)))?;
             }
         }
 
@@ -434,9 +434,7 @@ pub fn connect_block(
                                 .map(|utxo| utxo.value)
                                 .unwrap_or(0);
                             acc.checked_add(value).ok_or_else(|| {
-                                ConsensusError::TransactionValidation(
-                                    "Input value overflow".into(),
-                                )
+                                ConsensusError::TransactionValidation("Input value overflow".into())
                             })
                         })
                         .map_err(|e| ConsensusError::TransactionValidation(e.to_string().into()))?;
@@ -454,9 +452,7 @@ pub fn connect_block(
                         .map_err(|e| ConsensusError::TransactionValidation(e.to_string().into()))?;
 
                     let fee = total_input.checked_sub(total_output).ok_or_else(|| {
-                        ConsensusError::TransactionValidation(
-                            "Fee calculation underflow".into(),
-                        )
+                        ConsensusError::TransactionValidation("Fee calculation underflow".into())
                     })?;
 
                     // Runtime assertion: Fee must be non-negative after checked subtraction
@@ -542,9 +538,9 @@ pub fn connect_block(
                 }
 
                 // Use checked arithmetic to prevent fee overflow
-                total_fees = total_fees.checked_add(fee).ok_or_else(|| {
-                    make_fee_overflow_error(Some(i))
-                })?;
+                total_fees = total_fees
+                    .checked_add(fee)
+                    .ok_or_else(|| make_fee_overflow_error(Some(i)))?;
             }
         }
     }
@@ -623,9 +619,9 @@ pub fn connect_block(
             }
 
             // Use checked arithmetic to prevent fee overflow
-            total_fees = total_fees.checked_add(fee).ok_or_else(|| {
-                make_fee_overflow_error(Some(i))
-            })?;
+            total_fees = total_fees
+                .checked_add(fee)
+                .ok_or_else(|| make_fee_overflow_error(Some(i)))?;
         }
     }
 
@@ -648,15 +644,14 @@ pub fn connect_block(
                 .map(|input| input.script_sig.len())
                 .unwrap_or(0)
         };
-        
+
         #[cfg(not(feature = "production"))]
         let script_sig_len = coinbase.inputs[0].script_sig.len();
-        
-        if script_sig_len < 2 || script_sig_len > 100 {
+
+        if !(2..=100).contains(&script_sig_len) {
             return Ok((
                 ValidationResult::Invalid(format!(
-                    "Coinbase scriptSig length {} must be between 2 and 100 bytes",
-                    script_sig_len
+                    "Coinbase scriptSig length {script_sig_len} must be between 2 and 100 bytes"
                 )),
                 utxo_set,
             ));
@@ -686,9 +681,9 @@ pub fn connect_block(
         }
 
         // Use checked arithmetic for fee + subsidy calculation
-        let max_coinbase_value = total_fees.checked_add(subsidy).ok_or_else(|| {
-            ConsensusError::BlockValidation("Fees + subsidy overflow".into())
-        })?;
+        let max_coinbase_value = total_fees
+            .checked_add(subsidy)
+            .ok_or_else(|| ConsensusError::BlockValidation("Fees + subsidy overflow".into()))?;
 
         if coinbase_output > max_coinbase_value {
             return Ok((
@@ -735,7 +730,9 @@ pub fn connect_block(
         let tx_sigop_cost = get_transaction_sigop_cost(tx, &utxo_set, tx_witness, flags)?;
 
         total_sigop_cost = total_sigop_cost.checked_add(tx_sigop_cost).ok_or_else(|| {
-            ConsensusError::BlockValidation(format!("Sigop cost overflow at transaction {i}").into())
+            ConsensusError::BlockValidation(
+                format!("Sigop cost overflow at transaction {i}").into(),
+            )
         })?;
     }
 
@@ -810,46 +807,43 @@ pub fn connect_block(
     // This ensures no money creation or destruction beyond expected inflation
     #[cfg(any(debug_assertions, feature = "runtime-invariants"))]
     {
-        use crate::economic::{total_supply, get_block_subsidy};
         use crate::constants::MAX_MONEY;
-        
+        use crate::economic::{get_block_subsidy, total_supply};
+
         // Calculate expected supply at this height
         let expected_supply = total_supply(height);
-        
+
         // Calculate actual supply from UTXO set (sum of all UTXO values)
         let actual_supply: i64 = utxo_set
             .values()
             .map(|utxo| utxo.value)
             .try_fold(0i64, |acc, val| acc.checked_add(val))
             .unwrap_or(MAX_MONEY);
-        
+
         // Expected supply change = subsidy + fees
         let subsidy = get_block_subsidy(height);
         let _expected_change = subsidy + total_fees;
-        
+
         // Actual supply change = actual_supply - previous_supply
         // We can't easily get previous_supply, but we can verify:
         // - Actual supply should be <= expected_supply (no inflation beyond subsidy)
         // - Actual supply should be >= expected_supply - some_tolerance (no excessive destruction)
-        
+
         // Runtime assertion: Actual supply should not exceed expected supply by more than fees
         // (Allowing for fees because they're part of the economic model)
         debug_assert!(
             actual_supply <= expected_supply + total_fees,
-            "Supply invariant violated at height {}: actual supply {} exceeds expected {} + fees {}",
-            height, actual_supply, expected_supply, total_fees
+            "Supply invariant violated at height {height}: actual supply {actual_supply} exceeds expected {expected_supply} + fees {total_fees}"
         );
-        
+
         // Runtime assertion: Actual supply should be non-negative and <= MAX_MONEY
         debug_assert!(
             actual_supply >= 0,
-            "Supply invariant violated: actual supply {} is negative",
-            actual_supply
+            "Supply invariant violated: actual supply {actual_supply} is negative"
         );
         debug_assert!(
             actual_supply <= MAX_MONEY,
-            "Supply invariant violated: actual supply {} exceeds MAX_MONEY {}",
-            actual_supply, MAX_MONEY
+            "Supply invariant violated: actual supply {actual_supply} exceeds MAX_MONEY {MAX_MONEY}"
         );
     }
 
@@ -2514,16 +2508,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![0x00, 0x01], // Coinbase scriptSig must be 2-100 bytes
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000, // 50 BTC
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2558,16 +2554,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2587,16 +2585,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2646,16 +2646,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2684,16 +2686,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 6000000000, // 60 BTC - exceeds subsidy
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2736,16 +2740,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51], // OP_1
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 500,
-                script_pubkey: vec![0x52], // OP_2
-            }],
+                script_pubkey: vec![0x52].into(), // OP_2
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2761,22 +2767,24 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![
                 TransactionOutput {
                     value: 2500000000,
-                    script_pubkey: vec![0x51],
+                    script_pubkey: vec![0x51].into(),
                 },
                 TransactionOutput {
                     value: 2500000000,
                     script_pubkey: vec![0x52],
                 },
-            ],
+            ]
+            .into(),
             lock_time: 0,
         };
 
@@ -2840,16 +2848,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2862,16 +2872,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0xffffffff,
                 }, // Wrong hash
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2884,16 +2896,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 }, // Wrong index
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2907,7 +2921,7 @@ mod tests {
             inputs: vec![
                 TransactionInput {
                     prevout: OutPoint {
-                        hash: [0; 32],
+                        hash: [0; 32].into(),
                         index: 0xffffffff,
                     },
                     script_sig: vec![],
@@ -2921,11 +2935,13 @@ mod tests {
                     script_sig: vec![],
                     sequence: 0xffffffff,
                 },
-            ],
+            ]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2938,16 +2954,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -2971,15 +2989,15 @@ mod tests {
     fn test_calculate_tx_id_different_versions() {
         let tx1 = Transaction {
             version: 2,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
 
         let tx2 = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
 
@@ -3019,16 +3037,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 }, // Wrong hash for coinbase
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -3073,16 +3093,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 200, // More than input value
-                script_pubkey: vec![0x52],
-            }],
+                script_pubkey: vec![0x52].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -3099,16 +3121,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 100,
-                script_pubkey: vec![0x52],
-            }],
+                script_pubkey: vec![0x52].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -3163,16 +3187,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 2100000000000000, // Exceeds total supply
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -3203,16 +3229,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x52],
-            }],
+                script_pubkey: vec![0x52].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -3269,7 +3297,7 @@ mod tests {
             inputs: vec![
                 TransactionInput {
                     prevout: OutPoint {
-                        hash: [1; 32],
+                        hash: [1; 32].into(),
                         index: 0,
                     },
                     script_sig: vec![0x51],
@@ -3283,11 +3311,13 @@ mod tests {
                     script_sig: vec![0x52],
                     sequence: 0xffffffff,
                 },
-            ],
+            ]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 700, // Total input value
-                script_pubkey: vec![0x53],
-            }],
+                script_pubkey: vec![0x53].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -3314,13 +3344,14 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
-            outputs: vec![], // No outputs
+            }]
+            .into(),
+            outputs: vec![].into(), // No outputs
             lock_time: 0,
         };
 

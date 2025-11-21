@@ -17,14 +17,14 @@ fn test_transaction_size_boundaries() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: large_script.clone(),
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey: large_script,
-        }],
+        }].into(),
         lock_time: 0,
     };
     
@@ -49,11 +49,11 @@ fn test_maximum_input_output_counts() {
     
     let tx_max_inputs = Transaction {
         version: 1,
-        inputs,
+            inputs: inputs.into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -72,11 +72,11 @@ fn test_maximum_input_output_counts() {
     let tx_max_outputs = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
-        outputs,
+        }].into(),
+            outputs: outputs.into(),
         lock_time: 0,
     };
     
@@ -92,14 +92,14 @@ fn test_monetary_boundaries() {
     let tx_max_money = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -110,14 +110,14 @@ fn test_monetary_boundaries() {
     let tx_excess_money = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY + 1,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -172,14 +172,14 @@ fn test_block_size_boundaries() {
         transactions.push(Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [i as u8; 32], index: 0 },
+                prevout: OutPoint { hash: [i as u8; 32].into(), index: 0 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         });
     }
@@ -193,7 +193,7 @@ fn test_block_size_boundaries() {
             bits: 0x0300ffff,
             nonce: 0,
         },
-        transactions,
+            transactions: transactions.into(),
     };
     
     let utxo_set = UtxoSet::new();
@@ -286,14 +286,14 @@ fn test_sequence_number_boundaries() {
     let tx_max_sequence = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff, // Maximum sequence
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -304,14 +304,14 @@ fn test_sequence_number_boundaries() {
     let tx_rbf = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: SEQUENCE_RBF as u32, // RBF sequence
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     

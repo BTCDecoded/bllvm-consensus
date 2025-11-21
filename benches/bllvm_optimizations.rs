@@ -22,16 +22,18 @@ fn create_test_transaction() -> Transaction {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51], // OP_1
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51], // OP_1
-        }],
+            script_pubkey: vec![0x51].into(), // OP_1
+        }]
+        .into(),
         lock_time: 0,
     }
 }
@@ -76,7 +78,7 @@ fn bench_transaction_serialization(c: &mut Criterion) {
 
 /// Benchmark batch hash operations with different batch sizes
 fn bench_batch_hashing(c: &mut Criterion) {
-    let group = c.benchmark_group("batch_hashing");
+    let mut group = c.benchmark_group("batch_hashing");
 
     for size in [10, 100, 1000, 2000].iter() {
         let transactions = create_test_transactions(*size);

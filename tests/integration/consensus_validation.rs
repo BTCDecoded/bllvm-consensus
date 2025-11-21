@@ -11,14 +11,14 @@ fn test_consensus_proof_basic_functionality() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -33,14 +33,14 @@ fn test_consensus_proof_coinbase_validation() {
     let coinbase_tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+            prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -55,14 +55,14 @@ fn test_consensus_proof_utxo_validation() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -86,14 +86,14 @@ fn test_consensus_proof_insufficient_funds() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 2000, // More than available
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -116,11 +116,11 @@ fn test_consensus_proof_invalid_transaction() {
     
     let invalid_tx = Transaction {
         version: 1,
-        inputs: vec![], // Empty inputs
+        inputs: vec![].into(), // Empty inputs
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -144,14 +144,14 @@ fn test_consensus_proof_block_validation() {
         transactions: vec![Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         }],
     };

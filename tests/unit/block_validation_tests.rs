@@ -18,11 +18,11 @@ fn create_valid_coinbase_block() -> Block {
     let coinbase_tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+            prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
-        outputs: vec![TransactionOutput { value: 50_000_000_000, script_pubkey: vec![0x51] }],
+        }].into(),
+        outputs: vec![TransactionOutput { value: 50_000_000_000, script_pubkey: vec![0x51].into() }].into(),
         lock_time: 0,
     };
     
@@ -35,7 +35,7 @@ fn create_valid_coinbase_block() -> Block {
             bits: 0x0300ffff,
             nonce: 0,
         },
-        transactions: vec![coinbase_tx],
+            transactions: vec![coinbase_tx].into(),
     }
 }
 
@@ -78,11 +78,11 @@ fn test_apply_transaction_coinbase() {
     let coinbase_tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+            prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
-        outputs: vec![TransactionOutput { value: 50_000_000_000, script_pubkey: vec![0x51] }],
+        }].into(),
+        outputs: vec![TransactionOutput { value: 50_000_000_000, script_pubkey: vec![0x51].into() }].into(),
         lock_time: 0,
     };
     

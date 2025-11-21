@@ -76,14 +76,14 @@ proptest! {
             block.transactions.push(Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [i as u8; 32], index: 0 },
+                    prevout: OutPoint { hash: [i as u8; 32].into(), index: 0 },
                     script_sig: vec![0x51],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }].into(),
                 lock_time: 0,
             });
         }
@@ -244,14 +244,14 @@ proptest! {
                 block.transactions.push(Transaction {
                     version: 1,
                     inputs: vec![TransactionInput {
-                        prevout: OutPoint { hash: [i as u8; 32], index: 0 },
+                        prevout: OutPoint { hash: [i as u8; 32].into(), index: 0 },
                         script_sig: vec![0x51],
                         sequence: 0xffffffff,
-                    }],
+                    }].into(),
                     outputs: vec![TransactionOutput {
                         value: 1000,
-                        script_pubkey: vec![0x51],
-                    }],
+                        script_pubkey: vec![0x51].into(),
+                    }].into(),
                     lock_time: 0,
                 });
             }

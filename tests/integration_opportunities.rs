@@ -7,7 +7,9 @@ use bllvm_consensus::transaction::is_coinbase;
 use bllvm_consensus::*;
 
 mod test_helpers;
-use test_helpers::{adjusted_timeout, is_ci, create_test_tx, create_test_utxo_set, create_invalid_transaction};
+use test_helpers::{
+    adjusted_timeout, create_invalid_transaction, create_test_tx, create_test_utxo_set, is_ci,
+};
 
 /// Test integration between mempool and block creation
 #[test]
@@ -328,6 +330,7 @@ fn create_valid_block() -> Block {
                 script_pubkey: vec![0x51],
             }],
             lock_time: 0,
-        }].into_boxed_slice(),
+        }]
+        .into_boxed_slice(),
     }
 }

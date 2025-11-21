@@ -16,14 +16,14 @@ proptest! {
         let tx = Transaction {
             version,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0 },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -42,14 +42,14 @@ proptest! {
         let tx = Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0 },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time,
         };
         
@@ -67,14 +67,14 @@ proptest! {
         let tx = Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0 },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0 },
                 script_sig: vec![0x51],
                 sequence,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -300,14 +300,14 @@ proptest! {
         let coinbase = Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: height.to_le_bytes().to_vec(),
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: subsidy,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -327,10 +327,10 @@ proptest! {
         let tx = Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0 },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: (0..output_count).map(|i| TransactionOutput {
                 value: 1000 * (i as i64 + 1),
                 script_pubkey: vec![i as u8],
@@ -359,8 +359,8 @@ proptest! {
             }).collect(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -392,14 +392,14 @@ proptest! {
         block.transactions.push(Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         });
         
@@ -408,14 +408,14 @@ proptest! {
             block.transactions.push(Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [i as u8; 32], index: 0 },
+                    prevout: OutPoint { hash: [i as u8; 32].into(), index: 0 },
                     script_sig: vec![0x51],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }].into(),
                 lock_time: 0,
             });
         }
@@ -463,14 +463,14 @@ proptest! {
             block.transactions.push(Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [i as u8; 32], index: 0 },
+                    prevout: OutPoint { hash: [i as u8; 32].into(), index: 0 },
                     script_sig: vec![0x51],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }].into(),
                 lock_time: 0,
             });
         }

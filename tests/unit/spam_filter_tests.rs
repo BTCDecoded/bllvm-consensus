@@ -10,16 +10,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
                 script_pubkey,
-            }],
+            }].into(),
             lock_time: 0,
         }
     }
@@ -51,16 +51,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 100, // Below 546 satoshi threshold
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -79,16 +79,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 10000, // Above dust threshold
                 script_pubkey: normal_script,
-            }],
+            }].into(),
             lock_time: 0,
         };
         
@@ -132,14 +132,14 @@ mod tests {
             Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [0; 32], index: 0 },
+                    prevout: OutPoint { hash: [0; 32].into(), index: 0 },
                     script_sig: vec![],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 100, // Dust
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             }, // Dust spam
         ];

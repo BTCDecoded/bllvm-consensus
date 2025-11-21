@@ -402,16 +402,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51, 0xac], // OP_1, OP_CHECKSIG
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51, 0xad], // OP_1, OP_CHECKSIGVERIFY
-            }],
+                script_pubkey: vec![0x51, 0xad].into(), // OP_1, OP_CHECKSIGVERIFY
+            }]
+            .into(),
             lock_time: 0,
         };
 

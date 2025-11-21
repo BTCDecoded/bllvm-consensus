@@ -206,11 +206,11 @@ mod tests {
         // Create a simple transaction
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51], // OP_1
-            }],
+                script_pubkey: vec![0x51].into(), // OP_1
+            }].into(),
             lock_time: 0,
         };
         

@@ -563,16 +563,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![0x04, 0x00, 0x00, 0x00, 0x00],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 50_0000_0000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         }];
         let block = Block {
@@ -598,16 +598,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![0x04, 0x00, 0x00, 0x00, 0x00],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 50_0000_0000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         }];
         let block = Block {
@@ -634,17 +634,17 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 // Height encoded as CScriptNum: 0x03 (push 3 bytes) + height in little-endian
                 script_sig: vec![0x03, (height & 0xff) as u8, ((height >> 8) & 0xff) as u8, ((height >> 16) & 0xff) as u8],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 50_0000_0000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         }];
         let block = Block {
@@ -695,16 +695,16 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![0x04, 0x00, 0x00, 0x00, 0x00],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 50_0000_0000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -747,17 +747,17 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 // Wrong height encoding
                 script_sig: vec![0x03, 0x00, 0x00, 0x00], // Height 0 instead of 227836
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 50_0000_0000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         }];
         let block = Block {

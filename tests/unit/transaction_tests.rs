@@ -9,14 +9,14 @@ fn test_check_transaction_valid() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -28,11 +28,11 @@ fn test_check_transaction_valid() {
 fn test_check_transaction_empty_inputs() {
     let tx = Transaction {
         version: 1,
-        inputs: vec![],
+        inputs: vec![].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -53,11 +53,11 @@ fn test_check_transaction_too_many_inputs() {
     
     let tx = Transaction {
         version: 1,
-        inputs,
+            inputs: inputs.into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -78,11 +78,11 @@ fn test_check_transaction_too_many_outputs() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
-        outputs,
+        }].into(),
+            outputs: outputs.into(),
         lock_time: 0,
     };
     
@@ -95,14 +95,14 @@ fn test_check_transaction_negative_output() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: -1000, // Negative value
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -115,14 +115,14 @@ fn test_check_transaction_excessive_output() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY + 1, // Exceeds max money
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -135,14 +135,14 @@ fn test_is_coinbase() {
     let coinbase_tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+            prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -151,14 +151,14 @@ fn test_is_coinbase() {
     let regular_tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -170,14 +170,14 @@ fn test_calculate_transaction_size() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51, 0x52],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51, 0x52, 0x53],
-        }],
+            script_pubkey: vec![0x51, 0x52, 0x53].into(),
+        }].into(),
         lock_time: 0,
     };
     

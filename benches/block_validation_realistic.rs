@@ -16,16 +16,18 @@ fn create_realistic_test_block(num_txs: usize) -> Block {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff, // Coinbase
             },
             script_sig: vec![0x51; 4], // OP_1 repeated
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
-            value: 50_000_000_000,     // 50 BTC
-            script_pubkey: vec![0x51], // OP_1
-        }],
+            value: 50_000_000_000,            // 50 BTC
+            script_pubkey: vec![0x51].into(), // OP_1
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -36,22 +38,24 @@ fn create_realistic_test_block(num_txs: usize) -> Block {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [i as u8; 32], // Different hash for each
+                    hash: [i as u8; 32].into(), // Different hash for each
                     index: 0,
                 },
                 script_sig: vec![0x51; 20], // Longer script
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![
                 TransactionOutput {
-                    value: 10_000_000,             // 0.1 BTC
-                    script_pubkey: vec![0x51; 25], // Longer script
+                    value: 10_000_000,                    // 0.1 BTC
+                    script_pubkey: vec![0x51; 25].into(), // Longer script
                 },
                 TransactionOutput {
                     value: 5_000_000, // 0.05 BTC
                     script_pubkey: vec![0x51; 25],
                 },
-            ],
+            ]
+            .into(),
             lock_time: 0,
         });
     }
@@ -65,7 +69,7 @@ fn create_realistic_test_block(num_txs: usize) -> Block {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions,
+        transactions: transactions.into(),
     }
 }
 

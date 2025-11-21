@@ -205,19 +205,22 @@ fn benchmark_merkle_root_batching(c: &mut Criterion) {
                 version: 1u64,
                 inputs: vec![TransactionInput {
                     prevout: OutPoint {
-                        hash: [i as u8; 32],
+                        hash: [i as u8; 32].into(),
                         index: 0u64,
                     },
                     script_sig: vec![0x51], // OP_1
                     sequence: 0xffffffffu64,
-                }],
+                }]
+                .into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000i64,
                     script_pubkey: vec![
                         0x76, 0xa9, 0x14, 0x89, 0xab, 0xcd, 0xef, 0x12, 0x34, 0x56, 0x78, 0x9a,
                         0xbc, 0xde, 0xf0, 0x12, 0x34, 0x56, 0x78, 0x9a, 0x88, 0xac,
-                    ],
-                }],
+                    ]
+                    .into(),
+                }]
+                .into(),
                 lock_time: 0u64,
             })
             .collect();
@@ -242,19 +245,22 @@ fn benchmark_block_validation_tx_ids(c: &mut Criterion) {
                 version: 1u64,
                 inputs: vec![TransactionInput {
                     prevout: OutPoint {
-                        hash: [i as u8; 32],
+                        hash: [i as u8; 32].into(),
                         index: 0u64,
                     },
                     script_sig: vec![0x51],
                     sequence: 0xffffffffu64,
-                }],
+                }]
+                .into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000i64,
                     script_pubkey: vec![
                         0x76, 0xa9, 0x14, 0x89, 0xab, 0xcd, 0xef, 0x12, 0x34, 0x56, 0x78, 0x9a,
                         0xbc, 0xde, 0xf0, 0x12, 0x34, 0x56, 0x78, 0x9a, 0x88, 0xac,
-                    ],
-                }],
+                    ]
+                    .into(),
+                }]
+                .into(),
                 lock_time: 0u64,
             })
             .collect();
@@ -297,8 +303,10 @@ fn benchmark_sighash_batching(c: &mut Criterion) {
                 script_pubkey: vec![
                     0x76, 0xa9, 0x14, 0x89, 0xab, 0xcd, 0xef, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc,
                     0xde, 0xf0, 0x12, 0x34, 0x56, 0x78, 0x9a, 0x88, 0xac,
-                ],
-            }],
+                ]
+                .into(),
+            }]
+            .into(),
             lock_time: 0u64,
         };
 
@@ -438,19 +446,22 @@ fn benchmark_sighash_templates(c: &mut Criterion) {
         version: 1u64,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0u8; 32],
+                hash: [0u8; 32].into(),
                 index: 0u64,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffffu64,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 5000000000i64,
             script_pubkey: vec![
                 0x76, 0xa9, 0x14, 0x89, 0xab, 0xcd, 0xef, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde,
                 0xf0, 0x12, 0x34, 0x56, 0x78, 0x9a, 0x88, 0xac,
-            ],
-        }],
+            ]
+            .into(),
+        }]
+        .into(),
         lock_time: 0u64,
     };
 
@@ -485,11 +496,12 @@ fn benchmark_early_exit_transaction(c: &mut Criterion) {
     // Test with obviously invalid transaction (empty inputs)
     let invalid_tx = Transaction {
         version: 1u64,
-        inputs: vec![],
+        inputs: vec![].into(),
         outputs: vec![TransactionOutput {
             value: 5000000000i64,
-            script_pubkey: vec![0x76, 0xa9, 0x14],
-        }],
+            script_pubkey: vec![0x76, 0xa9, 0x14].into(),
+        }]
+        .into(),
         lock_time: 0u64,
     };
 
@@ -498,16 +510,18 @@ fn benchmark_early_exit_transaction(c: &mut Criterion) {
         version: 1u64,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0u8; 32],
+                hash: [0u8; 32].into(),
                 index: 0u64,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffffu64,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 5000000000i64,
-            script_pubkey: vec![0x76, 0xa9, 0x14],
-        }],
+            script_pubkey: vec![0x76, 0xa9, 0x14].into(),
+        }]
+        .into(),
         lock_time: 0u64,
     };
 

@@ -87,7 +87,7 @@ fn get_next_work_required_internal(
     }
 
     let time_span = last_timestamp - first_timestamp;
-    
+
     // Calculate expected_time based on whether we're using corrected version
     // When we have n blocks (indices 0 to n-1), we measure (n-1) intervals
     // Bitcoin bug: compares against n intervals
@@ -130,10 +130,7 @@ fn get_next_work_required_internal(
     let old_target = expand_target(previous_bits)?;
 
     // Runtime assertion: Old target must be positive
-    debug_assert!(
-        !old_target.is_zero(),
-        "Old target must be non-zero"
-    );
+    debug_assert!(!old_target.is_zero(), "Old target must be non-zero");
 
     // Multiply target by clamped_timespan (integer multiplication)
     let multiplied_target = old_target
@@ -166,14 +163,11 @@ fn get_next_work_required_internal(
     // Runtime assertion: Clamped bits must be positive and <= MAX_TARGET
     debug_assert!(
         clamped_bits > 0,
-        "Clamped bits ({}) must be positive",
-        clamped_bits
+        "Clamped bits ({clamped_bits}) must be positive"
     );
     debug_assert!(
         clamped_bits <= MAX_TARGET as Natural,
-        "Clamped bits ({}) must be <= MAX_TARGET ({})",
-        clamped_bits,
-        MAX_TARGET
+        "Clamped bits ({clamped_bits}) must be <= MAX_TARGET ({MAX_TARGET})"
     );
 
     // Ensure result is positive
@@ -350,17 +344,13 @@ impl U256 {
         // Runtime assertion: word_shift must be < 4 (since shift < 256)
         debug_assert!(
             word_shift < 4,
-            "Word shift ({}) must be < 4 (shift: {})",
-            word_shift,
-            shift
+            "Word shift ({word_shift}) must be < 4 (shift: {shift})"
         );
-        
+
         // Runtime assertion: bit_shift must be < 64
         debug_assert!(
             bit_shift < 64,
-            "Bit shift ({}) must be < 64 (shift: {})",
-            bit_shift,
-            shift
+            "Bit shift ({bit_shift}) must be < 64 (shift: {shift})"
         );
 
         for i in 0..4 {
@@ -369,34 +359,26 @@ impl U256 {
                 let dest_idx = i - word_shift;
                 debug_assert!(
                     dest_idx < 4,
-                    "Destination index ({}) must be < 4 (i: {}, word_shift: {})",
-                    dest_idx,
-                    i,
-                    word_shift
+                    "Destination index ({dest_idx}) must be < 4 (i: {i}, word_shift: {word_shift})"
                 );
-                
+
                 result.0[dest_idx] |= self.0[i] >> bit_shift;
-                
+
                 if bit_shift > 0 && i - word_shift + 1 < 4 {
                     // Runtime assertion: Second destination index must be in bounds
                     let dest_idx2 = i - word_shift + 1;
                     debug_assert!(
                         dest_idx2 < 4,
-                        "Second destination index ({}) must be < 4 (i: {}, word_shift: {})",
-                        dest_idx2,
-                        i,
-                        word_shift
+                        "Second destination index ({dest_idx2}) must be < 4 (i: {i}, word_shift: {word_shift})"
                     );
-                    
+
                     // Runtime assertion: Left shift amount must be valid
                     let left_shift = 64 - bit_shift;
                     debug_assert!(
                         left_shift > 0 && left_shift < 64,
-                        "Left shift amount ({}) must be in (0, 64) (bit_shift: {})",
-                        left_shift,
-                        bit_shift
+                        "Left shift amount ({left_shift}) must be in (0, 64) (bit_shift: {bit_shift})"
                     );
-                    
+
                     result.0[dest_idx2] |= self.0[i] << left_shift;
                 }
             }
@@ -466,31 +448,26 @@ impl U256 {
             let dividend = (remainder << 64) | (self.0[i] as u128);
             let quotient = dividend / (rhs as u128);
             remainder = dividend % (rhs as u128);
-            
+
             // Runtime assertion: Quotient must fit in u64
             debug_assert!(
                 quotient <= u64::MAX as u128,
-                "Quotient ({}) must fit in u64",
-                quotient
+                "Quotient ({quotient}) must fit in u64"
             );
-            
+
             result.0[i] = quotient as u64;
         }
 
         // Runtime assertion: Result must be <= self (division never increases)
         debug_assert!(
             result <= *self,
-            "Division result ({:?}) must be <= dividend ({:?})",
-            result,
-            self
+            "Division result ({result:?}) must be <= dividend ({self:?})"
         );
-        
+
         // Runtime assertion: Remainder must be < rhs
         debug_assert!(
             remainder < rhs as u128,
-            "Remainder ({}) must be < divisor ({})",
-            remainder,
-            rhs
+            "Remainder ({remainder}) must be < divisor ({rhs})"
         );
 
         result
@@ -637,9 +614,9 @@ fn compress_target(target: &U256) -> Result<Natural> {
     }
 
     // Find the highest set bit to determine size in bytes
-    let highest_bit = target.highest_set_bit().ok_or_else(|| {
-        ConsensusError::InvalidProofOfWork("Cannot compress zero target".into())
-    })?;
+    let highest_bit = target
+        .highest_set_bit()
+        .ok_or_else(|| ConsensusError::InvalidProofOfWork("Cannot compress zero target".into()))?;
 
     // Calculate size in bytes: nSize = (bits + 7) / 8 (ceiling division)
     // This is the number of bytes needed to represent the target
@@ -679,9 +656,9 @@ fn compress_target(target: &U256) -> Result<Natural> {
 
     // Validate exponent is reasonable (Bitcoin Core allows up to 34, but we clamp to 29 for safety)
     if n_size_final > 29 {
-        return Err(ConsensusError::InvalidProofOfWork(format!(
-            "Target too large: exponent {n_size_final} exceeds maximum 29"
-        ).into()));
+        return Err(ConsensusError::InvalidProofOfWork(
+            format!("Target too large: exponent {n_size_final} exceeds maximum 29").into(),
+        ));
     }
 
     // Combine exponent and mantissa: (nSize << 24) | mantissa
@@ -1266,12 +1243,7 @@ mod property_tests {
         kani::assume(shift < 256); // Valid shift range
 
         // Create a symbolic U256 value
-        let value = U256([
-            kani::any(),
-            kani::any(),
-            kani::any(),
-            kani::any(),
-        ]);
+        let value = U256([kani::any(), kani::any(), kani::any(), kani::any()]);
 
         // Calculate shift parameters
         let word_shift = (shift / 64) as usize;

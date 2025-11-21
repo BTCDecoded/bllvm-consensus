@@ -469,19 +469,22 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1u8; 32],
+                    hash: [1u8; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51], // OP_1
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
                 script_pubkey: vec![
                     0x76, 0xa9, 0x14, 0x89, 0xab, 0xcd, 0xef, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc,
                     0xde, 0xf0, 0x12, 0x34, 0x56, 0x78, 0x9a, 0x88, 0xac,
-                ], // P2PKH
-            }],
+                ]
+                .into(), // P2PKH
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -512,8 +515,8 @@ mod tests {
     fn test_sighash_invalid_input_index() {
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
 

@@ -16,7 +16,7 @@ fn test_bip65_cltv_compliance_basic() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: {
                 let mut script = vec![0x51]; // OP_1
                 script.extend_from_slice(&encode_varint(400000)); // Required locktime
@@ -24,11 +24,11 @@ fn test_bip65_cltv_compliance_basic() {
                 script
             },
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 500000, // >= required
     };
     
@@ -74,7 +74,7 @@ fn test_bip112_csv_compliance_basic() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: {
                 let mut script = vec![0x51]; // OP_1
                 script.extend_from_slice(&encode_varint(0x00040000)); // 4 blocks required
@@ -82,11 +82,11 @@ fn test_bip112_csv_compliance_basic() {
                 script
             },
             sequence: 0x00050000, // 5 blocks (>= required)
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -157,7 +157,7 @@ fn test_bip65_cltv_type_mismatch_rejection() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: {
                 let mut script = vec![0x51];
                 script.extend_from_slice(&encode_varint(600000000)); // Timestamp (>= threshold)
@@ -165,11 +165,11 @@ fn test_bip65_cltv_type_mismatch_rejection() {
                 script
             },
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 400000, // Block height (< threshold)
     };
     
@@ -214,7 +214,7 @@ fn test_bip112_csv_disabled_sequence_rejection() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: {
                 let mut script = vec![0x51];
                 script.extend_from_slice(&encode_varint(0x00040000));
@@ -222,11 +222,11 @@ fn test_bip112_csv_disabled_sequence_rejection() {
                 script
             },
             sequence: 0x80000000, // Sequence disabled
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     

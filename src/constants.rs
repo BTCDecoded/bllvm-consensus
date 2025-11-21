@@ -99,7 +99,7 @@ pub const MAX_BLOCK_SIGOPS_COST: u64 = 80_000;
 /// - OP_RETURN (0x6a): 1 byte
 /// - Push opcode (0x24): 1 byte
 /// - Commitment hash: 32 bytes
-/// Total: 34 bytes
+///   Total: 34 bytes
 ///
 /// Reference: BIP141 - Witness commitment format
 pub const WITNESS_COMMITMENT_HASH_LENGTH: usize = 32;
@@ -110,7 +110,7 @@ pub const WITNESS_COMMITMENT_HASH_LENGTH: usize = 32;
 /// - OP_RETURN (0x6a): 1 byte
 /// - Push opcode (0x24): 1 byte  
 /// - Commitment hash: 32 bytes
-/// Total: 34 bytes
+///   Total: 34 bytes
 pub const WITNESS_COMMITMENT_SCRIPT_LENGTH: usize = 34;
 
 /// Taproot script length (BIP341)
@@ -119,7 +119,7 @@ pub const WITNESS_COMMITMENT_SCRIPT_LENGTH: usize = 34;
 /// - OP_1 (0x51): 1 byte
 /// - Push opcode (0x20): 1 byte
 /// - Program hash: 32 bytes
-/// Total: 34 bytes
+///   Total: 34 bytes
 pub const TAPROOT_SCRIPT_LENGTH: usize = 34;
 
 /// Taproot program hash length (BIP341)

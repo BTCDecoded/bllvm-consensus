@@ -204,7 +204,7 @@ mod tests {
                     bits: 0x1d00ffff,
                     nonce: 0,
                 },
-                transactions: vec![],
+            transactions: vec![].into(),
             },
             expected_result: ValidationResult::Invalid("Test block".to_string()),
             height: 0,

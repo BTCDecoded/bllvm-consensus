@@ -30,16 +30,16 @@ fn test_template_hash_basic_calculation() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51], // OP_1 (not included in template)
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x76, 0xa9, 0x14, 0x00, 0x87], // P2PKH
-        }],
+            script_pubkey: vec![0x76, 0xa9, 0x14, 0x00, 0x87].into(), // P2PKH
+        }].into(),
         lock_time: 0,
     };
 
@@ -61,7 +61,7 @@ fn test_template_hash_multiple_inputs() {
         inputs: vec![
             TransactionInput {
                 prevout: OutPoint {
-                    hash: [0x01; 32],
+                    hash: [0x01; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51],
@@ -75,11 +75,11 @@ fn test_template_hash_multiple_inputs() {
                 script_sig: vec![0x52],
                 sequence: 0,
             },
-        ],
+        ].into(),
         outputs: vec![TransactionOutput {
             value: 2000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -96,22 +96,22 @@ fn test_template_hash_multiple_outputs() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![
             TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
+                script_pubkey: vec![0x51].into(),
             },
             TransactionOutput {
                 value: 2000,
                 script_pubkey: vec![0x52],
             },
-        ],
+        ].into(),
         lock_time: 0,
     };
 
@@ -126,16 +126,16 @@ fn test_template_hash_script_sig_independence() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51], // OP_1
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -143,16 +143,16 @@ fn test_template_hash_script_sig_independence() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x52, 0x53], // Different scriptSig
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -169,16 +169,16 @@ fn test_template_hash_version_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -186,16 +186,16 @@ fn test_template_hash_version_dependency() {
         version: 2,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -211,16 +211,16 @@ fn test_template_hash_locktime_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -228,16 +228,16 @@ fn test_template_hash_locktime_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 100,
     };
 
@@ -258,16 +258,16 @@ fn test_ctv_opcode_valid_template() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -309,16 +309,16 @@ fn test_ctv_opcode_invalid_template() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -358,16 +358,16 @@ fn test_ctv_opcode_wrong_hash_size() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -406,16 +406,16 @@ fn test_ctv_opcode_empty_stack() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -454,16 +454,16 @@ fn test_ctv_transaction_validation_passes() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51], // OP_1
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -519,16 +519,16 @@ fn test_ctv_transaction_validation_fails_wrong_structure() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -540,16 +540,16 @@ fn test_ctv_transaction_validation_fails_wrong_structure() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 2000, // Different value
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -589,11 +589,11 @@ fn test_ctv_transaction_validation_fails_wrong_structure() {
 fn test_template_hash_empty_inputs_error() {
     let tx = Transaction {
         version: 1,
-        inputs: vec![],
+        inputs: vec![].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -607,13 +607,13 @@ fn test_template_hash_empty_outputs_error() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
-        outputs: vec![],
+        }].into(),
+        outputs: vec![].into(),
         lock_time: 0,
     };
 
@@ -627,16 +627,16 @@ fn test_template_hash_input_index_out_of_bounds() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -669,8 +669,8 @@ fn test_template_hash_large_transaction() {
 
     let tx = Transaction {
         version: 1,
-        inputs,
-        outputs,
+            inputs: inputs.into(),
+            outputs: outputs.into(),
         lock_time: 0,
     };
 
@@ -695,16 +695,16 @@ fn test_ctv_vault_contract() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000000, // Full vault amount
             script_pubkey: withdrawal_address.clone(),
-        }],
+        }].into(),
         lock_time: 0,
     };
 
@@ -752,13 +752,13 @@ fn test_ctv_payment_channel() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
-        outputs: vec![channel_output.clone()],
+        }].into(),
+        outputs: vec![channel_output.clone()].into(),
         lock_time: 0,
     };
 
@@ -796,16 +796,16 @@ fn test_ctv_transaction_batching() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![
             TransactionOutput {
                 value: 100000,
-                script_pubkey: vec![0x51], // Payment 1
+                script_pubkey: vec![0x51].into(), // Payment 1
             },
             TransactionOutput {
                 value: 200000,
@@ -815,7 +815,7 @@ fn test_ctv_transaction_batching() {
                 value: 300000,
                 script_pubkey: vec![0x53], // Payment 3
             },
-        ],
+        ].into(),
         lock_time: 0,
     };
 
@@ -858,16 +858,16 @@ fn test_template_hash_sequence_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -875,16 +875,16 @@ fn test_template_hash_sequence_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -901,16 +901,16 @@ fn test_template_hash_output_value_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -918,16 +918,16 @@ fn test_template_hash_output_value_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 2000, // Different value
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -944,16 +944,16 @@ fn test_template_hash_output_script_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51], // OP_1
-        }],
+            script_pubkey: vec![0x51].into(), // OP_1
+        }].into(),
         lock_time: 0,
     };
 
@@ -961,16 +961,16 @@ fn test_template_hash_output_script_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x52], // OP_2 (different script)
-        }],
+            script_pubkey: vec![0x52].into(), // OP_2 (different script)
+        }].into(),
         lock_time: 0,
     };
 
@@ -987,16 +987,16 @@ fn test_template_hash_prevout_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -1004,16 +1004,16 @@ fn test_template_hash_prevout_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x02; 32], // Different hash
+                hash: [0x02; 32].into(), // Different hash
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -1030,16 +1030,16 @@ fn test_template_hash_prevout_index_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -1047,16 +1047,16 @@ fn test_template_hash_prevout_index_dependency() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x00; 32],
+                hash: [0x00; 32].into(),
                 index: 1, // Different index
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -1073,16 +1073,16 @@ fn test_ctv_with_cltv_combined() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 500000, // Block height locktime
     };
 
@@ -1115,16 +1115,16 @@ fn test_ctv_validation_hash_size_check() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
 
@@ -1148,16 +1148,16 @@ fn test_template_hash_max_values() {
         version: i64::MAX,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0xff; 32],
+                hash: [0xff; 32].into(),
                 index: u32::MAX,
             },
             script_sig: vec![],
             sequence: u64::MAX,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: i64::MAX,
-            script_pubkey: vec![0xff; 100], // Large script
-        }],
+            script_pubkey: vec![0xff; 100].into(), // Large script
+        }].into(),
         lock_time: u64::MAX,
     };
 
@@ -1174,16 +1174,16 @@ fn test_ctv_multiple_ctv_in_script() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0x01; 32],
+                hash: [0x01; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
 

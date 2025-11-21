@@ -190,11 +190,11 @@ mod tests {
         // Test infrastructure - will skip if Core RPC is not available
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         };
         

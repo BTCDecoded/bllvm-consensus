@@ -124,17 +124,16 @@ impl UtxoMerkleTree {
 
         // Update tracking with checked arithmetic
         let old_supply = self.total_supply;
-        self.total_supply = self.total_supply
+        self.total_supply = self
+            .total_supply
             .checked_add(utxo.value as u64)
             .ok_or_else(|| {
                 UtxoCommitmentError::MerkleTreeError("Total supply overflow".to_string())
             })?;
-        self.utxo_count = self.utxo_count
-            .checked_add(1)
-            .ok_or_else(|| {
-                UtxoCommitmentError::MerkleTreeError("UTXO count overflow".to_string())
-            })?;
-        
+        self.utxo_count = self.utxo_count.checked_add(1).ok_or_else(|| {
+            UtxoCommitmentError::MerkleTreeError("UTXO count overflow".to_string())
+        })?;
+
         // Runtime assertion: Supply must increase
         debug_assert!(
             self.total_supply >= old_supply,
@@ -166,10 +165,10 @@ impl UtxoMerkleTree {
         // Update tracking with checked arithmetic
         let old_supply = self.total_supply;
         let old_count = self.utxo_count;
-        
+
         self.total_supply = self.total_supply.saturating_sub(utxo.value as u64);
         self.utxo_count = self.utxo_count.saturating_sub(1);
-        
+
         // Runtime assertion: Supply must decrease (or saturate at 0)
         debug_assert!(
             self.total_supply <= old_supply,
@@ -177,7 +176,7 @@ impl UtxoMerkleTree {
             self.total_supply,
             old_supply
         );
-        
+
         // Runtime assertion: Count must decrease (or saturate at 0)
         debug_assert!(
             self.utxo_count <= old_count,
@@ -185,17 +184,19 @@ impl UtxoMerkleTree {
             self.utxo_count,
             old_count
         );
-        
+
         // Runtime assertion: Supply and count must be non-negative
         // Note: u64 is always >= 0, but we keep the assertion for documentation
         // and to catch any potential type changes in the future
         debug_assert!(
-            self.total_supply <= u64::MAX,
+            // total_supply is u64, so this check is always true - removed
+            true,
             "Total supply ({}) must be within u64 bounds",
             self.total_supply
         );
         debug_assert!(
-            self.utxo_count <= u64::MAX,
+            // utxo_count is u64, so this check is always true - removed
+            true,
             "UTXO count ({}) must be within u64 bounds",
             self.utxo_count
         );

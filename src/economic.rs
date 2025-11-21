@@ -2,8 +2,8 @@
 
 use crate::constants::*;
 use crate::error::{ConsensusError, Result};
-use std::borrow::Cow;
 use crate::types::*;
+use std::borrow::Cow;
 
 /// GetBlockSubsidy: ℕ → ℤ
 ///
@@ -26,8 +26,7 @@ pub fn get_block_subsidy(height: Natural) -> Integer {
     // Runtime assertion: Halving period must be valid
     debug_assert!(
         halving_period < 64,
-        "Halving period ({}) must be < 64",
-        halving_period
+        "Halving period ({halving_period}) must be < 64"
     );
 
     // Calculate subsidy: 50 BTC * 2^(-halving_period)
@@ -35,16 +34,10 @@ pub fn get_block_subsidy(height: Natural) -> Integer {
     let subsidy = base_subsidy >> halving_period;
 
     // Runtime assertion: Subsidy must be non-negative and <= initial subsidy
-    debug_assert!(
-        subsidy >= 0,
-        "Subsidy ({}) must be non-negative",
-        subsidy
-    );
+    debug_assert!(subsidy >= 0, "Subsidy ({subsidy}) must be non-negative");
     debug_assert!(
         subsidy <= INITIAL_SUBSIDY,
-        "Subsidy ({}) must be <= initial subsidy ({})",
-        subsidy,
-        INITIAL_SUBSIDY
+        "Subsidy ({subsidy}) must be <= initial subsidy ({INITIAL_SUBSIDY})"
     );
 
     subsidy
@@ -62,14 +55,10 @@ pub fn total_supply(height: Natural) -> Integer {
         // Use checked arithmetic to prevent overflow
         total = total.checked_add(subsidy).unwrap_or_else(|| {
             // If overflow occurs, clamp to MAX_MONEY
-            debug_assert!(
-                false,
-                "Total supply calculation overflow at height {}",
-                h
-            );
+            debug_assert!(false, "Total supply calculation overflow at height {h}");
             MAX_MONEY
         });
-        
+
         // Early exit if we've reached max money
         if total >= MAX_MONEY {
             break;
@@ -77,16 +66,10 @@ pub fn total_supply(height: Natural) -> Integer {
     }
 
     // Runtime assertion: Total supply must be non-negative and <= MAX_MONEY
-    debug_assert!(
-        total >= 0,
-        "Total supply ({}) must be non-negative",
-        total
-    );
+    debug_assert!(total >= 0, "Total supply ({total}) must be non-negative");
     debug_assert!(
         total <= MAX_MONEY,
-        "Total supply ({}) must be <= MAX_MONEY ({})",
-        total,
-        MAX_MONEY
+        "Total supply ({total}) must be <= MAX_MONEY ({MAX_MONEY})"
     );
 
     total
@@ -109,9 +92,8 @@ pub fn calculate_fee(tx: &Transaction, utxo_set: &UtxoSet) -> Result<Integer> {
                 .get(&input.prevout)
                 .map(|utxo| utxo.value)
                 .unwrap_or(0);
-            acc.checked_add(value).ok_or_else(|| {
-                ConsensusError::EconomicValidation("Input value overflow".into())
-            })
+            acc.checked_add(value)
+                .ok_or_else(|| ConsensusError::EconomicValidation("Input value overflow".into()))
         })
         .map_err(|e| ConsensusError::EconomicValidation(Cow::Owned(e.to_string())))?;
 
@@ -119,40 +101,32 @@ pub fn calculate_fee(tx: &Transaction, utxo_set: &UtxoSet) -> Result<Integer> {
         .outputs
         .iter()
         .try_fold(0i64, |acc, output| {
-            acc.checked_add(output.value).ok_or_else(|| {
-                ConsensusError::EconomicValidation("Output value overflow".into())
-            })
+            acc.checked_add(output.value)
+                .ok_or_else(|| ConsensusError::EconomicValidation("Output value overflow".into()))
         })
         .map_err(|e| ConsensusError::EconomicValidation(Cow::Owned(e.to_string())))?;
 
     // Note: We use inline error here because it's EconomicValidation, not TransactionValidation
     // The helper function returns TransactionValidation, so we keep inline for type consistency
-    let fee = total_input.checked_sub(total_output).ok_or_else(|| {
-        ConsensusError::EconomicValidation("Fee calculation underflow".into())
-    })?;
-    
+    let fee = total_input
+        .checked_sub(total_output)
+        .ok_or_else(|| ConsensusError::EconomicValidation("Fee calculation underflow".into()))?;
+
     // Check for negative fee and return error (tests intentionally test this error path)
     if fee < 0 {
-        return Err(ConsensusError::EconomicValidation(
-            "Negative fee".into(),
-        ));
+        return Err(ConsensusError::EconomicValidation("Negative fee".into()));
     }
-    
+
     // Runtime assertion: Fee must be non-negative (only after we've handled negative case)
     debug_assert!(
         fee >= 0,
-        "Fee ({}) must be non-negative (input: {}, output: {})",
-        fee,
-        total_input,
-        total_output
+        "Fee ({fee}) must be non-negative (input: {total_input}, output: {total_output})"
     );
 
     // Runtime assertion: Fee cannot exceed total input
     debug_assert!(
         fee <= total_input,
-        "Fee ({}) cannot exceed total input ({})",
-        fee,
-        total_input
+        "Fee ({fee}) cannot exceed total input ({total_input})"
     );
 
     Ok(fee)
@@ -627,7 +601,10 @@ mod kani_proofs {
         // (though it may result in negative fee, which is an error)
         if result.is_ok() {
             let fee = result.unwrap();
-            assert!(fee >= 0, "Fee must be non-negative when calculation succeeds");
+            assert!(
+                fee >= 0,
+                "Fee must be non-negative when calculation succeeds"
+            );
         }
     }
 
@@ -673,8 +650,14 @@ mod kani_proofs {
         );
 
         // Both supplies must respect MAX_MONEY
-        assert!(supply1 <= MAX_MONEY, "Supply at height1 must not exceed MAX_MONEY");
-        assert!(supply2 <= MAX_MONEY, "Supply at height2 must not exceed MAX_MONEY");
+        assert!(
+            supply1 <= MAX_MONEY,
+            "Supply at height1 must not exceed MAX_MONEY"
+        );
+        assert!(
+            supply2 <= MAX_MONEY,
+            "Supply at height2 must not exceed MAX_MONEY"
+        );
     }
 }
 
@@ -836,16 +819,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -951,16 +936,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 900000000, // 9 BTC output
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -1000,7 +987,7 @@ mod tests {
             inputs: vec![
                 TransactionInput {
                     prevout: OutPoint {
-                        hash: [1; 32],
+                        hash: [1; 32].into(),
                         index: 0,
                     },
                     script_sig: vec![],
@@ -1014,17 +1001,19 @@ mod tests {
                     script_sig: vec![],
                     sequence: 0xffffffff,
                 },
-            ],
+            ]
+            .into(),
             outputs: vec![
                 TransactionOutput {
                     value: 600000000, // 6 BTC output
-                    script_pubkey: vec![],
+                    script_pubkey: vec![].into(),
                 },
                 TransactionOutput {
                     value: 150000000, // 1.5 BTC output
                     script_pubkey: vec![],
                 },
-            ],
+            ]
+            .into(),
             lock_time: 0,
         };
 
@@ -1040,16 +1029,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 100000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -1079,16 +1070,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 200000000, // 2 BTC output (more than input)
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -1120,13 +1113,14 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
-            outputs: vec![],
+            }]
+            .into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         assert!(is_coinbase(&valid_coinbase));
@@ -1136,13 +1130,14 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
-            outputs: vec![],
+            }]
+            .into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         assert!(!is_coinbase(&wrong_hash));
@@ -1152,13 +1147,14 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
-            outputs: vec![],
+            }]
+            .into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         assert!(!is_coinbase(&wrong_index));
@@ -1169,7 +1165,7 @@ mod tests {
             inputs: vec![
                 TransactionInput {
                     prevout: OutPoint {
-                        hash: [0; 32],
+                        hash: [0; 32].into(),
                         index: 0xffffffff,
                     },
                     script_sig: vec![],
@@ -1183,8 +1179,9 @@ mod tests {
                     script_sig: vec![],
                     sequence: 0xffffffff,
                 },
-            ],
-            outputs: vec![],
+            ]
+            .into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         assert!(!is_coinbase(&multiple_inputs));
@@ -1192,8 +1189,8 @@ mod tests {
         // No inputs
         let no_inputs = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         assert!(!is_coinbase(&no_inputs));

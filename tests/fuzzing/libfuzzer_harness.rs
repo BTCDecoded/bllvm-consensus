@@ -40,8 +40,8 @@ fuzz_target!(|data: &[u8]| {
             data.get(2).copied().unwrap_or(0),
             data.get(3).copied().unwrap_or(0),
         ]) as u64,
-        inputs: vec![], // Simplified for fuzzing
-        outputs: vec![],
+        inputs: vec![].into(), // Simplified for fuzzing
+        outputs: vec![].into(),
         lock_time: if data.len() > 4 {
             u32::from_le_bytes([
                 data.get(4).copied().unwrap_or(0),

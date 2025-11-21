@@ -10,8 +10,8 @@ fn test_transaction_validation_errors() {
     // Test empty transaction
     let empty_tx = Transaction {
         version: 1,
-        inputs: vec![],
-        outputs: vec![],
+        inputs: vec![].into(),
+        outputs: vec![].into(),
         lock_time: 0,
     };
 
@@ -87,16 +87,18 @@ fn test_mempool_errors() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51; MAX_TX_SIZE],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -204,11 +206,12 @@ fn test_taproot_errors() {
     // Test invalid Taproot transaction
     let invalid_tx = Transaction {
         version: 1,
-        inputs: vec![],
+        inputs: vec![].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51], // Not a valid Taproot script
-        }],
+            script_pubkey: vec![0x51].into(), // Not a valid Taproot script
+        }]
+        .into(),
         lock_time: 0,
     };
 

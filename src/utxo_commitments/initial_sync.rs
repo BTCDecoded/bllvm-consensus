@@ -17,9 +17,7 @@ use crate::utxo_commitments::data_structures::{
 #[cfg(feature = "utxo-commitments")]
 use crate::utxo_commitments::merkle_tree::UtxoMerkleTree;
 #[cfg(feature = "utxo-commitments")]
-use crate::utxo_commitments::peer_consensus::{
-    ConsensusConfig, PeerConsensus, PeerInfo,
-};
+use crate::utxo_commitments::peer_consensus::{ConsensusConfig, PeerConsensus, PeerInfo};
 #[cfg(feature = "utxo-commitments")]
 use crate::utxo_commitments::spam_filter::{
     SpamBreakdown, SpamFilter, SpamFilterConfig, SpamSummary, SpamType,

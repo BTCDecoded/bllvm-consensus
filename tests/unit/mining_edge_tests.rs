@@ -70,7 +70,7 @@ fn test_mine_block_failure() {
             bits: 0x00000001, // Extremely difficult target
             nonce: 0,
         },
-        transactions: vec![create_coinbase_tx(50_000_000_000)],
+            transactions: vec![create_coinbase_tx(50_000_000_000)].into(),
     };
     
     let result = mining::mine_block(block, 10); // Only 10 attempts

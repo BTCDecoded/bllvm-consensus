@@ -49,7 +49,7 @@ fn test_process_misc_messages_ok() {
     let block = bllvm_consensus::Block { header: dummy_header(), transactions: vec![] };
     assert!(matches!(super::process_block_message(&block, &mut peer, &chain).unwrap(), NetworkResponse::Ok));
 
-    let tx = bllvm_consensus::Transaction { version: 1, inputs: vec![], outputs: vec![], lock_time: 0 };
+    let tx = bllvm_consensus::Transaction { version: 1, inputs: vec![].into(), outputs: vec![].into(), lock_time: 0 };
     assert!(matches!(super::process_tx_message(&tx, &mut peer, &chain).unwrap(), NetworkResponse::Ok));
 
     // ping/pong

@@ -15,7 +15,7 @@ use bllvm_consensus::{
     block::connect_block, segwit::Witness, Block, BlockHeader, OutPoint, Transaction,
     TransactionInput, TransactionOutput, UtxoSet, UTXO,
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 
 // ============================================================================
 // CRYPTOGRAPHIC OPERATIONS (SHA-NI + AVX2)
@@ -94,16 +94,18 @@ fn create_simple_transaction() -> Transaction {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51], // OP_1
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
-            value: 1_000_000,          // 0.01 BTC
-            script_pubkey: vec![0x51], // OP_1
-        }],
+            value: 1_000_000,                 // 0.01 BTC
+            script_pubkey: vec![0x51].into(), // OP_1
+        }]
+        .into(),
         lock_time: 0,
     }
 }
@@ -139,16 +141,18 @@ fn create_realistic_block(num_txs: usize) -> Block {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![0x51; 4],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 50_000_000_000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         },
     ];
@@ -159,22 +163,24 @@ fn create_realistic_block(num_txs: usize) -> Block {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [i as u8; 32],
+                    hash: [i as u8; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51; 20],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![
                 TransactionOutput {
                     value: 10_000_000,
-                    script_pubkey: vec![0x51; 25],
+                    script_pubkey: vec![0x51; 25].into(),
                 },
                 TransactionOutput {
                     value: 5_000_000,
                     script_pubkey: vec![0x51; 25],
                 },
-            ],
+            ]
+            .into(),
             lock_time: 0,
         });
     }
@@ -188,7 +194,7 @@ fn create_realistic_block(num_txs: usize) -> Block {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions,
+        transactions: transactions.into(),
     }
 }
 

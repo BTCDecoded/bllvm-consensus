@@ -30,14 +30,14 @@ mod tests {
                 Transaction {
                     version: 1,
                     inputs: vec![TransactionInput {
-                        prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                        prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                         script_sig: vec![0x51],
                         sequence: 0xffffffff,
-                    }],
+                    }].into(),
                     outputs: vec![TransactionOutput {
                         value: 50_000_000_000,
-                        script_pubkey: vec![0x51],
-                    }],
+                        script_pubkey: vec![0x51].into(),
+                    }].into(),
                     lock_time: 0,
                 },
             ],

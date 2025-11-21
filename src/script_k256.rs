@@ -5,6 +5,7 @@
 //! function but uses k256 for cryptographic operations.
 
 #[cfg(feature = "k256")]
+#[allow(deprecated)] // generic_array is deprecated but k256 still uses it
 use k256::{
     ecdsa::{signature::Verifier, Signature, VerifyingKey},
     elliptic_curve::generic_array::GenericArray,

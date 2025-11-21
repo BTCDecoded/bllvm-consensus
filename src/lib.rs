@@ -30,11 +30,11 @@
 //! let consensus = ConsensusProof::new();
 //! let transaction = Transaction {
 //!     version: 1,
-//!     inputs: vec![],
+//!     inputs: vec![].into(),
 //!     outputs: vec![TransactionOutput {
 //!         value: 1000,
-//!         script_pubkey: vec![0x51],
-//!     }],
+//!         script_pubkey: vec![0x51].into(),
+//!     }].into(),
 //!     lock_time: 0,
 //! };
 //! let result = consensus.validate_transaction(&transaction).unwrap();
@@ -121,16 +121,16 @@ pub use witness::{
 ///     version: 1,
 ///     inputs: vec![TransactionInput {
 ///         prevout: OutPoint {
-///             hash: [0u8; 32],
+///             hash: [0u8; 32].into(),
 ///             index: 0,
 ///         },
 ///         script_sig: vec![0x51], // OP_1
 ///         sequence: 0xffffffff,
-///     }],
+///     }].into(),
 ///     outputs: vec![TransactionOutput {
 ///         value: 5000000000, // 50 BTC in satoshis
-///         script_pubkey: vec![0x51], // OP_1
-///     }],
+///         script_pubkey: vec![0x51].into(), // OP_1
+///     }].into(),
 ///     lock_time: 0,
 /// };
 ///
@@ -165,11 +165,11 @@ impl ConsensusProof {
     /// let consensus = ConsensusProof::new();
     /// let tx = Transaction {
     ///     version: 1,
-    ///     inputs: vec![],
+    ///     inputs: vec![].into(),
     ///     outputs: vec![TransactionOutput {
     ///         value: 1000,
-    ///         script_pubkey: vec![0x51],
-    ///     }],
+    ///         script_pubkey: vec![0x51].into(),
+    ///     }].into(),
     ///     lock_time: 0,
     /// };
     ///
@@ -201,14 +201,14 @@ impl ConsensusProof {
     /// let tx = Transaction {
     ///     version: 1,
     ///     inputs: vec![TransactionInput {
-    ///         prevout: OutPoint { hash: [1; 32], index: 0 },
+    ///         prevout: OutPoint { hash: [1; 32].into(), index: 0 },
     ///         script_sig: vec![],
     ///         sequence: 0xffffffff,
-    ///     }],
+    ///     }].into(),
     ///     outputs: vec![TransactionOutput {
     ///         value: 900000000, // 9 BTC output
-    ///         script_pubkey: vec![],
-    ///     }],
+    ///         script_pubkey: vec![].into(),
+    ///     }].into(),
     ///     lock_time: 0,
     /// };
     ///
@@ -241,14 +241,14 @@ impl ConsensusProof {
     /// let coinbase_tx = Transaction {
     ///     version: 1,
     ///     inputs: vec![TransactionInput {
-    ///         prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+    ///         prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
     ///         script_sig: vec![],
     ///         sequence: 0xffffffff,
-    ///     }],
+    ///     }].into(),
     ///     outputs: vec![TransactionOutput {
     ///         value: 5000000000, // 50 BTC
-    ///         script_pubkey: vec![],
-    ///     }],
+    ///         script_pubkey: vec![].into(),
+    ///     }].into(),
     ///     lock_time: 0,
     /// };
     /// let merkle_root = calculate_merkle_root(&[coinbase_tx.clone()]).unwrap();
@@ -471,14 +471,14 @@ impl ConsensusProof {
     /// let tx = Transaction {
     ///     version: 1,
     ///     inputs: vec![TransactionInput {
-    ///         prevout: OutPoint { hash: [1; 32], index: 0 },
+    ///         prevout: OutPoint { hash: [1; 32].into(), index: 0 },
     ///         script_sig: vec![],
     ///         sequence: 0xffffffff,
-    ///     }],
+    ///     }].into(),
     ///     outputs: vec![TransactionOutput {
     ///         value: 100000000,
-    ///         script_pubkey: vec![],
-    ///     }],
+    ///         script_pubkey: vec![].into(),
+    ///     }].into(),
     ///     lock_time: 0,
     /// };
     ///
@@ -508,14 +508,14 @@ impl ConsensusProof {
     /// let tx = Transaction {
     ///     version: 1,
     ///     inputs: vec![TransactionInput {
-    ///         prevout: OutPoint { hash: [1; 32], index: 0 },
+    ///         prevout: OutPoint { hash: [1; 32].into(), index: 0 },
     ///         script_sig: vec![0x51], // OP_1
     ///         sequence: 0xffffffff,
-    ///     }],
+    ///     }].into(),
     ///     outputs: vec![TransactionOutput {
     ///         value: 100000000,
-    ///         script_pubkey: vec![0x51], // OP_1
-    ///     }],
+    ///         script_pubkey: vec![0x51].into(), // OP_1
+    ///     }].into(),
     ///     lock_time: 0,
     /// };
     ///
@@ -541,28 +541,28 @@ impl ConsensusProof {
     /// let existing_tx = Transaction {
     ///     version: 1,
     ///     inputs: vec![TransactionInput {
-    ///         prevout: OutPoint { hash: [1; 32], index: 0 },
+    ///         prevout: OutPoint { hash: [1; 32].into(), index: 0 },
     ///         script_sig: vec![],
     ///         sequence: 0xfffffffe, // RBF enabled
-    ///     }],
+    ///     }].into(),
     ///     outputs: vec![TransactionOutput {
     ///         value: 100000000,
-    ///         script_pubkey: vec![],
-    ///     }],
+    ///         script_pubkey: vec![].into(),
+    ///     }].into(),
     ///     lock_time: 0,
     /// };
     ///
     /// let new_tx = Transaction {
     ///     version: 1,
     ///     inputs: vec![TransactionInput {
-    ///         prevout: OutPoint { hash: [1; 32], index: 0 },
+    ///         prevout: OutPoint { hash: [1; 32].into(), index: 0 },
     ///         script_sig: vec![],
     ///         sequence: 0xfffffffe, // RBF enabled
-    ///     }],
+    ///     }].into(),
     ///     outputs: vec![TransactionOutput {
     ///         value: 90000000, // Higher fee
-    ///         script_pubkey: vec![],
-    ///     }],
+    ///         script_pubkey: vec![].into(),
+    ///     }].into(),
     ///     lock_time: 0,
     /// };
     ///
@@ -677,14 +677,14 @@ impl ConsensusProof {
     ///     transactions: vec![Transaction {
     ///         version: 1,
     ///         inputs: vec![TransactionInput {
-    ///             prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+    ///             prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
     ///             script_sig: vec![],
     ///             sequence: 0xffffffff,
-    ///         }],
+    ///         }].into(),
     ///         outputs: vec![TransactionOutput {
     ///             value: 5000000000,
-    ///             script_pubkey: vec![],
-    ///         }],
+    ///             script_pubkey: vec![].into(),
+    ///         }].into(),
     ///         lock_time: 0,
     ///     }].into(),
     /// };
@@ -807,14 +807,14 @@ impl ConsensusProof {
     /// let tx = Transaction {
     ///     version: 1,
     ///     inputs: vec![TransactionInput {
-    ///         prevout: OutPoint { hash: [1; 32], index: 0 },
+    ///         prevout: OutPoint { hash: [1; 32].into(), index: 0 },
     ///         script_sig: vec![0x51], // OP_1
     ///         sequence: 0xffffffff,
-    ///     }],
+    ///     }].into(),
     ///     outputs: vec![TransactionOutput {
     ///         value: 100000000,
-    ///         script_pubkey: vec![0x51], // OP_1
-    ///     }],
+    ///         script_pubkey: vec![0x51].into(), // OP_1
+    ///     }].into(),
     ///     lock_time: 0,
     /// };
     ///
@@ -851,14 +851,14 @@ impl ConsensusProof {
     ///     transactions: vec![Transaction {
     ///         version: 1,
     ///         inputs: vec![TransactionInput {
-    ///             prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+    ///             prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
     ///             script_sig: vec![],
     ///             sequence: 0xffffffff,
-    ///         }],
+    ///         }].into(),
     ///         outputs: vec![TransactionOutput {
     ///             value: 5000000000,
-    ///             script_pubkey: vec![],
-    ///         }],
+    ///             script_pubkey: vec![].into(),
+    ///         }].into(),
     ///         lock_time: 0,
     ///     }].into(),
     /// };
@@ -891,14 +891,14 @@ impl ConsensusProof {
     /// let tx = Transaction {
     ///     version: 1,
     ///     inputs: vec![TransactionInput {
-    ///         prevout: OutPoint { hash: [1; 32], index: 0 },
+    ///         prevout: OutPoint { hash: [1; 32].into(), index: 0 },
     ///         script_sig: vec![],
     ///         sequence: 0xffffffff,
-    ///     }],
+    ///     }].into(),
     ///     outputs: vec![TransactionOutput {
     ///         value: 100000000,
-    ///         script_pubkey: vec![0x51, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], // Taproot output
-    ///     }],
+    ///         script_pubkey: vec![0x51, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00].into(), // Taproot output
+    ///     }].into(),
     ///     lock_time: 0,
     /// };
     ///
@@ -975,8 +975,8 @@ mod tests {
         let consensus = ConsensusProof::new();
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         let result = consensus.validate_transaction(&tx);
@@ -988,8 +988,8 @@ mod tests {
         let consensus = ConsensusProof::new();
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         let utxo_set = UtxoSet::new();
@@ -1083,8 +1083,8 @@ mod tests {
         let consensus = ConsensusProof::new();
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         let utxo_set = UtxoSet::new();
@@ -1098,8 +1098,8 @@ mod tests {
         let consensus = ConsensusProof::new();
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         let result = consensus.is_standard_tx(&tx);
@@ -1111,14 +1111,14 @@ mod tests {
         let consensus = ConsensusProof::new();
         let new_tx = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         let existing_tx = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         let mempool = mempool::Mempool::new();
@@ -1259,8 +1259,8 @@ mod tests {
         let consensus = ConsensusProof::new();
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         let result = consensus.calculate_transaction_weight(&tx, None);
@@ -1291,8 +1291,8 @@ mod tests {
         let consensus = ConsensusProof::new();
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
         let result = consensus.validate_taproot_transaction(&tx, None);

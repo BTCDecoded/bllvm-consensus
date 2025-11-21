@@ -376,7 +376,7 @@ fn estimate_transaction_size(tx: &Transaction) -> u64 {
         .checked_add(input_size)
         .and_then(|sum| sum.checked_add(output_size))
         .unwrap_or(u64::MAX); // Overflow protection
-    
+
     // Runtime assertion: Estimated size must be reasonable
     debug_assert!(
         total_size <= 1_000_000,

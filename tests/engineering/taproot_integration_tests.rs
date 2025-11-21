@@ -25,14 +25,14 @@ fn test_taproot_p2tr_output_validation() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![], // Empty scriptSig for Taproot key path
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey: p2tr_script.clone(),
-        }],
+        }].into(),
         lock_time: 0,
     };
     
@@ -143,14 +143,14 @@ fn test_taproot_signature_hash() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: create_p2tr_script(&[1u8; 32]),
-        }],
+            script_pubkey: create_p2tr_script(&[1u8; 32].into()),
+        }].into(),
         lock_time: 0,
     };
     
@@ -177,10 +177,10 @@ fn test_taproot_transaction_with_multiple_outputs() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![
             TransactionOutput {
                 value: 1000,
@@ -192,9 +192,9 @@ fn test_taproot_transaction_with_multiple_outputs() {
             },
             TransactionOutput {
                 value: 3000,
-                script_pubkey: vec![0x51], // Non-Taproot output
+                script_pubkey: vec![0x51].into(), // Non-Taproot output
             },
-        ],
+        ].into(),
         lock_time: 0,
     };
     
@@ -215,24 +215,24 @@ fn test_taproot_block_validation() {
         transactions: vec![
             Transaction {
                 version: 1,
-                inputs: vec![],
+                inputs: vec![].into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [1; 32], index: 0 },
+                    prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                     script_sig: vec![],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: create_p2tr_script(&[1u8; 32]),
-                }],
+                    script_pubkey: create_p2tr_script(&[1u8; 32].into()),
+                }].into(),
                 lock_time: 0,
             },
         ],
@@ -258,14 +258,14 @@ fn test_taproot_key_path_spending() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![], // Empty for key path
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey: p2tr_script.clone(),
-        }],
+        }].into(),
         lock_time: 0,
     };
     
@@ -360,14 +360,14 @@ fn test_taproot_sighash_types() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: create_p2tr_script(&[1u8; 32]),
-        }],
+            script_pubkey: create_p2tr_script(&[1u8; 32].into()),
+        }].into(),
         lock_time: 0,
     };
     
@@ -392,37 +392,37 @@ fn test_taproot_mixed_block() {
         transactions: vec![
             Transaction {
                 version: 1,
-                inputs: vec![],
+                inputs: vec![].into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [1; 32], index: 0 },
+                    prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                     script_sig: vec![],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: create_p2tr_script(&[1u8; 32]),
-                }],
+                    script_pubkey: create_p2tr_script(&[1u8; 32].into()),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [2; 32], index: 0 },
+                    prevout: OutPoint { hash: [2; 32].into(), index: 0 },
                     script_sig: vec![0x51],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x51], // Non-Taproot
-                }],
+                    script_pubkey: vec![0x51].into(), // Non-Taproot
+                }].into(),
                 lock_time: 0,
             },
         ],
@@ -458,14 +458,14 @@ fn test_taproot_transaction_no_taproot_outputs() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51], // Not Taproot
-        }],
+            script_pubkey: vec![0x51].into(), // Not Taproot
+        }].into(),
         lock_time: 0,
     };
     
@@ -484,7 +484,7 @@ fn test_taproot_signature_hash_different_inputs() {
         version: 1,
         inputs: vec![
             TransactionInput {
-                prevout: OutPoint { hash: [1; 32], index: 0 },
+                prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
             },
@@ -493,11 +493,11 @@ fn test_taproot_signature_hash_different_inputs() {
                 script_sig: vec![],
                 sequence: 0xffffffff,
             },
-        ],
+        ].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: create_p2tr_script(&[1u8; 32]),
-        }],
+            script_pubkey: create_p2tr_script(&[1u8; 32].into()),
+        }].into(),
         lock_time: 0,
     };
     

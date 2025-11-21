@@ -45,7 +45,8 @@ fn test_witness_commitment_segwit_block() {
                 ],
                 lock_time: 0,
             },
-        ].into_boxed_slice(),
+        ]
+        .into_boxed_slice(),
     };
 
     // Create witness data
@@ -88,7 +89,8 @@ fn test_witness_commitment_activation_height() {
                 script_pubkey: vec![],
             }],
             lock_time: 0,
-        }].into_boxed_slice(),
+        }]
+        .into_boxed_slice(),
     };
 
     let witnesses = vec![Witness::new()];
@@ -127,7 +129,8 @@ fn test_witness_commitment_no_witness_txs() {
                 script_pubkey: vec![],
             }],
             lock_time: 0,
-        }].into_boxed_slice(),
+        }]
+        .into_boxed_slice(),
     };
 
     // All witnesses are empty (no witness transactions)
@@ -166,7 +169,8 @@ fn test_invalid_witness_commitment_rejection() {
                 script_pubkey: vec![], // Would contain wrong commitment
             }],
             lock_time: 0,
-        }].into_boxed_slice(),
+        }]
+        .into_boxed_slice(),
     };
 
     let witnesses = vec![Witness::new()];
@@ -178,16 +182,18 @@ fn test_invalid_witness_commitment_rejection() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 12_5000_0000,
-            script_pubkey: vec![], // Would contain wrong commitment
-        }],
+            script_pubkey: vec![].into(), // Would contain wrong commitment
+        }]
+        .into(),
         lock_time: 0,
     };
 

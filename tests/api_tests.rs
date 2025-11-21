@@ -29,16 +29,18 @@ fn test_validate_transaction() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -48,11 +50,12 @@ fn test_validate_transaction() {
     // Test invalid transaction (empty inputs)
     let invalid_tx = Transaction {
         version: 1,
-        inputs: vec![],
+        inputs: vec![].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -68,16 +71,18 @@ fn test_validate_tx_inputs() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -107,16 +112,18 @@ fn test_validate_block() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -295,16 +302,18 @@ fn test_accept_to_memory_pool() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -334,16 +343,18 @@ fn test_is_standard_tx() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -360,16 +371,18 @@ fn test_replacement_checks() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -377,16 +390,18 @@ fn test_replacement_checks() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 2000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -448,18 +463,21 @@ fn test_mine_block() {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
-        }].into_boxed_slice(),
+        }]
+        .into_boxed_slice(),
     };
 
     let (_mined_block, result) = consensus.mine_block(block, 1000).unwrap();
@@ -629,16 +647,18 @@ fn test_calculate_transaction_weight() {
         version: 2,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -666,22 +686,26 @@ fn test_validate_segwit_block() {
             version: 2,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
                 script_pubkey: vec![
                     0x6a, 0x24, 0xaa, 0x21, 0xa9, 0xed, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                ],
-            }],
+                ]
+                .into(),
+            }]
+            .into(),
             lock_time: 0,
-        }].into_boxed_slice(),
+        }]
+        .into_boxed_slice(),
     };
 
     let witnesses = vec![Witness::new()];
@@ -698,15 +722,17 @@ fn test_validate_taproot_transaction() {
 
     let tx = Transaction {
         version: 1,
-        inputs: vec![],
+        inputs: vec![].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey: vec![
                 0x51, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-            ],
-        }],
+            ]
+            .into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 

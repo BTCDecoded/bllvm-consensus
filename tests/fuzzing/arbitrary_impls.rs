@@ -94,7 +94,7 @@ impl Arbitrary for Block {
         )
             .prop_map(|(header, transactions)| Block {
                 header,
-                transactions,
+            transactions: transactions.into(),
             })
             .boxed()
     }

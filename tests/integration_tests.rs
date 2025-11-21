@@ -11,16 +11,18 @@ fn test_consensus_proof_basic_functionality() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -37,16 +39,18 @@ fn test_consensus_proof_coinbase_validation() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 5000000000, // 50 BTC
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -66,11 +70,12 @@ fn test_consensus_proof_invalid_transaction() {
     // Test invalid transaction (empty inputs)
     let invalid_tx = Transaction {
         version: 1,
-        inputs: vec![],
+        inputs: vec![].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -91,13 +96,15 @@ fn test_consensus_proof_utxo_validation() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: prevout.clone(),
-            script_sig: vec![],
+            script_sig: vec![].into(),
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 500,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -131,13 +138,15 @@ fn test_consensus_proof_insufficient_funds() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: prevout.clone(),
-            script_sig: vec![],
+            script_sig: vec![].into(),
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 2000, // More than available
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 

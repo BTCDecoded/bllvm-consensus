@@ -18,8 +18,8 @@ fn fuzz_check_transaction_robustness() {
         // Create a minimal transaction and test robustness
         let tx = Transaction {
             version: data.get(0).copied().unwrap_or(1) as u64,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: data.get(1).copied().unwrap_or(0) as u64,
         };
         
@@ -37,8 +37,8 @@ fn fuzz_check_transaction_deterministic() {
     check!().for_each(|data: &[u8]| {
         let tx = Transaction {
             version: data.get(0).copied().unwrap_or(1) as u64,
-            inputs: vec![],
-            outputs: vec![],
+            inputs: vec![].into(),
+            outputs: vec![].into(),
             lock_time: data.get(1).copied().unwrap_or(0) as u64,
         };
         
@@ -58,8 +58,8 @@ fn fuzz_transaction_structure() {
         if data.len() > 0 {
             let tx = Transaction {
                 version: data.get(0).copied().unwrap_or(1) as u64,
-                inputs: vec![],
-                outputs: vec![],
+                inputs: vec![].into(),
+                outputs: vec![].into(),
                 lock_time: data.get(1).copied().unwrap_or(0) as u64,
             };
             let _result = check_transaction(&tx);

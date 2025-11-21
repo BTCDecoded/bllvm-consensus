@@ -40,7 +40,7 @@ pub fn adjusted_timeout(base_timeout_ms: u64) -> u64 {
 // Transaction Creation Helpers
 // ============================================================================
 
-use bllvm_consensus::{Transaction, TransactionInput, TransactionOutput, OutPoint, UtxoSet, UTXO};
+use bllvm_consensus::{OutPoint, Transaction, TransactionInput, TransactionOutput, UtxoSet, UTXO};
 
 /// Create a test transaction with configurable parameters
 ///
@@ -59,16 +59,18 @@ pub fn create_test_tx(
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: prevout_hash.unwrap_or([1; 32]),
+                hash: prevout_hash.unwrap_or([1; 32].into()),
                 index: prevout_index.unwrap_or(0),
             },
             script_sig: vec![0x51], // OP_1
             sequence: sequence.unwrap_or(0xffffffff),
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value,
-            script_pubkey: vec![0x51], // OP_1
-        }],
+            script_pubkey: vec![0x51].into(), // OP_1
+        }]
+        .into(),
         lock_time: 0,
     }
 }
@@ -89,16 +91,18 @@ pub fn create_coinbase_tx(value: i64) -> Transaction {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     }
 }
@@ -109,7 +113,10 @@ pub fn create_coinbase_tx(value: i64) -> Transaction {
 pub fn create_test_utxo(value: i64) -> (UtxoSet, OutPoint) {
     let mut set = UtxoSet::new();
     let txid = [1u8; 32];
-    let op = OutPoint { hash: txid, index: 0 };
+    let op = OutPoint {
+        hash: txid,
+        index: 0,
+    };
     set.insert(
         op.clone(),
         UTXO {
@@ -131,11 +138,12 @@ pub fn create_test_utxo_set() -> UtxoSet {
 pub fn create_invalid_transaction() -> Transaction {
     Transaction {
         version: 1,
-        inputs: vec![], // Empty inputs - invalid
+        inputs: vec![].into(), // Empty inputs - invalid
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     }
 }

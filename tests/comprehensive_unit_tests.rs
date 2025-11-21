@@ -16,16 +16,18 @@ fn test_check_transaction_valid() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -37,11 +39,12 @@ fn test_check_transaction_valid() {
 fn test_check_transaction_empty_inputs() {
     let tx = Transaction {
         version: 1,
-        inputs: vec![],
+        inputs: vec![].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -65,11 +68,12 @@ fn test_check_transaction_too_many_inputs() {
 
     let tx = Transaction {
         version: 1,
-        inputs,
+        inputs: inputs.into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -91,13 +95,14 @@ fn test_check_transaction_too_many_outputs() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
-        outputs,
+        }]
+        .into(),
+        outputs: outputs.into(),
         lock_time: 0,
     };
 
@@ -111,16 +116,18 @@ fn test_check_transaction_negative_output() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: -1000, // Negative value
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -134,16 +141,18 @@ fn test_check_transaction_excessive_output() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY + 1, // Exceeds max money
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -157,16 +166,18 @@ fn test_is_coinbase() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -176,16 +187,18 @@ fn test_is_coinbase() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -198,16 +211,18 @@ fn test_calculate_transaction_size() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51, 0x52],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51, 0x52, 0x53],
-        }],
+            script_pubkey: vec![0x51, 0x52, 0x53].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -309,16 +324,18 @@ fn test_calculate_fee() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 800,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -344,16 +361,18 @@ fn test_calculate_fee_negative() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 800,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -379,16 +398,18 @@ fn test_calculate_fee_zero() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -536,16 +557,18 @@ fn test_transaction_size_boundaries() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: large_script.clone(),
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey: large_script,
-        }],
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -574,11 +597,12 @@ fn test_maximum_input_output_counts() {
 
     let tx_max_inputs = Transaction {
         version: 1,
-        inputs,
+        inputs: inputs.into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -609,13 +633,14 @@ fn test_maximum_input_output_counts() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
-        outputs,
+        }]
+        .into(),
+        outputs: outputs.into(),
         lock_time: 0,
     };
 
@@ -630,16 +655,18 @@ fn test_monetary_boundaries() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -651,16 +678,18 @@ fn test_monetary_boundaries() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY + 1,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -767,16 +796,18 @@ fn test_sequence_number_boundaries() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: 0xffffffff, // Maximum sequence
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -788,16 +819,18 @@ fn test_sequence_number_boundaries() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51],
             sequence: SEQUENCE_RBF as u64, // RBF sequence
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 

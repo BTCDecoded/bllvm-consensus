@@ -7,16 +7,18 @@ fn create_test_transaction() -> Transaction {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51], // OP_1
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 100000000,
-            script_pubkey: vec![0x51, 0x87], // OP_1 OP_EQUAL
-        }],
+            script_pubkey: vec![0x51, 0x87].into(), // OP_1 OP_EQUAL
+        }]
+        .into(),
         lock_time: 0,
     }
 }

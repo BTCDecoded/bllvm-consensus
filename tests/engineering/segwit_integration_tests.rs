@@ -24,14 +24,14 @@ fn test_segwit_witness_validation() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x00], // SegWit marker (empty scriptSig for SegWit)
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51], // OP_1
-        }],
+            script_pubkey: vec![0x51].into(), // OP_1
+        }].into(),
         lock_time: 0,
     };
     
@@ -79,14 +79,14 @@ fn test_segwit_transaction_weight() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x00], // SegWit marker
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -109,24 +109,24 @@ fn test_segwit_block_weight() {
         transactions: vec![
             Transaction {
                 version: 1,
-                inputs: vec![],
+                inputs: vec![].into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [1; 32], index: 0 },
+                    prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                     script_sig: vec![0x00],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }].into(),
                 lock_time: 0,
             },
         ],
@@ -148,7 +148,7 @@ fn test_segwit_block_weight_boundary() {
     // Test block weight at boundary (exactly at or near 4M weight)
     let mut block = Block {
         header: create_test_header(1234567890, [0; 32]),
-        transactions: vec![],
+            transactions: vec![].into(),
     };
     
     // Create transactions that approach the weight limit
@@ -157,14 +157,14 @@ fn test_segwit_block_weight_boundary() {
         block.transactions.push(Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [1; 32], index: 0 },
+                prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                 script_sig: vec![0x00],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51; 100], // Large scriptPubkey
-            }],
+                script_pubkey: vec![0x51; 100].into(), // Large scriptPubkey
+            }].into(),
             lock_time: 0,
         });
     }
@@ -186,14 +186,14 @@ fn test_segwit_witness_commitment() {
     let mut coinbase_tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+            prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -218,14 +218,14 @@ fn test_segwit_p2wpkh_validation() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![], // Empty scriptSig for P2WPKH
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -282,14 +282,14 @@ fn test_segwit_p2wsh_validation() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![], // Empty scriptSig for P2WSH
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -338,7 +338,7 @@ fn test_segwit_weight_exceeds_limit() {
     // Test that block weight exceeding 4M is detected
     let mut block = Block {
         header: create_test_header(1234567890, [0; 32]),
-        transactions: vec![],
+            transactions: vec![].into(),
     };
     
     // Create a very large transaction with large witness
@@ -348,14 +348,14 @@ fn test_segwit_weight_exceeds_limit() {
     block.transactions.push(Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x00],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     });
     
@@ -383,39 +383,39 @@ fn test_segwit_mixed_block() {
         transactions: vec![
             Transaction {
                 version: 1,
-                inputs: vec![],
+                inputs: vec![].into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 // SegWit transaction
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [1; 32], index: 0 },
+                    prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                     script_sig: vec![0x00], // SegWit marker
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 // Non-SegWit transaction
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [2; 32], index: 0 },
+                    prevout: OutPoint { hash: [2; 32].into(), index: 0 },
                     script_sig: vec![0x51], // Non-empty scriptSig
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }].into(),
                 lock_time: 0,
             },
         ],
@@ -440,24 +440,24 @@ fn test_segwit_witness_merkle_root() {
         transactions: vec![
             Transaction {
                 version: 1,
-                inputs: vec![],
+                inputs: vec![].into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [1; 32], index: 0 },
+                    prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                     script_sig: vec![0x00],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }].into(),
                 lock_time: 0,
             },
         ],
@@ -478,7 +478,7 @@ fn test_segwit_witness_merkle_root_empty_block() {
     // Test witness merkle root with empty block (should fail)
     let block = Block {
         header: create_test_header(1234567890, [0; 32]),
-        transactions: vec![],
+            transactions: vec![].into(),
     };
     
     let witnesses = vec![];
@@ -494,14 +494,14 @@ fn test_segwit_no_witness_weight() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -518,14 +518,14 @@ fn test_segwit_witness_commitment_validation() {
     let mut coinbase_tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+            prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -549,14 +549,14 @@ fn test_segwit_is_segwit_transaction() {
     let mut tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x00], // SegWit marker
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -573,14 +573,14 @@ fn test_segwit_weight_base_size() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51; 50], // 50-byte scriptSig
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51; 25], // 25-byte scriptPubkey
-        }],
+            script_pubkey: vec![0x51; 25].into(), // 25-byte scriptPubkey
+        }].into(),
         lock_time: 0,
     };
     
@@ -597,14 +597,14 @@ fn test_segwit_weight_precise_calculation() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x00], // SegWit marker
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -625,24 +625,24 @@ fn test_segwit_block_weight_sum() {
         transactions: vec![
             Transaction {
                 version: 1,
-                inputs: vec![],
+                inputs: vec![].into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             },
             Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [1; 32], index: 0 },
+                    prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                     script_sig: vec![0x00],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 1000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }].into(),
                 lock_time: 0,
             },
         ],
@@ -668,21 +668,21 @@ fn test_segwit_validate_block_weight_limit() {
     // Test that validate_segwit_block enforces weight limit
     let mut block = Block {
         header: create_test_header(1234567890, [0; 32]),
-        transactions: vec![],
+            transactions: vec![].into(),
     };
     
     // Create a small block (should pass)
     block.transactions.push(Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x00],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     });
     

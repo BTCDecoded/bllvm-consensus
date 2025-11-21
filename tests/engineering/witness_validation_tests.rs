@@ -20,14 +20,14 @@ fn test_witness_validation_empty_witnesses() {
         transactions: vec![Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         }],
     };
@@ -59,14 +59,14 @@ fn test_witness_validation_segwit_block() {
             Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                    prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                     script_sig: vec![],
                     sequence: 0xffffffff,
-                }],
+                }].into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![],
-                }],
+                    script_pubkey: vec![].into(),
+                }].into(),
                 lock_time: 0,
             },
         ],
@@ -97,14 +97,14 @@ fn test_witness_count_mismatch() {
         transactions: vec![Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         }],
     };
@@ -153,14 +153,14 @@ fn test_median_time_past_validation() {
         transactions: vec![Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }].into(),
             lock_time: 0,
         }],
     };

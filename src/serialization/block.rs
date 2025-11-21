@@ -6,9 +6,9 @@
 use super::transaction::{deserialize_transaction, serialize_transaction};
 use super::varint::decode_varint;
 use crate::error::{ConsensusError, Result};
-use std::borrow::Cow;
 use crate::segwit::Witness;
 use crate::types::*;
+use std::borrow::Cow;
 
 /// Error type for block parsing failures
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -65,9 +65,9 @@ pub fn serialize_block_header(header: &BlockHeader) -> Vec<u8> {
 pub fn deserialize_block_header(data: &[u8]) -> Result<BlockHeader> {
     // Block header must be exactly 80 bytes
     if data.len() < 80 {
-        return Err(ConsensusError::Serialization(
-            Cow::Owned(BlockParseError::InsufficientBytes.to_string()),
-        ));
+        return Err(ConsensusError::Serialization(Cow::Owned(
+            BlockParseError::InsufficientBytes.to_string(),
+        )));
     }
 
     let mut offset = 0;
@@ -147,9 +147,9 @@ fn parse_witness(data: &[u8], mut offset: usize) -> Result<(Witness, usize)> {
         offset += varint_len;
 
         if data.len() < offset + element_len as usize {
-            return Err(ConsensusError::Serialization(
-                Cow::Owned(BlockParseError::InsufficientBytes.to_string()),
-            ));
+            return Err(ConsensusError::Serialization(Cow::Owned(
+                BlockParseError::InsufficientBytes.to_string(),
+            )));
         }
 
         // Witness element bytes
@@ -172,9 +172,9 @@ fn parse_witness(data: &[u8], mut offset: usize) -> Result<(Witness, usize)> {
 ///   - Witness data for each transaction
 pub fn deserialize_block_with_witnesses(data: &[u8]) -> Result<(Block, Vec<Witness>)> {
     if data.len() < 80 {
-        return Err(ConsensusError::Serialization(
-            Cow::Owned(BlockParseError::InsufficientBytes.to_string()),
-        ));
+        return Err(ConsensusError::Serialization(Cow::Owned(
+            BlockParseError::InsufficientBytes.to_string(),
+        )));
     }
 
     let mut offset = 0;
@@ -188,9 +188,9 @@ pub fn deserialize_block_with_witnesses(data: &[u8]) -> Result<(Block, Vec<Witne
     offset += varint_len;
 
     if tx_count == 0 {
-        return Err(ConsensusError::Serialization(
-            Cow::Owned(BlockParseError::InvalidTransactionCount.to_string()),
-        ));
+        return Err(ConsensusError::Serialization(Cow::Owned(
+            BlockParseError::InvalidTransactionCount.to_string(),
+        )));
     }
 
     let mut transactions = Vec::new();

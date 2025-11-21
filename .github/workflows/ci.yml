@@ -1,4 +1,4 @@
-name: CI (Enhanced Caching)
+name: CI
 
 on:
   push:
@@ -22,25 +22,20 @@ env:
 
 jobs:
   setup:
-    name: Setup Dependencies and Cache
+    name: Setup
     runs-on: [self-hosted, linux, x64]
     outputs:
       cache-key: ${{ steps.setup-cache.outputs.cache-key }}
     steps:
-      - name: Emergency disk space check
+      - name: Disk check
         run: |
-          echo "🔍 DEBUG: Disk space before setup:"
-          df -h
           if [ $(df / | tail -1 | awk '{print $5}' | sed 's/%//') -gt 80 ]; then
-            echo "⚠️ Disk space >80%, cleaning old caches..."
             find /tmp/runner-cache -maxdepth 2 -type d -mtime +7 -exec rm -rf {} + 2>/dev/null || true
-            echo "🔍 DEBUG: Disk space after cleanup:"
-            df -h
           fi
 
       - uses: actions/checkout@v4
       
-      - name: Setup local cache system
+      - name: Cache
         id: setup-cache
         run: |
           CACHE_ROOT="/tmp/runner-cache"
@@ -63,9 +58,6 @@ jobs:
           echo "cache-key=$CACHE_KEY" >> $GITHUB_OUTPUT
           
           mkdir -p "$CARGO_CACHE_DIR"/{registry,git} "$TARGET_CACHE_DIR"
-          
-          echo "🔍 DEBUG: Cache setup complete"
-          echo "🔍 DEBUG: Cache key: ${CACHE_KEY:0:16}..."
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@master
@@ -79,43 +71,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup cache environment
+      - name: Cache
         run: |
           CACHE_ROOT="/tmp/runner-cache"
           CACHE_KEY="${{ needs.setup.outputs.cache-key }}"
           echo "CARGO_CACHE_DIR=$CACHE_ROOT/cargo/$CACHE_KEY" >> $GITHUB_ENV
           echo "TARGET_CACHE_DIR=$CACHE_ROOT/target/$CACHE_KEY" >> $GITHUB_ENV
       
-      - name: Restore Cargo registry cache
+      - name: Restore registry
         run: |
           if [ -d "$CARGO_CACHE_DIR/registry" ] && [ "$(ls -A $CARGO_CACHE_DIR/registry 2>/dev/null)" ]; then
-            echo "🚀 Restoring Cargo registry from local cache..."
             mkdir -p "$HOME/.cargo/registry"
             rsync -a --delete "$CARGO_CACHE_DIR/registry/" "$HOME/.cargo/registry/" || true
-            echo "✅ Cargo registry restored"
-          else
-            echo "💿 No Cargo registry cache found"
           fi
       
-      - name: Restore Cargo git cache
+      - name: Restore git
         run: |
           if [ -d "$CARGO_CACHE_DIR/git" ] && [ "$(ls -A $CARGO_CACHE_DIR/git 2>/dev/null)" ]; then
-            echo "🚀 Restoring Cargo git cache from local cache..."
             mkdir -p "$HOME/.cargo/git"
             rsync -a --delete "$CARGO_CACHE_DIR/git/" "$HOME/.cargo/git/" || true
-            echo "✅ Cargo git cache restored"
-          else
-            echo "💿 No Cargo git cache found"
           fi
       
-      - name: Restore target directory cache
+      - name: Restore target
         run: |
           if [ -d "$TARGET_CACHE_DIR" ] && [ "$(ls -A $TARGET_CACHE_DIR 2>/dev/null)" ]; then
-            echo "🚀 Restoring target directory from local cache..."
             rsync -a --delete "$TARGET_CACHE_DIR/" ./target/ || true
-            echo "✅ Target directory restored"
-          else
-            echo "💿 No target cache found, will build from scratch"
           fi
       
       - name: Install Rust
@@ -126,41 +106,35 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
       
-      - name: Run tests with coverage
+      - name: Coverage
         run: |
           cargo install cargo-tarpaulin --version 0.27.0
           cargo tarpaulin --out xml --output-dir coverage
       
-      - name: Upload coverage to Codecov
+      - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
           file: coverage/cobertura.xml
       
-      - name: Cache Cargo registry
+      - name: Cache registry
         if: always()
         run: |
           if [ -d "$HOME/.cargo/registry" ] && [ "$CARGO_CACHE_DIR" != "" ]; then
-            echo "💾 Caching Cargo registry..."
             rsync -a --delete "$HOME/.cargo/registry/" "$CARGO_CACHE_DIR/registry/" || true
-            echo "✅ Cargo registry cached"
           fi
       
-      - name: Cache Cargo git
+      - name: Cache git
         if: always()
         run: |
           if [ -d "$HOME/.cargo/git" ] && [ "$CARGO_CACHE_DIR" != "" ]; then
-            echo "💾 Caching Cargo git cache..."
             rsync -a --delete "$HOME/.cargo/git/" "$CARGO_CACHE_DIR/git/" || true
-            echo "✅ Cargo git cache saved"
           fi
       
-      - name: Cache target directory
+      - name: Cache target
         if: always()
         run: |
           if [ -d "./target" ] && [ "$TARGET_CACHE_DIR" != "" ]; then
-            echo "💾 Caching target directory..."
             rsync -a --delete ./target/ "$TARGET_CACHE_DIR/" || true
-            echo "✅ Target directory cached"
           fi
 
   clippy:
@@ -170,20 +144,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup cache environment
+      - name: Cache
         run: |
           CACHE_ROOT="/tmp/runner-cache"
           CACHE_KEY="${{ needs.setup.outputs.cache-key }}"
           echo "CARGO_CACHE_DIR=$CACHE_ROOT/cargo/$CACHE_KEY" >> $GITHUB_ENV
       
-      - name: Restore Cargo registry cache
+      - name: Restore registry
         run: |
           if [ -d "$CARGO_CACHE_DIR/registry" ] && [ "$(ls -A $CARGO_CACHE_DIR/registry 2>/dev/null)" ]; then
             mkdir -p "$HOME/.cargo/registry"
             rsync -a --delete "$CARGO_CACHE_DIR/registry/" "$HOME/.cargo/registry/" || true
           fi
       
-      - name: Restore Cargo git cache
+      - name: Restore git
         run: |
           if [ -d "$CARGO_CACHE_DIR/git" ] && [ "$(ls -A $CARGO_CACHE_DIR/git 2>/dev/null)" ]; then
             mkdir -p "$HOME/.cargo/git"
@@ -200,7 +174,7 @@ jobs:
         run: cargo clippy -- -D warnings
 
   fmt:
-    name: Rustfmt
+    name: Format
     needs: setup
     runs-on: [self-hosted, linux, x64]
     steps:
@@ -212,30 +186,30 @@ jobs:
           toolchain: 1.88.0
           components: rustfmt
       
-      - name: Check formatting
+      - name: Format
         run: cargo fmt -- --check
 
   docs:
-    name: Documentation
+    name: Docs
     needs: setup
     runs-on: [self-hosted, linux, x64]
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup cache environment
+      - name: Cache
         run: |
           CACHE_ROOT="/tmp/runner-cache"
           CACHE_KEY="${{ needs.setup.outputs.cache-key }}"
           echo "CARGO_CACHE_DIR=$CACHE_ROOT/cargo/$CACHE_KEY" >> $GITHUB_ENV
       
-      - name: Restore Cargo registry cache
+      - name: Restore registry
         run: |
           if [ -d "$CARGO_CACHE_DIR/registry" ] && [ "$(ls -A $CARGO_CACHE_DIR/registry 2>/dev/null)" ]; then
             mkdir -p "$HOME/.cargo/registry"
             rsync -a --delete "$CARGO_CACHE_DIR/registry/" "$HOME/.cargo/registry/" || true
           fi
       
-      - name: Restore Cargo git cache
+      - name: Restore git
         run: |
           if [ -d "$CARGO_CACHE_DIR/git" ] && [ "$(ls -A $CARGO_CACHE_DIR/git 2>/dev/null)" ]; then
             mkdir -p "$HOME/.cargo/git"
@@ -247,14 +221,14 @@ jobs:
         with:
           toolchain: 1.88.0
       
-      - name: Build docs
+      - name: Docs
         run: cargo doc --no-deps
       
-      - name: Check docs
+      - name: Verify docs
         run: cargo doc --no-deps --document-private-items
 
   security:
-    name: Security Audit
+    name: Security
     runs-on: [self-hosted, linux, x64]
     steps:
       - uses: actions/checkout@v4
@@ -264,10 +238,10 @@ jobs:
         with:
           toolchain: 1.89.0
       
-      - name: Install cargo-audit
+      - name: Install audit
         run: cargo install cargo-audit --version 0.22.0
       
-      - name: Run security audit
+      - name: Audit
         run: cargo audit
 
   build:
@@ -278,28 +252,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup cache environment
+      - name: Cache
         run: |
           CACHE_ROOT="/tmp/runner-cache"
           CACHE_KEY="${{ needs.setup.outputs.cache-key }}"
           echo "CARGO_CACHE_DIR=$CACHE_ROOT/cargo/$CACHE_KEY" >> $GITHUB_ENV
           echo "TARGET_CACHE_DIR=$CACHE_ROOT/target/$CACHE_KEY" >> $GITHUB_ENV
       
-      - name: Restore Cargo registry cache
+      - name: Restore registry
         run: |
           if [ -d "$CARGO_CACHE_DIR/registry" ] && [ "$(ls -A $CARGO_CACHE_DIR/registry 2>/dev/null)" ]; then
             mkdir -p "$HOME/.cargo/registry"
             rsync -a --delete "$CARGO_CACHE_DIR/registry/" "$HOME/.cargo/registry/" || true
           fi
       
-      - name: Restore Cargo git cache
+      - name: Restore git
         run: |
           if [ -d "$CARGO_CACHE_DIR/git" ] && [ "$(ls -A $CARGO_CACHE_DIR/git 2>/dev/null)" ]; then
             mkdir -p "$HOME/.cargo/git"
             rsync -a --delete "$CARGO_CACHE_DIR/git/" "$HOME/.cargo/git/" || true
           fi
       
-      - name: Restore target directory cache
+      - name: Restore target
         run: |
           if [ -d "$TARGET_CACHE_DIR" ] && [ "$(ls -A $TARGET_CACHE_DIR 2>/dev/null)" ]; then
             rsync -a --delete "$TARGET_CACHE_DIR/" ./target/ || true
@@ -313,7 +287,7 @@ jobs:
       - name: Build
         run: cargo build --release
       
-      - name: Cache target directory
+      - name: Cache target
         if: always()
         run: |
           if [ -d "./target" ] && [ "$TARGET_CACHE_DIR" != "" ]; then
@@ -321,7 +295,7 @@ jobs:
             rsync -a --delete ./target/ "$TARGET_CACHE_DIR/" || true
           fi
       
-      - name: Trigger downstream build (bllvm-protocol)
+      - name: Trigger downstream
         if: success()
         uses: peter-evans/repository-dispatch@v2
         with:
@@ -336,11 +310,9 @@ jobs:
               "source_sha": "${{ github.sha }}"
             }
       
-      - name: Cache cleanup management
+      - name: Cleanup
         if: always()
         run: |
-          echo "🧹 Cleaning up old caches..."
           CACHE_ROOT="/tmp/runner-cache"
           find "$CACHE_ROOT/cargo" -maxdepth 1 -type d -mtime +1 2>/dev/null | head -n -5 | xargs rm -rf 2>/dev/null || true
           find "$CACHE_ROOT/target" -maxdepth 1 -type d -mtime +1 2>/dev/null | head -n -3 | xargs rm -rf 2>/dev/null || true
-          echo "✅ Cache cleanup completed"

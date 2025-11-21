@@ -41,18 +41,28 @@ pub fn is_sha_ni_available() -> bool {
 #[target_feature(enable = "sha,sse2,ssse3,sse4.1")]
 unsafe fn sha256_ni_impl(data: &[u8]) -> [u8; 32] {
     // SHA256 initial hash values (first 32 bits of fractional parts of square roots of first 8 primes)
+    // Following Bitcoin Core's approach: load state in standard order, then shuffle to SHA-NI layout
+    // Standard order: [h0, h1, h2, h3, h4, h5, h6, h7]
+    // After Shuffle: state0 and state1 are in SHA-NI layout for processing
     let mut state0 = _mm_setr_epi32(
-        0x6a09e667u32 as i32,
-        0xbb67ae85u32 as i32,
-        0x3c6ef372u32 as i32,
-        0xa54ff53au32 as i32,
+        0x6a09e667u32 as i32, // h0
+        0xbb67ae85u32 as i32, // h1
+        0x3c6ef372u32 as i32, // h2
+        0xa54ff53au32 as i32, // h3
     );
     let mut state1 = _mm_setr_epi32(
-        0x510e527fu32 as i32,
-        0x9b05688cu32 as i32,
-        0x1f83d9abu32 as i32,
-        0x5be0cd19u32 as i32,
+        0x510e527fu32 as i32, // h4
+        0x9b05688cu32 as i32, // h5
+        0x1f83d9abu32 as i32, // h6
+        0x5be0cd19u32 as i32, // h7
     );
+
+    // Shuffle to SHA-NI layout (matches Bitcoin Core's Shuffle function)
+    // Shuffle mask 0xB1 = [1, 0, 3, 2], 0x1B = [3, 0, 1, 2]
+    let t1 = _mm_shuffle_epi32(state0, 0xB1); // [h1, h0, h3, h2]
+    let t2 = _mm_shuffle_epi32(state1, 0x1B); // [h7, h4, h5, h6]
+    state0 = _mm_alignr_epi8(t1, t2, 0x08);
+    state1 = _mm_blend_epi16(t2, t1, 0xF0);
 
     // Byte swap mask for converting between little-endian and big-endian
     let shuf_mask = _mm_setr_epi8(3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12);
@@ -300,38 +310,51 @@ unsafe fn sha256_ni_impl(data: &[u8]) -> [u8; 32] {
         state1 = _mm_add_epi32(state1, state1_save);
     }
 
-    // Combine state0 and state1 into final hash
-    // After _mm_sha256rnds2_epu32, the state layout is interleaved:
-    // state0: [h0, h1, h4, h5]
-    // state1: [h2, h3, h6, h7]
-    // We need to reorder to h0,h1,h2,h3,h4,h5,h6,h7 and byte-swap each word to big-endian
+    // Unshuffle from SHA-NI layout back to standard layout (matches Bitcoin Core's Unshuffle function)
+    // Unshuffle mask 0x1B = [3, 0, 1, 2], 0xB1 = [1, 0, 3, 2]
+    let t1 = _mm_shuffle_epi32(state0, 0x1B);
+    let t2 = _mm_shuffle_epi32(state1, 0xB1);
+    state0 = _mm_blend_epi16(t1, t2, 0xF0);
+    state1 = _mm_alignr_epi8(t2, t1, 0x08);
 
+    // DEBUG: Log state values after Unshuffle
+    let s0_0 = _mm_extract_epi32(state0, 0) as u32;
+    let s0_1 = _mm_extract_epi32(state0, 1) as u32;
+    let s0_2 = _mm_extract_epi32(state0, 2) as u32;
+    let s0_3 = _mm_extract_epi32(state0, 3) as u32;
+    let s1_0 = _mm_extract_epi32(state1, 0) as u32;
+    let s1_1 = _mm_extract_epi32(state1, 1) as u32;
+    let s1_2 = _mm_extract_epi32(state1, 2) as u32;
+    let s1_3 = _mm_extract_epi32(state1, 3) as u32;
+
+    // Only log if SHA_NI_DEBUG env var is set to avoid spam in normal operation
+    if std::env::var("SHA_NI_DEBUG").is_ok() {
+        eprintln!("SHA-NI DEBUG: After Unshuffle - state0 = [{s0_0:08x}, {s0_1:08x}, {s0_2:08x}, {s0_3:08x}]");
+        eprintln!("SHA-NI DEBUG: After Unshuffle - state1 = [{s1_0:08x}, {s1_1:08x}, {s1_2:08x}, {s1_3:08x}]");
+        eprintln!("SHA-NI DEBUG: Expected final hash (empty input): e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+    }
+
+    // After Unshuffle, state is back in standard layout: state0=[h0,h1,h2,h3], state1=[h4,h5,h6,h7]
+    // Extract in sequential order
+    let h0 = _mm_extract_epi32(state0, 0) as u32;
+    let h1 = _mm_extract_epi32(state0, 1) as u32;
+    let h2 = _mm_extract_epi32(state0, 2) as u32;
+    let h3 = _mm_extract_epi32(state0, 3) as u32;
+    let h4 = _mm_extract_epi32(state1, 0) as u32;
+    let h5 = _mm_extract_epi32(state1, 1) as u32;
+    let h6 = _mm_extract_epi32(state1, 2) as u32;
+    let h7 = _mm_extract_epi32(state1, 3) as u32;
+
+    // Convert to big-endian bytes and store in correct order: h0, h1, h2, h3, h4, h5, h6, h7
     let mut result = [0u8; 32];
-
-    // Extract and byte-swap state0: h0, h1, h4, h5
-    let state0_swapped = _mm_shuffle_epi8(state0, shuf_mask);
-    _mm_storeu_si128(result.as_mut_ptr() as *mut __m128i, state0_swapped);
-
-    // Extract and byte-swap state1: h2, h3, h6, h7
-    let state1_swapped = _mm_shuffle_epi8(state1, shuf_mask);
-    _mm_storeu_si128(result.as_mut_ptr().add(16) as *mut __m128i, state1_swapped);
-
-    // Now we need to reorder: currently [h0, h1, h4, h5, h2, h3, h6, h7]
-    // Need: [h0, h1, h2, h3, h4, h5, h6, h7]
-    // Swap the middle two 16-byte blocks
-    let temp = [
-        result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7],
-        result[8], result[9], result[10], result[11], result[12], result[13], result[14],
-        result[15], result[16], result[17], result[18], result[19], result[20], result[21],
-        result[22], result[23], result[24], result[25], result[26], result[27], result[28],
-        result[29], result[30], result[31],
-    ];
-
-    // Reorder: h0, h1 from temp[0-7], h2, h3 from temp[16-23], h4, h5 from temp[8-15], h6, h7 from temp[24-31]
-    result[0..8].copy_from_slice(&temp[0..8]); // h0, h1
-    result[8..16].copy_from_slice(&temp[16..24]); // h2, h3
-    result[16..24].copy_from_slice(&temp[8..16]); // h4, h5
-    result[24..32].copy_from_slice(&temp[24..32]); // h6, h7
+    result[0..4].copy_from_slice(&h0.to_be_bytes());
+    result[4..8].copy_from_slice(&h1.to_be_bytes());
+    result[8..12].copy_from_slice(&h2.to_be_bytes());
+    result[12..16].copy_from_slice(&h3.to_be_bytes());
+    result[16..20].copy_from_slice(&h4.to_be_bytes());
+    result[20..24].copy_from_slice(&h5.to_be_bytes());
+    result[24..28].copy_from_slice(&h6.to_be_bytes());
+    result[28..32].copy_from_slice(&h7.to_be_bytes());
 
     result
 }

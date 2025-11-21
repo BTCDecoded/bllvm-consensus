@@ -18,14 +18,14 @@ proptest! {
         let tx = Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -62,8 +62,8 @@ proptest! {
         
         let tx = Transaction {
             version: 1,
-            inputs,
-            outputs: vec![], // Zero outputs
+            inputs: inputs.into(),
+            outputs: vec![].into(), // Zero outputs
             lock_time: 0,
         };
         
@@ -93,11 +93,11 @@ proptest! {
         
         let tx = Transaction {
             version: 1,
-            inputs,
+            inputs: inputs.into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -131,11 +131,11 @@ proptest! {
         let tx = Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
-            outputs,
+            }].into(),
+            outputs: outputs.into(),
             lock_time: 0,
         };
         
@@ -161,14 +161,14 @@ proptest! {
         let tx = Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -202,11 +202,11 @@ proptest! {
         let coinbase = Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff }, // Coinbase marker
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff }, // Coinbase marker
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
-            outputs,
+            }].into(),
+            outputs: outputs.into(),
             lock_time: 0,
         };
         
@@ -231,7 +231,7 @@ proptest! {
             inputs: vec![
                 TransactionInput {
                     prevout: prevout.clone(),
-                    script_sig: vec![0x51],
+                    script_sig: vec![0x51].into(),
                     sequence: 0xffffffff,
                 },
                 TransactionInput {
@@ -239,11 +239,11 @@ proptest! {
                     script_sig: vec![0x52],
                     sequence: 0xffffffff,
                 },
-            ],
+            ].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         };
         
@@ -282,8 +282,8 @@ proptest! {
         
         let tx = Transaction {
             version: 1,
-            inputs,
-            outputs,
+            inputs: inputs.into(),
+            outputs: outputs.into(),
             lock_time: 0,
         };
         

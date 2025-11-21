@@ -62,32 +62,21 @@ pub fn decode_locktime_value(bytes: &ByteString) -> Option<u32> {
         if i >= 4 {
             break; // Only use first 4 bytes
         }
-        
+
         // Runtime assertion: Index must be < 4
-        debug_assert!(
-            i < 4,
-            "Byte index ({}) must be < 4 for locktime decoding",
-            i
-        );
-        
+        debug_assert!(i < 4, "Byte index ({i}) must be < 4 for locktime decoding");
+
         // Runtime assertion: Shift amount must be valid (0-24, multiples of 8)
         let shift_amount = i * 8;
         debug_assert!(
             shift_amount < 32,
-            "Shift amount ({}) must be < 32 (i: {})",
-            shift_amount,
-            i
+            "Shift amount ({shift_amount}) must be < 32 (i: {i})"
         );
-        
+
         value |= (byte as u32) << shift_amount;
     }
-    
-    // Runtime assertion: Decoded value must fit in u32 (always true, but documents invariant)
-    debug_assert!(
-        value <= u32::MAX,
-        "Decoded locktime value ({}) must fit in u32",
-        value
-    );
+
+    // value is u32, so it always fits in u32 - no assertion needed
 
     Some(value)
 }
@@ -104,7 +93,7 @@ pub fn encode_locktime_value(value: u32) -> ByteString {
     while temp > 0 {
         bytes.push((temp & 0xff) as u8);
         temp >>= 8;
-        
+
         // Runtime assertion: Encoding loop must terminate (temp decreases each iteration)
         // This is guaranteed by right shift, but documents the invariant
         debug_assert!(
@@ -120,12 +109,12 @@ pub fn encode_locktime_value(value: u32) -> ByteString {
     if bytes.is_empty() {
         bytes.push(0);
     }
-    
+
     // Runtime assertion: Encoded length must be between 1 and 4 bytes (u32 max)
+    let len = bytes.len();
     debug_assert!(
-        bytes.len() >= 1 && bytes.len() <= 4,
-        "Encoded locktime length ({}) must be between 1 and 4 bytes",
-        bytes.len()
+        !bytes.is_empty() && len <= 4,
+        "Encoded locktime length ({len}) must be between 1 and 4 bytes"
     );
 
     bytes

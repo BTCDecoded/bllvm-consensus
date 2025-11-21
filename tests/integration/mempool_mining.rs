@@ -15,28 +15,28 @@ fn test_mempool_to_block_integration() {
     let tx1 = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
     let tx2 = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [2; 32], index: 0 },
+            prevout: OutPoint { hash: [2; 32].into(), index: 0 },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 2000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -115,14 +115,14 @@ fn test_script_transaction_integration() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51], // OP_1
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51], // OP_1
-        }],
+            script_pubkey: vec![0x51].into(), // OP_1
+        }].into(),
         lock_time: 0,
     };
     
@@ -152,14 +152,14 @@ fn test_pow_block_integration() {
         transactions: vec![Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         }],
     };
@@ -181,11 +181,11 @@ fn test_cross_system_error_handling() {
     // Test error propagation across systems
     let invalid_tx = Transaction {
         version: 1,
-        inputs: vec![], // Invalid: empty inputs
+        inputs: vec![].into(), // Invalid: empty inputs
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -232,14 +232,14 @@ fn test_performance_integration() {
         transactions.push(Transaction {
             version: 1,
             inputs: vec![TransactionInput {
-                prevout: OutPoint { hash: [i as u8; 32], index: 0 },
+                prevout: OutPoint { hash: [i as u8; 32].into(), index: 0 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }].into(),
             lock_time: 0,
         });
     }

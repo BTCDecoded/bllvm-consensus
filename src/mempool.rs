@@ -279,28 +279,30 @@ pub fn replacement_checks(
     // Compare: new_fee / new_tx_size > existing_fee / existing_tx_size
     // Equivalent to: new_fee * existing_tx_size > existing_fee * new_tx_size
     // This avoids floating-point division and precision errors
-    
+
     // Runtime assertion: Transaction sizes must be positive
     debug_assert!(
         new_tx_size > 0,
-        "New transaction size ({}) must be positive",
-        new_tx_size
+        "New transaction size ({new_tx_size}) must be positive"
     );
     debug_assert!(
         existing_tx_size > 0,
-        "Existing transaction size ({}) must be positive",
-        existing_tx_size
+        "Existing transaction size ({existing_tx_size}) must be positive"
     );
-    
+
     // Use integer multiplication to avoid floating-point precision issues
     // Check: new_fee * existing_tx_size > existing_fee * new_tx_size
     let new_fee_scaled = (new_fee as u128)
         .checked_mul(existing_tx_size as u128)
-        .ok_or_else(|| ConsensusError::TransactionValidation("Fee rate calculation overflow".into()))?;
+        .ok_or_else(|| {
+            ConsensusError::TransactionValidation("Fee rate calculation overflow".into())
+        })?;
     let existing_fee_scaled = (existing_fee as u128)
         .checked_mul(new_tx_size as u128)
-        .ok_or_else(|| ConsensusError::TransactionValidation("Fee rate calculation overflow".into()))?;
-    
+        .ok_or_else(|| {
+            ConsensusError::TransactionValidation("Fee rate calculation overflow".into())
+        })?;
+
     if new_fee_scaled <= existing_fee_scaled {
         return Ok(false);
     }
@@ -369,11 +371,11 @@ pub enum MempoolResult {
 /// # let coinbase_tx = Transaction {
 /// #     version: 1,
 /// #     inputs: vec![TransactionInput {
-/// #         prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+/// #         prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
 /// #         script_sig: vec![],
 /// #         sequence: 0xffffffff,
-/// #     }],
-/// #     outputs: vec![TransactionOutput { value: 5000000000, script_pubkey: vec![] }],
+/// #     }].into(),
+/// #     outputs: vec![TransactionOutput { value: 5000000000, script_pubkey: vec![].into() }].into(),
 /// #     lock_time: 0,
 /// # };
 /// # let merkle_root = calculate_merkle_root(&[coinbase_tx.clone()]).unwrap();
@@ -497,19 +499,15 @@ fn check_mempool_rules(tx: &Transaction, fee: Integer, mempool: &Mempool) -> Res
     // Runtime assertion: Transaction size must be positive
     debug_assert!(
         tx_size > 0,
-        "Transaction size ({}) must be positive for fee rate calculation",
-        tx_size
+        "Transaction size ({tx_size}) must be positive for fee rate calculation"
     );
-    
+
     let fee_rate = (fee as f64) / (tx_size as f64);
-    
+
     // Runtime assertion: Fee rate must be non-negative
     debug_assert!(
         fee_rate >= 0.0,
-        "Fee rate ({:.6}) must be non-negative (fee: {}, size: {})",
-        fee_rate,
-        fee,
-        tx_size
+        "Fee rate ({fee_rate:.6}) must be non-negative (fee: {fee}, size: {tx_size})"
     );
     let min_fee_rate = 1.0; // 1 sat/byte minimum
 
@@ -1067,7 +1065,8 @@ mod kani_proofs {
         // Critical invariant: Integer comparison is equivalent to cross-multiplication
         assert_eq!(
             new_fee_scaled > existing_fee_scaled,
-            (new_fee as u128) * (existing_size as u128) > (existing_fee as u128) * (new_size as u128),
+            (new_fee as u128) * (existing_size as u128)
+                > (existing_fee as u128) * (new_size as u128),
             "Integer-based comparison must be equivalent to cross-multiplication"
         );
     }
@@ -1571,8 +1570,8 @@ mod tests {
     fn create_valid_transaction() -> Transaction {
         Transaction {
             version: 1,
-            inputs: vec![create_dummy_input()],
-            outputs: vec![create_dummy_output()],
+            inputs: vec![create_dummy_input()].into(),
+            outputs: vec![create_dummy_output()].into(),
             lock_time: 0,
         }
     }
@@ -1615,16 +1614,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0xffffffff,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![],
-            }],
+                script_pubkey: vec![].into(),
+            }]
+            .into(),
             lock_time: 0,
         }
     }

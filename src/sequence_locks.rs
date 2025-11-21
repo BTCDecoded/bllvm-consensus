@@ -66,7 +66,8 @@ pub fn calculate_sequence_locks(
                 "prev_heights length {} does not match input count {}",
                 prev_heights.len(),
                 tx.inputs.len()
-            ).into(),
+            )
+            .into(),
         ));
     }
 
@@ -108,25 +109,21 @@ pub fn calculate_sequence_locks(
 
             // Extract locktime value and multiply by granularity (512 seconds)
             let locktime_value = extract_sequence_locktime_value(input.sequence as u32) as i64;
-            
+
             // Runtime assertion: Locktime value must be non-negative
             debug_assert!(
                 locktime_value >= 0,
-                "Locktime value ({}) must be non-negative",
-                locktime_value
+                "Locktime value ({locktime_value}) must be non-negative"
             );
-            
+
             let locktime_seconds = locktime_value << SEQUENCE_LOCKTIME_GRANULARITY;
-            
+
             // Runtime assertion: Shift operation must not overflow
             // locktime_value is u16 (max 65535), so locktime_seconds = 65535 * 512 = 33,553,920
             // This fits in i64, so no overflow possible
             debug_assert!(
                 locktime_seconds >= 0,
-                "Locktime seconds ({}) must be non-negative (locktime_value: {}, granularity: {})",
-                locktime_seconds,
-                locktime_value,
-                SEQUENCE_LOCKTIME_GRANULARITY
+                "Locktime seconds ({locktime_seconds}) must be non-negative (locktime_value: {locktime_value}, granularity: {SEQUENCE_LOCKTIME_GRANULARITY})"
             );
 
             // Calculate minimum time: coin_time + locktime_seconds - 1
@@ -139,33 +136,29 @@ pub fn calculate_sequence_locks(
                         "Sequence lock time calculation overflow".into(),
                     )
                 })?;
-            
+
             // Runtime assertion: Required time must be >= coin_time (or close to it after -1)
             debug_assert!(
                 required_time >= coin_time.saturating_sub(1),
-                "Required time ({}) must be >= coin_time - 1 ({})",
-                required_time,
-                coin_time
+                "Required time ({required_time}) must be >= coin_time - 1 ({coin_time})"
             );
-            
+
             min_time = min_time.max(required_time);
         } else {
             // Block-based relative locktime
             // Extract locktime value (number of blocks)
             let locktime_value = extract_sequence_locktime_value(input.sequence as u32) as i64;
-            
+
             // Runtime assertion: Locktime value must be non-negative
             debug_assert!(
                 locktime_value >= 0,
-                "Locktime value ({}) must be non-negative",
-                locktime_value
+                "Locktime value ({locktime_value}) must be non-negative"
             );
-            
+
             // Runtime assertion: Coin height must be non-negative
             debug_assert!(
                 coin_height >= 0,
-                "Coin height ({}) must be non-negative",
-                coin_height
+                "Coin height ({coin_height}) must be non-negative"
             );
 
             // Calculate minimum height: coin_height + locktime_value - 1
@@ -178,15 +171,13 @@ pub fn calculate_sequence_locks(
                         "Sequence lock height calculation overflow".into(),
                     )
                 })?;
-            
+
             // Runtime assertion: Required height must be >= coin_height - 1
             debug_assert!(
                 required_height >= coin_height.saturating_sub(1),
-                "Required height ({}) must be >= coin_height - 1 ({})",
-                required_height,
-                coin_height
+                "Required height ({required_height}) must be >= coin_height - 1 ({coin_height})"
             );
-            
+
             min_height = min_height.max(required_height);
         }
     }
@@ -210,27 +201,14 @@ pub fn calculate_sequence_locks(
 pub fn evaluate_sequence_locks(block_height: u64, block_time: u64, lock_pair: (i64, i64)) -> bool {
     let (min_height, min_time) = lock_pair;
 
-    // Runtime assertion: Block height must be non-negative (u64 is always >= 0)
-    debug_assert!(
-        true, // u64 is always non-negative
-        "Block height ({}) must be non-negative",
-        block_height
-    );
-    
-    // Runtime assertion: Block time must be non-negative (u64 is always >= 0)
-    debug_assert!(
-        true, // u64 is always non-negative
-        "Block time ({}) must be non-negative",
-        block_time
-    );
+    // u64 is always non-negative - no assertion needed
 
     // Check height constraint
     if min_height >= 0 && block_height <= min_height as u64 {
         // Runtime assertion: Cast must be valid (min_height >= 0)
         debug_assert!(
             min_height >= 0,
-            "min_height ({}) must be non-negative for cast to u64",
-            min_height
+            "min_height ({min_height}) must be non-negative for cast to u64"
         );
         return false;
     }
@@ -240,8 +218,7 @@ pub fn evaluate_sequence_locks(block_height: u64, block_time: u64, lock_pair: (i
         // Runtime assertion: Cast must be valid (min_time >= 0)
         debug_assert!(
             min_time >= 0,
-            "min_time ({}) must be non-negative for cast to u64",
-            min_time
+            "min_time ({min_time}) must be non-negative for cast to u64"
         );
         return false;
     }
@@ -285,13 +262,14 @@ mod tests {
             version: 2,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: SEQUENCE_LOCKTIME_DISABLE_FLAG as u64, // Disabled
-            }],
-            outputs: vec![],
+            }]
+            .into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
 
@@ -309,13 +287,14 @@ mod tests {
             version: 2,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 100, // 100 blocks relative locktime
-            }],
-            outputs: vec![],
+            }]
+            .into(),
+            outputs: vec![].into(),
             lock_time: 0,
         };
 
@@ -362,19 +341,19 @@ mod kani_proofs {
         let locktime_value: u16 = kani::any();
         let coin_height: i64 = kani::any();
         let coin_time: i64 = kani::any();
-        
+
         // Bound for tractability
         kani::assume(coin_height >= 0);
         kani::assume(coin_height <= 1_000_000_000); // Reasonable block height
         kani::assume(coin_time >= 0);
         kani::assume(coin_time <= 2_000_000_000); // Reasonable timestamp
-        
+
         // Test block-based lock calculation
         let locktime_i64 = locktime_value as i64;
         let required_height = coin_height
             .checked_add(locktime_i64)
             .and_then(|sum| sum.checked_sub(1));
-        
+
         // Critical invariant: Calculation must not overflow
         assert!(
             required_height.is_some(),
@@ -382,7 +361,7 @@ mod kani_proofs {
             coin_height,
             locktime_value
         );
-        
+
         if let Some(height) = required_height {
             // Critical invariant: Required height must be >= coin_height - 1
             assert!(
@@ -392,13 +371,13 @@ mod kani_proofs {
                 coin_height
             );
         }
-        
+
         // Test time-based lock calculation
         let locktime_seconds = (locktime_value as i64) << SEQUENCE_LOCKTIME_GRANULARITY;
         let required_time = coin_time
             .checked_add(locktime_seconds)
             .and_then(|sum| sum.checked_sub(1));
-        
+
         // Critical invariant: Calculation must not overflow
         assert!(
             required_time.is_some(),
@@ -406,7 +385,7 @@ mod kani_proofs {
             coin_time,
             locktime_value
         );
-        
+
         if let Some(time) = required_time {
             // Critical invariant: Required time must be >= coin_time - 1
             assert!(

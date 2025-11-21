@@ -12,7 +12,10 @@
 //! - CVE-2012-2459: Merkle tree duplicate hash vulnerability
 
 use bllvm_consensus::block::connect_block;
-use bllvm_consensus::{Block, BlockHeader, UtxoSet, Transaction, TransactionInput, TransactionOutput, OutPoint, UTXO, ValidationResult};
+use bllvm_consensus::{
+    Block, BlockHeader, OutPoint, Transaction, TransactionInput, TransactionOutput, UtxoSet,
+    ValidationResult, UTXO,
+};
 
 /// Test CVE-2012-2459: Merkle tree duplicate hash vulnerability
 ///
@@ -37,106 +40,151 @@ use bllvm_consensus::{Block, BlockHeader, UtxoSet, Transaction, TransactionInput
 #[test]
 fn test_cve_2012_2459_merkle_duplicate_hash() {
     use bllvm_consensus::mining::calculate_merkle_root;
-    
+
     // Create three different transactions
     let tx1 = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint {
+                hash: [1; 32].into(),
+                index: 0,
+            },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
-    
+
     let tx2 = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [2; 32], index: 0 },
+            prevout: OutPoint {
+                hash: [2; 32].into(),
+                index: 0,
+            },
             script_sig: vec![0x52],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 2000,
-            script_pubkey: vec![0x52],
-        }],
+            script_pubkey: vec![0x52].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
-    
+
     let tx3 = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [3; 32], index: 0 },
+            prevout: OutPoint {
+                hash: [3; 32].into(),
+                index: 0,
+            },
             script_sig: vec![0x53],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 3000,
-            script_pubkey: vec![0x53],
-        }],
+            script_pubkey: vec![0x53].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
-    
+
     // Test 1: Block with odd number of transactions (3 transactions)
     // This triggers the duplicate hash behavior in merkle tree construction
     let block_odd = vec![tx1.clone(), tx2.clone(), tx3.clone()];
-    let merkle_root_odd = calculate_merkle_root(&block_odd).expect("Should calculate merkle root for odd number of transactions");
-    
+    let merkle_root_odd = calculate_merkle_root(&block_odd)
+        .expect("Should calculate merkle root for odd number of transactions");
+
     // Verify merkle root is not zero (valid calculation)
     assert_ne!(merkle_root_odd, [0u8; 32], "Merkle root should not be zero");
-    
+
     // Test 2: Same transaction set should produce same merkle root (deterministic)
     let block_odd_2 = vec![tx1.clone(), tx2.clone(), tx3.clone()];
-    let merkle_root_odd_2 = calculate_merkle_root(&block_odd_2).expect("Should calculate merkle root");
-    assert_eq!(merkle_root_odd, merkle_root_odd_2, "Same transaction set must produce same merkle root");
-    
+    let merkle_root_odd_2 =
+        calculate_merkle_root(&block_odd_2).expect("Should calculate merkle root");
+    assert_eq!(
+        merkle_root_odd, merkle_root_odd_2,
+        "Same transaction set must produce same merkle root"
+    );
+
     // Test 3: Different transaction set should produce different merkle root
     let tx4 = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [4; 32], index: 0 },
+            prevout: OutPoint {
+                hash: [4; 32].into(),
+                index: 0,
+            },
             script_sig: vec![0x54],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 4000,
-            script_pubkey: vec![0x54],
-        }],
+            script_pubkey: vec![0x54].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
     let block_different = vec![tx1.clone(), tx2.clone(), tx4];
-    let merkle_root_different = calculate_merkle_root(&block_different).expect("Should calculate merkle root");
-    assert_ne!(merkle_root_odd, merkle_root_different, "Different transaction sets must produce different merkle roots");
-    
+    let merkle_root_different =
+        calculate_merkle_root(&block_different).expect("Should calculate merkle root");
+    assert_ne!(
+        merkle_root_odd, merkle_root_different,
+        "Different transaction sets must produce different merkle roots"
+    );
+
     // Test 4: Block with even number of transactions (2 transactions)
     // This should not trigger duplicate hash behavior
     let block_even = vec![tx1.clone(), tx2.clone()];
-    let merkle_root_even = calculate_merkle_root(&block_even).expect("Should calculate merkle root for even number of transactions");
-    assert_ne!(merkle_root_even, [0u8; 32], "Merkle root should not be zero");
-    assert_ne!(merkle_root_even, merkle_root_odd, "Even and odd transaction counts should produce different merkle roots");
-    
+    let merkle_root_even = calculate_merkle_root(&block_even)
+        .expect("Should calculate merkle root for even number of transactions");
+    assert_ne!(
+        merkle_root_even, [0u8; 32],
+        "Merkle root should not be zero"
+    );
+    assert_ne!(
+        merkle_root_even, merkle_root_odd,
+        "Even and odd transaction counts should produce different merkle roots"
+    );
+
     // Test 5: Single transaction (edge case - just coinbase)
     let coinbase = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+            prevout: OutPoint {
+                hash: [0; 32].into(),
+                index: 0xffffffff,
+            },
             script_sig: vec![0x51, 0x51],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 5000000000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
     let block_single = vec![coinbase];
-    let merkle_root_single = calculate_merkle_root(&block_single).expect("Should calculate merkle root for single transaction");
-    assert_ne!(merkle_root_single, [0u8; 32], "Single transaction merkle root should not be zero");
-    
+    let merkle_root_single = calculate_merkle_root(&block_single)
+        .expect("Should calculate merkle root for single transaction");
+    assert_ne!(
+        merkle_root_single, [0u8; 32],
+        "Single transaction merkle root should not be zero"
+    );
+
     // The CVE-2012-2459 vulnerability is that with an odd number of transactions,
     // the last hash is duplicated, which can theoretically allow two different
     // transaction sets to produce the same merkle root. However, in practice,
@@ -155,49 +203,56 @@ fn test_cve_2012_2459_merkle_duplicate_hash() {
 #[test]
 fn test_cve_2018_17144_double_spend_in_block() {
     use bllvm_consensus::block::connect_block;
-    
+
     // Create a UTXO that will be spent twice
     let mut utxo_set = UtxoSet::new();
     let prevout = OutPoint {
         hash: [1; 32],
         index: 0,
     };
-    utxo_set.insert(prevout.clone(), UTXO {
-        value: 1000000,
-        script_pubkey: vec![0x51],
-        height: 0,
-    });
-    
+    utxo_set.insert(
+        prevout.clone(),
+        UTXO {
+            value: 1000000,
+            script_pubkey: vec![0x51],
+            height: 0,
+        },
+    );
+
     // Create first transaction spending the UTXO
     let tx1 = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: prevout.clone(),
-            script_sig: vec![0x51],
+            script_sig: vec![0x51].into(),
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 500000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
-    
+
     // Create second transaction spending the SAME UTXO (double-spend)
     let tx2 = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: prevout.clone(), // Same prevout as tx1!
-            script_sig: vec![0x52],
+            script_sig: vec![0x52].into(),
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 600000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
-    
+
     // Create block with both transactions (double-spend attempt)
     let block = Block {
         header: BlockHeader {
@@ -213,19 +268,25 @@ fn test_cve_2018_17144_double_spend_in_block() {
             Transaction {
                 version: 1,
                 inputs: vec![TransactionInput {
-                    prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+                    prevout: OutPoint {
+                        hash: [0; 32].into(),
+                        index: 0xffffffff,
+                    },
                     script_sig: vec![0x51, 0x51],
                     sequence: 0xffffffff,
-                }],
+                }]
+                .into(),
                 outputs: vec![TransactionOutput {
                     value: 5000000000,
-                    script_pubkey: vec![0x51],
-                }],
+                    script_pubkey: vec![0x51].into(),
+                }]
+                .into(),
                 lock_time: 0,
             },
             tx1,
             tx2, // Double-spend!
-        ].into_boxed_slice(),
+        ]
+        .into_boxed_slice(),
     };
 
     // Block should be rejected due to double-spend

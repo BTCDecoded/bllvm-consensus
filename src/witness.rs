@@ -99,34 +99,25 @@ pub fn calculate_transaction_weight_segwit(base_size: Natural, total_size: Natur
 pub fn weight_to_vsize(weight: Natural) -> Natural {
     #[allow(clippy::manual_div_ceil)]
     let result = (weight + 3) / 4; // Ceiling division
-    
+
     // Runtime assertion: Verify ceiling division property
     // vsize must be >= weight / 4 (ceiling property)
+    let weight_div_4 = weight / 4;
     debug_assert!(
-        (result as u64) >= (weight / 4),
-        "Vsize ({}) must be >= weight / 4 ({})",
-        result,
-        weight / 4
+        result >= weight_div_4,
+        "Vsize ({result}) must be >= weight / 4 ({weight_div_4})"
     );
-    
+
     // Runtime assertion: vsize must be <= (weight / 4) + 1 (ceiling property)
     // Note: When weight % 4 == 0, result == weight/4, otherwise result == (weight/4) + 1
+    let weight_div_4_plus_1 = weight_div_4 + 1;
     debug_assert!(
-        (result as u64) <= ((weight / 4) + 1),
-        "Vsize ({}) must be <= (weight / 4) + 1 ({})",
-        result,
-        (weight / 4) + 1
+        result <= weight_div_4_plus_1,
+        "Vsize ({result}) must be <= (weight / 4) + 1 ({weight_div_4_plus_1})"
     );
-    
-    // Runtime assertion: Result must be non-negative
-    // Note: Natural is unsigned, so this is always true, but documents the invariant
-    debug_assert!(
-        true, // Natural is always non-negative
-        "Vsize ({}) must be non-negative (weight: {})",
-        result,
-        weight
-    );
-    
+
+    // Natural is always non-negative - no assertion needed
+
     result
 }
 
@@ -168,7 +159,7 @@ pub fn extract_witness_program(
 /// BIP341: Taproot v1 programs are 32 bytes (P2TR)
 pub fn validate_witness_program_length(program: &ByteString, version: WitnessVersion) -> bool {
     use crate::constants::{SEGWIT_P2WPKH_LENGTH, SEGWIT_P2WSH_LENGTH, TAPROOT_PROGRAM_LENGTH};
-    
+
     match version {
         WitnessVersion::SegWitV0 => {
             // P2WPKH: 20 bytes, P2WSH: 32 bytes
@@ -420,14 +411,15 @@ mod kani_proofs {
 
         // Critical invariant: result must match specification
         use crate::constants::{SEGWIT_P2WPKH_LENGTH, SEGWIT_P2WSH_LENGTH, TAPROOT_PROGRAM_LENGTH};
-        
+
         match version {
             WitnessVersion::SegWitV0 => {
                 assert_eq!(
                     result,
                     program.len() == SEGWIT_P2WPKH_LENGTH || program.len() == SEGWIT_P2WSH_LENGTH,
                     "Witness program length validation: SegWit v0 must be {} or {} bytes",
-                    SEGWIT_P2WPKH_LENGTH, SEGWIT_P2WSH_LENGTH
+                    SEGWIT_P2WPKH_LENGTH,
+                    SEGWIT_P2WSH_LENGTH
                 );
             }
             WitnessVersion::TaprootV1 => {

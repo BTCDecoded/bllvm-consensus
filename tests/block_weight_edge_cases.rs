@@ -24,16 +24,18 @@ fn test_block_weight_exact_limit() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -71,16 +73,18 @@ fn test_segwit_weight_discount() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -110,16 +114,18 @@ fn test_mixed_witness_weight() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -127,16 +133,18 @@ fn test_mixed_witness_weight() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [1; 32],
+                hash: [1; 32].into(),
                 index: 0,
             },
             script_sig: vec![0x51], // OP_1
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -167,16 +175,18 @@ fn test_weight_calculation_segwit_activation() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -194,16 +204,18 @@ fn test_weight_large_witness() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 

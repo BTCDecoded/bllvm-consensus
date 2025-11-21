@@ -152,21 +152,21 @@ pub fn create_block_template(
     let target = expand_target(block.header.bits)?;
 
     let header = block.header.clone();
-    
+
     // BLLVM Optimization: Use Kani-proven bounds for coinbase access (block has been validated)
     #[cfg(feature = "production")]
     let coinbase_tx = {
         use crate::optimizations::kani_optimized_access::get_proven_by_kani;
         get_proven_by_kani(&block.transactions, 0)
-            .ok_or_else(|| crate::error::ConsensusError::BlockValidation(
-                "Block has no transactions".into()
-            ))?
+            .ok_or_else(|| {
+                crate::error::ConsensusError::BlockValidation("Block has no transactions".into())
+            })?
             .clone()
     };
-    
+
     #[cfg(not(feature = "production"))]
     let coinbase_tx = block.transactions[0].clone();
-    
+
     Ok(BlockTemplate {
         header: block.header,
         coinbase_tx,
@@ -281,19 +281,14 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
     #[cfg(feature = "production")]
     {
         use crate::optimizations::CacheAlignedHash;
-        
-        while hashes.len() > 1 {
-            use crate::optimizations::MAX_TRANSACTIONS_PROVEN;
-            let mut next_level: Vec<CacheAlignedHash> = Vec::with_capacity(
-                MAX_TRANSACTIONS_PROVEN.min(hashes.len() / 2 + 1)
-            );
 
+        while hashes.len() > 1 {
             // Optimization: Parallelize hash pair processing for large trees
             // Tree levels are independent, so we can process chunks in parallel
             #[cfg(feature = "rayon")]
-            {
+            let next_level: Vec<CacheAlignedHash> = {
                 use rayon::prelude::*;
-                let chunk_results: Vec<CacheAlignedHash> = hashes
+                hashes
                     .chunks(2)
                     .par_bridge()
                     .map(|chunk| {
@@ -302,7 +297,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
                             !chunk.is_empty(),
                             "Merkle tree chunk must have at least 1 element"
                         );
-                        
+
                         if chunk.len() == 2 {
                             // Hash two hashes together
                             // BLLVM Optimization: Use cache-aligned hash bytes directly
@@ -319,7 +314,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
                                 "Odd-length chunk must have exactly 1 element, got {}",
                                 chunk.len()
                             );
-                            
+
                             // BLLVM Optimization: Use cache-aligned hash bytes directly
                             let mut combined = Vec::with_capacity(64);
                             combined.extend_from_slice(chunk[0].as_bytes());
@@ -328,9 +323,11 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
                             CacheAlignedHash::new(hash)
                         }
                     })
-                    .collect();
-                next_level = chunk_results;
-            }
+                    .collect()
+            };
+
+            #[cfg(not(feature = "rayon"))]
+            let mut next_level: Vec<CacheAlignedHash> = Vec::with_capacity(hashes.len() / 2 + 1);
 
             #[cfg(not(feature = "rayon"))]
             {
@@ -341,7 +338,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
                         !chunk.is_empty(),
                         "Merkle tree chunk must have at least 1 element"
                     );
-                    
+
                     if chunk.len() == 2 {
                         // Hash two hashes together
                         // BLLVM Optimization: Use cache-aligned hash bytes directly
@@ -358,7 +355,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
                             "Odd-length chunk must have exactly 1 element, got {}",
                             chunk.len()
                         );
-                        
+
                         // BLLVM Optimization: Use cache-aligned hash bytes directly
                         let mut combined = Vec::with_capacity(64);
                         combined.extend_from_slice(chunk[0].as_bytes());
@@ -371,7 +368,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
 
             hashes = next_level;
         }
-        
+
         // Convert final cache-aligned hash to regular Hash for return
         // Runtime assertion: Final result must have exactly 1 hash (the merkle root)
         debug_assert!(
@@ -379,7 +376,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
             "Merkle tree calculation must result in exactly 1 hash (root), got {}",
             hashes.len()
         );
-        
+
         return Ok(*hashes[0].as_bytes());
     }
 
@@ -395,7 +392,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
                     !chunk.is_empty(),
                     "Merkle tree chunk must have at least 1 element"
                 );
-                
+
                 if chunk.len() == 2 {
                     // Hash two hashes together
                     // BLLVM Optimization: Pre-allocate 64-byte buffer (2 * 32-byte hashes)
@@ -411,7 +408,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
                         "Odd-length chunk must have exactly 1 element, got {}",
                         chunk.len()
                     );
-                    
+
                     // BLLVM Optimization: Pre-allocate 64-byte buffer
                     let mut combined = Vec::with_capacity(64);
                     combined.extend_from_slice(&chunk[0]);
@@ -429,7 +426,7 @@ pub fn calculate_merkle_root(transactions: &[Transaction]) -> Result<Hash> {
             "Merkle tree calculation must result in exactly 1 hash (root), got {}",
             hashes.len()
         );
-        
+
         // Runtime assertion: Merkle root must be 32 bytes
         debug_assert!(
             hashes[0].len() == 32,
@@ -1019,7 +1016,7 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 // Use OP_1 in script_sig to push 1, script_pubkey will be OP_1 which also pushes 1
@@ -1028,12 +1025,14 @@ mod tests {
                 // Actually, let's use OP_1 in script_sig and empty script_pubkey
                 script_sig: vec![0x51], // OP_1 pushes 1
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                // Empty script_pubkey - script_sig already pushed 1, so final stack is [1]
+                // Empty script_pubkey - script_sig already pushed 1, so final stack is [1].into()
                 script_pubkey: vec![],
-            }],
+            }]
+            .into(),
             lock_time: 0,
         }
     }

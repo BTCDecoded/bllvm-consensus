@@ -4,11 +4,11 @@ fn tx_p2pkh(value: i64) -> Transaction {
     Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [0;32], index: 0xffffffff },
+            prevout: OutPoint { hash: [0;32].into(), index: 0xffffffff },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
-        outputs: vec![TransactionOutput { value, script_pubkey: vec![0x51] }],
+        }].into(),
+        outputs: vec![TransactionOutput { value, script_pubkey: vec![0x51].into() }].into(),
         lock_time: 0,
     }
 }

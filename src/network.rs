@@ -784,11 +784,12 @@ mod tests {
         let chain_state = ChainState::new();
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
         let message = NetworkMessage::Tx(tx);
@@ -846,11 +847,12 @@ mod tests {
         let tx_hash = [2u8; 32];
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
         chain_state.transactions.insert(tx_hash, tx);
@@ -887,11 +889,12 @@ mod tests {
         let tx_hash = [2u8; 32];
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
         chain_state.transactions.insert(tx_hash, tx.clone());
@@ -960,11 +963,12 @@ mod tests {
         let chain_state = ChainState::new();
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -977,11 +981,12 @@ mod tests {
         let mut chain_state = ChainState::new();
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
         chain_state.mempool.push(tx.clone());
@@ -1010,11 +1015,12 @@ mod tests {
 
         let tx_obj = ChainObject::Transaction(Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         });
         assert!(tx_obj.as_block().is_none());
@@ -1024,11 +1030,12 @@ mod tests {
     fn test_chain_object_as_transaction() {
         let tx = Transaction {
             version: 1,
-            inputs: vec![],
+            inputs: vec![].into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 

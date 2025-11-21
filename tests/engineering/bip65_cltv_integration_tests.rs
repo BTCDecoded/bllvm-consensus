@@ -238,14 +238,14 @@ fn test_cltv_empty_stack_fails() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0xb1], // Just CLTV opcode, no value on stack
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 400000,
     };
     
@@ -272,17 +272,17 @@ fn test_cltv_invalid_encoding_fails() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![
                 0x51, 0x51, 0x51, 0x51, 0x51, 0x51, // 6 bytes (too many)
                 0xb1, // CLTV
             ],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 400000,
     };
     
@@ -335,7 +335,7 @@ fn test_cltv_multiple_inputs_context() {
         version: 1,
         inputs: vec![
             TransactionInput {
-                prevout: OutPoint { hash: [1; 32], index: 0 },
+                prevout: OutPoint { hash: [1; 32].into(), index: 0 },
                 script_sig: {
                     let mut script = vec![0x51];
                     script.extend_from_slice(&encode_script_int(400000));
@@ -349,11 +349,11 @@ fn test_cltv_multiple_inputs_context() {
                 script_sig: vec![0x51], // No CLTV
                 sequence: 0xffffffff,
             },
-        ],
+        ].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 500000,
     };
     
@@ -408,14 +408,14 @@ fn test_cltv_in_script_pubkey() {
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [1; 32], index: 0 },
+            prevout: OutPoint { hash: [1; 32].into(), index: 0 },
             script_sig: vec![0x51], // OP_1 (unlocks scriptPubkey)
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey,
-        }],
+        }].into(),
         lock_time: 500000, // >= required_locktime
     };
     

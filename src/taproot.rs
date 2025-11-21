@@ -19,7 +19,7 @@ pub const TAPROOT_SCRIPT_PREFIX: u8 = 0x51; // OP_1
 /// Validate Taproot output script
 pub fn validate_taproot_script(script: &ByteString) -> Result<bool> {
     use crate::constants::TAPROOT_SCRIPT_LENGTH;
-    
+
     // Check if script is P2TR: OP_1 <32-byte-program>
     if script.len() != TAPROOT_SCRIPT_LENGTH {
         return Ok(false);
@@ -356,16 +356,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: create_taproot_script(&[1u8; 32]),
-            }],
+                script_pubkey: create_taproot_script(&[1u8; 32].into()),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -380,16 +382,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -408,16 +412,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -437,16 +443,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -593,16 +601,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x52], // Not Taproot
-            }],
+                script_pubkey: vec![0x52].into(), // Not Taproot
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -617,16 +627,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: create_taproot_script(&[1u8; 32]),
-            }],
+                script_pubkey: create_taproot_script(&[1u8; 32].into()),
+            }]
+            .into(),
             lock_time: 0,
         };
 
@@ -934,8 +946,8 @@ mod kani_proofs {
 
         Transaction {
             version: 1,
-            inputs,
-            outputs,
+            inputs: inputs.into(),
+            outputs: outputs.into(),
             lock_time: 0,
         }
     }
@@ -1229,8 +1241,8 @@ mod property_tests {
 
                 Transaction {
                     version: 1,
-                    inputs,
-                    outputs,
+                    inputs: inputs.into(),
+                    outputs: outputs.into(),
                     lock_time: 0,
                 }
             })

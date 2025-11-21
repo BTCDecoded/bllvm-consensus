@@ -170,7 +170,7 @@ impl PeerConsensus {
             let mid = sorted_tips.len() / 2;
             let lower = sorted_tips[mid - 1];
             let upper = sorted_tips[mid];
-            
+
             // Runtime assertion: Verify median bounds
             debug_assert!(
                 lower <= upper,
@@ -178,7 +178,7 @@ impl PeerConsensus {
                 lower,
                 upper
             );
-            
+
             // Use checked arithmetic to prevent overflow
             (lower + upper) / 2
         } else {
@@ -200,7 +200,7 @@ impl PeerConsensus {
         // Apply safety margin with checked arithmetic
         if median_tip > self.config.safety_margin {
             let checkpoint = median_tip - self.config.safety_margin;
-            
+
             // Runtime assertion: Checkpoint is non-negative and <= median
             debug_assert!(
                 checkpoint <= median_tip,
@@ -208,7 +208,7 @@ impl PeerConsensus {
                 checkpoint,
                 median_tip
             );
-            
+
             checkpoint
         } else {
             0 // Genesis block
@@ -294,13 +294,14 @@ impl PeerConsensus {
         // Check if consensus threshold is met using integer arithmetic to avoid floating-point precision issues
         // Threshold check: agreement_count / total_peers >= consensus_threshold
         // Equivalent to: agreement_count >= (total_peers * consensus_threshold).ceil()
-        // 
+        //
         // Mathematical invariant: required_agreement_count must satisfy:
         // - required_agreement_count >= ceil(total_peers * threshold)
         // - required_agreement_count <= total_peers
         // - If agreement_count >= required_agreement_count, then agreement_count/total_peers >= threshold
-        let required_agreement_count = ((total_peers as f64) * self.config.consensus_threshold).ceil() as usize;
-        
+        let required_agreement_count =
+            ((total_peers as f64) * self.config.consensus_threshold).ceil() as usize;
+
         // Runtime assertion: Verify mathematical invariants
         debug_assert!(
             required_agreement_count <= total_peers,
@@ -318,7 +319,7 @@ impl PeerConsensus {
             best_agreement_count,
             total_peers
         );
-        
+
         if best_agreement_count < required_agreement_count {
             let best_ratio = best_agreement_count as f64 / total_peers as f64;
             return Err(UtxoCommitmentError::VerificationFailed(format!(
@@ -526,26 +527,26 @@ mod kani_proofs {
     /// Verifies that the integer-based threshold calculation correctly implements
     /// the mathematical requirement: agreement_count >= ceil(total_peers * threshold)
     #[kani::proof]
-    #[kani::unwind(10)]  // Reduced from 20 - assumptions already bound the space well
+    #[kani::unwind(10)] // Reduced from 20 - assumptions already bound the space well
     fn kani_integer_threshold_calculation() {
         let total_peers: usize = kani::any();
         kani::assume(total_peers >= 1 && total_peers <= 50); // Reduced from 100 for faster verification
-        
+
         let threshold: f64 = kani::any();
         kani::assume(threshold > 0.0 && threshold <= 1.0);
-        
+
         let agreement_count: usize = kani::any();
         kani::assume(agreement_count <= total_peers);
-        
+
         // Calculate required agreement count using the same method as find_consensus
         let required_agreement_count = ((total_peers as f64) * threshold).ceil() as usize;
-        
+
         // Mathematical invariant: required_agreement_count must be <= total_peers
         assert!(
             required_agreement_count <= total_peers,
             "Required agreement count cannot exceed total peers"
         );
-        
+
         // Mathematical invariant: If agreement_count >= required_agreement_count,
         // then agreement_count / total_peers >= threshold (within floating-point precision)
         if agreement_count >= required_agreement_count {
@@ -556,7 +557,7 @@ mod kani_proofs {
                 "If agreement_count >= required, then ratio >= threshold"
             );
         }
-        
+
         // Mathematical invariant: If agreement_count < required_agreement_count,
         // then agreement_count / total_peers < threshold (within floating-point precision)
         if agreement_count < required_agreement_count {
@@ -581,17 +582,17 @@ mod kani_proofs {
         let mut tips: Vec<Natural> = kani::vec::any_vec::<Natural>(10);
         kani::assume(!tips.is_empty());
         kani::assume(tips.len() <= 100); // Bound for tractability
-        
+
         // Sort to find median (same as determine_checkpoint_height)
         tips.sort();
-        
+
         let median = if tips.len() % 2 == 0 {
             let mid = tips.len() / 2;
             (tips[mid - 1] + tips[mid]) / 2
         } else {
             tips[tips.len() / 2]
         };
-        
+
         // Mathematical invariant: Median is always between min and max
         if let (Some(&min_tip), Some(&max_tip)) = (tips.first(), tips.last()) {
             assert!(
@@ -609,24 +610,24 @@ mod kani_proofs {
     fn kani_consensus_result_invariants() {
         let agreement_count: usize = kani::any();
         let total_peers: usize = kani::any();
-        
+
         kani::assume(total_peers >= 1 && total_peers <= 100);
         kani::assume(agreement_count <= total_peers);
         kani::assume(agreement_count >= 1);
-        
+
         let agreement_ratio = agreement_count as f64 / total_peers as f64;
-        
+
         // Mathematical invariants for ConsensusResult
         assert!(
             agreement_ratio >= 0.0 && agreement_ratio <= 1.0,
             "Agreement ratio must be in [0, 1]"
         );
-        
+
         assert!(
             agreement_count <= total_peers,
             "Agreement count cannot exceed total peers"
         );
-        
+
         // Verify ratio calculation is correct
         let recalculated_ratio = agreement_count as f64 / total_peers as f64;
         assert!(

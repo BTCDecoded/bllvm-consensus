@@ -34,8 +34,8 @@ pub fn klee_check_transaction_harness() {
     // KLEE will provide symbolic values for these
     let tx = Transaction {
         version: klee_int("tx_version"),
-        inputs: vec![], // TODO: Symbolic inputs
-        outputs: vec![], // TODO: Symbolic outputs
+        inputs: vec![].into(), // TODO: Symbolic inputs
+        outputs: vec![].into(), // TODO: Symbolic outputs
         lock_time: klee_int("tx_locktime"),
     };
     

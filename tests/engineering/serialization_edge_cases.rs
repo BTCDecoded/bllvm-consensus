@@ -77,7 +77,7 @@ fn test_transaction_serialization_round_trip() {
         inputs: vec![
             TransactionInput {
                 prevout: OutPoint {
-                    hash: [1; 32],
+                    hash: [1; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51], // OP_1
@@ -91,17 +91,17 @@ fn test_transaction_serialization_round_trip() {
                 script_sig: vec![0x51, 0x52], // OP_1 OP_2
                 sequence: 0xfffffffe,
             },
-        ],
+        ].into(),
         outputs: vec![
             TransactionOutput {
                 value: 5000000000,
-                script_pubkey: vec![0x51], // OP_1
+                script_pubkey: vec![0x51].into(), // OP_1
             },
             TransactionOutput {
                 value: 2500000000,
                 script_pubkey: vec![0x51, 0x52], // OP_1 OP_2
             },
-        ],
+        ].into(),
         lock_time: 0,
     };
     
@@ -121,16 +121,16 @@ fn test_transaction_serialization_empty_scripts() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: vec![],
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -150,16 +150,16 @@ fn test_transaction_serialization_large_scripts() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0,
             },
             script_sig: large_script.clone(),
             sequence: 0,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
             script_pubkey: large_script.clone(),
-        }],
+        }].into(),
         lock_time: 0,
     };
     
@@ -234,11 +234,11 @@ fn test_transaction_negative_version() {
     // Bitcoin allows negative transaction versions (though rare)
     let tx = Transaction {
         version: 0xffffffff, // -1 when interpreted as i32
-        inputs: vec![],
+        inputs: vec![].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![0x51],
-        }],
+            script_pubkey: vec![0x51].into(),
+        }].into(),
         lock_time: 0,
     };
     

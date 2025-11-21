@@ -38,7 +38,7 @@ fn test_input_value_overflow() {
         inputs: vec![
             TransactionInput {
                 prevout: outpoint1,
-                script_sig: vec![],
+                script_sig: vec![].into(),
                 sequence: 0xffffffff,
             },
             TransactionInput {
@@ -46,11 +46,11 @@ fn test_input_value_overflow() {
                 script_sig: vec![],
                 sequence: 0xffffffff,
             },
-        ],
+        ].into(),
         outputs: vec![TransactionOutput {
             value: 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -85,19 +85,19 @@ fn test_output_value_overflow() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: outpoint,
-            script_sig: vec![],
+            script_sig: vec![].into(),
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![
             TransactionOutput {
                 value: large_value,
-                script_pubkey: vec![],
+                script_pubkey: vec![].into(),
             },
             TransactionOutput {
                 value: large_value, // Adding this will overflow
                 script_pubkey: vec![],
             },
-        ],
+        ].into(),
         lock_time: 0,
     };
     
@@ -130,13 +130,13 @@ fn test_output_exceeds_max_money() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: outpoint,
-            script_sig: vec![],
+            script_sig: vec![].into(),
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY + 1, // Output exceeds max money
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -174,13 +174,13 @@ fn test_fee_calculation_no_overflow() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: outpoint,
-            script_sig: vec![],
+            script_sig: vec![].into(),
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: output_value,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -209,14 +209,14 @@ fn test_coinbase_value_overflow() {
     let coinbase = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
-            prevout: OutPoint { hash: [0; 32], index: 0xffffffff },
+            prevout: OutPoint { hash: [0; 32].into(), index: 0xffffffff },
             script_sig: vec![0x51],
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY + 1, // Exceeds max money
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -229,7 +229,7 @@ fn test_coinbase_value_overflow() {
             bits: 0x1d00ffff,
             nonce: 0,
         },
-        transactions: vec![coinbase],
+            transactions: vec![coinbase].into(),
     };
     
     // Block validation should reject coinbase exceeding MAX_MONEY
@@ -262,13 +262,13 @@ fn test_total_fees_overflow() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: outpoint,
-            script_sig: vec![],
+            script_sig: vec![].into(),
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY / 2 - 1000,
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
     
@@ -295,13 +295,13 @@ fn test_max_valid_values() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: outpoint,
-            script_sig: vec![],
+            script_sig: vec![].into(),
             sequence: 0xffffffff,
-        }],
+        }].into(),
         outputs: vec![TransactionOutput {
             value: MAX_MONEY, // Maximum valid value
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }].into(),
         lock_time: 0,
     };
     

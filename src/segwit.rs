@@ -480,16 +480,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: OutPoint {
-                    hash: [0; 32],
+                    hash: [0; 32].into(),
                     index: 0,
                 },
                 script_sig: vec![0x51],
                 sequence: 0xffffffff,
-            }],
+            }]
+            .into(),
             outputs: vec![TransactionOutput {
                 value: 1000,
-                script_pubkey: vec![0x51],
-            }],
+                script_pubkey: vec![0x51].into(),
+            }]
+            .into(),
             lock_time: 0,
         }
     }
@@ -500,7 +502,8 @@ mod tests {
             transactions: vec![
                 create_test_transaction(), // Coinbase
                 create_test_transaction(), // Regular tx
-            ].into_boxed_slice(),
+            ]
+            .into_boxed_slice(),
         }
     }
 
@@ -793,8 +796,8 @@ mod kani_proofs {
 
         Transaction {
             version: 1,
-            inputs,
-            outputs,
+            inputs: inputs.into(),
+            outputs: outputs.into(),
             lock_time: 0,
         }
     }
@@ -811,7 +814,7 @@ mod kani_proofs {
 
         Block {
             header: create_bounded_header(),
-            transactions,
+            transactions: transactions.into(),
         }
     }
 
@@ -1103,8 +1106,8 @@ mod property_tests {
 
                 Transaction {
                     version: 1,
-                    inputs,
-                    outputs,
+                    inputs: inputs.into(),
+                    outputs: outputs.into(),
                     lock_time: 0,
                 }
             })

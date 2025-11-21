@@ -125,18 +125,18 @@ mod tests {
             version: 1,
             inputs: vec![TransactionInput {
                 prevout: non_spam_outpoint.clone(),
-                script_sig: vec![0x51], // OP_1 (placeholder)
+                script_sig: vec![0x51].into(), // OP_1 (placeholder)
                 sequence: 0xffffffff,
-            }],
+            }].into(),
             outputs: vec![TransactionOutput {
                 value: 50000,
                 script_pubkey: {
                     // OP_RETURN with large data (spam pattern)
-                    let mut script = vec![0x6a]; // OP_RETURN
+                    let mut script = vec![0x6a].into(); // OP_RETURN
                     script.extend(vec![0x00; 100]); // Large data
                     script
                 },
-            }],
+            }].into(),
             lock_time: 0,
         };
         

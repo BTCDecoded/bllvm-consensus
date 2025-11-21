@@ -84,7 +84,7 @@ fn fuzz_connect_block_structure() {
                     bits: 0x1d00ffff,
                     nonce: 0,
                 },
-                transactions: vec![],
+            transactions: vec![].into(),
             };
             
             let initial_utxo_set = UtxoSet::new();

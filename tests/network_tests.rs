@@ -126,8 +126,8 @@ fn test_process_tx_message() {
 
     let tx = Transaction {
         version: 1,
-        inputs: vec![],
-        outputs: vec![],
+        inputs: vec![].into(),
+        outputs: vec![].into(),
         lock_time: 0,
     };
 
@@ -178,8 +178,8 @@ fn test_chain_state_methods() {
     // Test process_transaction
     let tx = Transaction {
         version: 1,
-        inputs: vec![],
-        outputs: vec![],
+        inputs: vec![].into(),
+        outputs: vec![].into(),
         lock_time: 0,
     };
     assert!(chain_state.process_transaction(&tx).is_ok());
@@ -205,8 +205,8 @@ fn test_chain_object_methods() {
 
     let tx = Transaction {
         version: 1,
-        inputs: vec![],
-        outputs: vec![],
+        inputs: vec![].into(),
+        outputs: vec![].into(),
         lock_time: 0,
     };
 

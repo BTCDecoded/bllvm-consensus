@@ -155,16 +155,18 @@ fn test_coinbase_transaction_eras() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![0x04, 0x00, 0x00, 0x00, 0x00], // Height encoding
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![TransactionOutput {
             value: 50_0000_0000, // 50 BTC
-            script_pubkey: vec![],
-        }],
+            script_pubkey: vec![].into(),
+        }]
+        .into(),
         lock_time: 0,
     };
 
@@ -177,19 +179,21 @@ fn test_coinbase_transaction_eras() {
         version: 1,
         inputs: vec![TransactionInput {
             prevout: OutPoint {
-                hash: [0; 32],
+                hash: [0; 32].into(),
                 index: 0xffffffff,
             },
             script_sig: vec![0x04, 0x00, 0x00, 0x00, 0x00],
             sequence: 0xffffffff,
-        }],
+        }]
+        .into(),
         outputs: vec![
             TransactionOutput {
                 value: 12_5000_0000, // 12.5 BTC (after halving)
-                script_pubkey: vec![],
+                script_pubkey: vec![].into(),
             },
             // Witness commitment output would be here
-        ],
+        ]
+        .into(),
         lock_time: 0,
     };
 

@@ -6,7 +6,9 @@
 //! Consensus-critical: Spending coinbase too early causes consensus violation.
 
 use bllvm_consensus::block::connect_block;
-use bllvm_consensus::types::{Block, BlockHeader, UtxoSet, OutPoint, Transaction, TransactionInput, TransactionOutput};
+use bllvm_consensus::types::{
+    Block, BlockHeader, OutPoint, Transaction, TransactionInput, TransactionOutput, UtxoSet,
+};
 
 use bllvm_consensus::constants::COINBASE_MATURITY;
 
@@ -217,7 +219,8 @@ fn test_coinbase_maturity_block_validation() {
                 }],
                 lock_time: 0,
             },
-        ].into_boxed_slice(),
+        ]
+        .into_boxed_slice(),
     };
 
     let utxo_set = UtxoSet::new();
