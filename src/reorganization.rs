@@ -595,8 +595,22 @@ mod property_tests {
     proptest! {
         #[test]
         fn prop_should_reorganize_max_work(
-            new_chain in proptest::collection::vec(any::<Block>(), 1..5),
-            current_chain in proptest::collection::vec(any::<Block>(), 1..5)
+            new_chain in proptest::collection::vec(
+                any::<Block>(),
+                if std::env::var("CARGO_TARPAULIN").is_ok() || std::env::var("TARPAULIN").is_ok() {
+                    1..3  // Reduced range under coverage
+                } else {
+                    1..5
+                }
+            ),
+            current_chain in proptest::collection::vec(
+                any::<Block>(),
+                if std::env::var("CARGO_TARPAULIN").is_ok() || std::env::var("TARPAULIN").is_ok() {
+                    1..3  // Reduced range under coverage
+                } else {
+                    1..5
+                }
+            )
         ) {
             // Calculate work for both chains - handle errors from invalid blocks
             let new_work = calculate_chain_work(&new_chain);
@@ -622,7 +636,14 @@ mod property_tests {
     proptest! {
         #[test]
         fn prop_calculate_chain_work_deterministic(
-            chain in proptest::collection::vec(any::<Block>(), 0..10)
+            chain in proptest::collection::vec(
+                any::<Block>(),
+                if std::env::var("CARGO_TARPAULIN").is_ok() || std::env::var("TARPAULIN").is_ok() {
+                    0..3  // Reduced range under coverage
+                } else {
+                    0..10
+                }
+            )
         ) {
             // Calculate work twice - handle errors from invalid blocks
             let work1 = calculate_chain_work(&chain);
