@@ -246,7 +246,7 @@ jobs:
         run: cargo audit
 
   verify:
-    name: Mathematical Verification
+    name: Verify
     needs: setup
     runs-on: [self-hosted, linux, x64]
     steps:
