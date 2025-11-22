@@ -1242,10 +1242,11 @@ mod kani_proofs {
         let height: Natural = kani::any();
         let subsidy: Integer = kani::any();
         let script = crate::kani_helpers::create_bounded_byte_string(10);
-        let address: Vec<u8> = kani::any();
+        let address = crate::kani_helpers::create_bounded_byte_string(10);
 
         // Bound for tractability
         kani::assume(subsidy >= 0);
+        use crate::MAX_MONEY;
         kani::assume(subsidy <= MAX_MONEY);
 
         let result = create_coinbase_transaction(height, subsidy, &script, &address);
@@ -1308,8 +1309,8 @@ mod kani_proofs {
     #[kani::proof]
     #[kani::unwind(5)]
     fn kani_merkle_tree_integrity() {
-        let txs1: Vec<Transaction> = kani::any();
-        let txs2: Vec<Transaction> = kani::any();
+        let txs1 = crate::kani_helpers::create_bounded_transaction_vec(3);
+        let txs2 = crate::kani_helpers::create_bounded_transaction_vec(3);
 
         use crate::assume_transaction_bounds_custom;
 
@@ -1383,7 +1384,7 @@ mod kani_proofs {
     #[kani::proof]
     #[kani::unwind(10)]
     fn kani_merkle_tree_calculation_bounds() {
-        let mut txs: Vec<Transaction> = kani::any();
+        let mut txs = crate::kani_helpers::create_bounded_transaction_vec(3);
 
         use crate::assume_transaction_bounds_custom;
 
@@ -1489,12 +1490,12 @@ mod kani_proofs {
         use crate::pow::get_next_work_required;
 
         let utxo_set = crate::kani_helpers::create_bounded_utxo_set();
-        let mempool_txs: Vec<Transaction> = kani::any();
+        let mempool_txs = crate::kani_helpers::create_bounded_transaction_vec(3);
         let height: Natural = kani::any();
-        let prev_header: BlockHeader = kani::any();
+        let prev_header = crate::kani_helpers::create_bounded_block_header();
         let prev_headers = crate::kani_helpers::create_bounded_block_header_vec(3);
-        let coinbase_script: Vec<u8> = kani::any();
-        let coinbase_address: Vec<u8> = kani::any();
+        let coinbase_script = crate::kani_helpers::create_bounded_byte_string(10);
+        let coinbase_address = crate::kani_helpers::create_bounded_byte_string(10);
 
         // Bound for tractability using standardized helpers
         assume_mining_bounds!(mempool_txs, prev_headers);
@@ -1650,12 +1651,12 @@ mod kani_proofs {
         use crate::kani_helpers::unwind_bounds;
 
         let utxo_set = crate::kani_helpers::create_bounded_utxo_set();
-        let mempool_txs: Vec<Transaction> = kani::any();
+        let mempool_txs = crate::kani_helpers::create_bounded_transaction_vec(3);
         let height: Natural = kani::any();
-        let prev_header: BlockHeader = kani::any();
+        let prev_header = crate::kani_helpers::create_bounded_block_header();
         let prev_headers = crate::kani_helpers::create_bounded_block_header_vec(3);
-        let coinbase_script: Vec<u8> = kani::any();
-        let coinbase_address: Vec<u8> = kani::any();
+        let coinbase_script = crate::kani_helpers::create_bounded_byte_string(10);
+        let coinbase_address = crate::kani_helpers::create_bounded_byte_string(10);
 
         // Bound for tractability using standardized helpers
         assume_mining_bounds!(mempool_txs, prev_headers);

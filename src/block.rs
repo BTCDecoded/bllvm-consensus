@@ -2046,7 +2046,7 @@ mod kani_proofs_2 {
         }
 
         // Create empty witnesses for simplicity
-        let witnesses: Vec<segwit::Witness> =
+        let witnesses: Vec<crate::segwit::Witness> =
             block.transactions.iter().map(|_| Vec::new()).collect();
 
         let result = connect_block(&block, &witnesses, utxo_set.clone(), height, None);
@@ -2236,7 +2236,7 @@ mod kani_proofs_2 {
         use crate::segwit::calculate_block_weight;
 
         let block = crate::kani_helpers::create_bounded_block();
-        let witnesses: Vec<crate::segwit::Witness> = kani::any();
+        let witnesses = crate::kani_helpers::create_bounded_witness_vec(10, 5, 10);
 
         // Bound for tractability
         kani::assume(block.transactions.len() <= 5);
@@ -2361,7 +2361,7 @@ mod kani_proofs_2 {
         kani::assume(block.transactions.len() <= 3);
         kani::assume(height <= 210000); // Before first halving
 
-        let witnesses: Vec<segwit::Witness> =
+        let witnesses: Vec<crate::segwit::Witness> =
             block.transactions.iter().map(|_| Vec::new()).collect();
 
         let result = connect_block(&block, &witnesses, utxo_set, height, None);
@@ -2429,7 +2429,7 @@ mod kani_proofs_2 {
                     hash: [0; 32],
                     index: 0xffffffff,
                 },
-                script_sig: kani::any(), // Variable length scriptSig
+                script_sig: crate::kani_helpers::create_bounded_byte_string(10), // Variable length scriptSig
                 sequence: 0xffffffff,
             }];
             coinbase.outputs = vec![TransactionOutput {
@@ -2438,7 +2438,7 @@ mod kani_proofs_2 {
             }];
         }
 
-        let witnesses: Vec<segwit::Witness> =
+        let witnesses: Vec<crate::segwit::Witness> =
             block.transactions.iter().map(|_| Vec::new()).collect();
 
         let result = connect_block(&block, &witnesses, utxo_set, height, None);

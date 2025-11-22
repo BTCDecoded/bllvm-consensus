@@ -1108,7 +1108,7 @@ mod kani_proofs_2 {
             let (validation_result, connected_utxo_set) = connect_result.unwrap();
             if matches!(
                 validation_result,
-                crate::transaction::ValidationResult::Valid
+                crate::types::ValidationResult::Valid
             ) {
                 // Disconnect block
                 let disconnect_result =

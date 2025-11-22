@@ -2643,7 +2643,7 @@ mod kani_proofs {
             result_exceed.is_ok()
                 && matches!(
                     result_exceed.unwrap(),
-                    crate::transaction::ValidationResult::Invalid(_)
+                    crate::types::ValidationResult::Invalid(_)
                 ),
             "Script size boundary: scripts with MAX_SCRIPT_SIZE + 1 bytes must fail"
         );
@@ -2795,7 +2795,7 @@ mod kani_proofs {
     fn kani_verify_script_correctness() {
         let script_sig = crate::kani_helpers::create_bounded_byte_string(10);
         let script_pubkey = crate::kani_helpers::create_bounded_byte_string(10);
-        let witness: Option<Vec<u8>> = kani::any();
+        let witness = Some(crate::kani_helpers::create_bounded_byte_string(10));
         let flags: u32 = kani::any();
 
         // Bound for tractability
@@ -3388,7 +3388,7 @@ mod kani_proofs_2 {
     #[kani::proof]
     #[kani::unwind(10)]
     fn kani_stack_size_limit() {
-        let mut stack: Vec<ByteString> = kani::any();
+        let mut stack = crate::kani_helpers::create_bounded_witness(5, 10);
         let opcode: u8 = kani::any();
         let flags: u32 = kani::any();
 
@@ -3416,7 +3416,7 @@ mod kani_proofs_2 {
     #[kani::proof]
     #[kani::unwind(10)]
     fn kani_operation_count_limit() {
-        let script: ByteString = kani::any();
+        let script = crate::kani_helpers::create_bounded_byte_string(10);
         let mut stack = Vec::new();
         let flags: u32 = kani::any();
 
@@ -3460,7 +3460,7 @@ mod kani_proofs_2 {
         let prevouts: Vec<TransactionOutput> = (0..tx.inputs.len())
             .map(|_| TransactionOutput {
                 value: kani::any(),
-                script_pubkey: kani::any(),
+                script_pubkey: crate::kani_helpers::create_bounded_byte_string(10),
             })
             .collect();
 
@@ -3760,7 +3760,7 @@ mod kani_proofs_2 {
         let prevouts: Vec<TransactionOutput> = (0..tx.inputs.len())
             .map(|_| TransactionOutput {
                 value: kani::any(),
-                script_pubkey: kani::any(),
+                script_pubkey: crate::kani_helpers::create_bounded_byte_string(10),
             })
             .collect();
 

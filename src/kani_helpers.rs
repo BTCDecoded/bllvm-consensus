@@ -7,7 +7,7 @@
 
 use crate::constants::*;
 use crate::types::*;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 /// Bitcoin transaction limits for Kani proofs
 ///
@@ -168,14 +168,11 @@ macro_rules! assume_transaction_bounds_custom {
 /// Macro for mempool bounds
 ///
 /// Applies standard bounds to a mempool for Kani proofs.
-/// Bounds mempool size and all transactions within it.
+/// Mempool is HashSet<Hash> (tx IDs), so we just bound the size.
 #[macro_export]
 macro_rules! assume_mempool_bounds {
     ($mempool:expr, $max_len:expr) => {
         kani::assume($mempool.len() <= $max_len);
-        for tx in $mempool {
-            $crate::assume_transaction_bounds!(tx);
-        }
     };
 }
 
@@ -447,7 +444,29 @@ pub fn create_bounded_witness_version() -> crate::witness::WitnessVersion {
     let variant: u8 = kani::any();
     kani::assume(variant <= 1);
     match variant {
-        0 => crate::witness::WitnessVersion::V0,
-        _ => crate::witness::WitnessVersion::V0,
+        0 => crate::witness::WitnessVersion::SegWitV0,
+        _ => crate::witness::WitnessVersion::SegWitV0,
     }
+}
+
+/// Create a bounded Vec<Hash> for Kani proofs
+pub fn create_bounded_hash_vec(max_len: usize) -> Vec<Hash> {
+    let len: usize = kani::any();
+    kani::assume(len <= max_len);
+    let mut result = Vec::new();
+    for _i in 0..len {
+        result.push(kani::any());
+    }
+    result
+}
+
+/// Create a bounded Vec<Transaction> for Kani proofs
+pub fn create_bounded_transaction_vec(max_len: usize) -> Vec<Transaction> {
+    let len: usize = kani::any();
+    kani::assume(len <= max_len);
+    let mut result = Vec::new();
+    for _i in 0..len {
+        result.push(create_bounded_transaction());
+    }
+    result
 }

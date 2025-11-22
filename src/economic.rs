@@ -472,7 +472,7 @@ mod kani_proofs {
             if !utxo_set.contains_key(&input.prevout) {
                 let utxo = UTXO {
                     value: kani::any(),
-                    script_pubkey: kani::any(),
+                    script_pubkey: crate::kani_helpers::create_bounded_byte_string(10),
                     height: 0,
                 };
                 utxo_set.insert(input.prevout, utxo);
@@ -548,7 +548,7 @@ mod kani_proofs {
                 kani::assume(value <= MAX_MONEY);
                 let utxo = UTXO {
                     value,
-                    script_pubkey: kani::any(),
+                    script_pubkey: crate::kani_helpers::create_bounded_byte_string(10),
                     height: 0,
                 };
                 utxo_set.insert(input.prevout, utxo);

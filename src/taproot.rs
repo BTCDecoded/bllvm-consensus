@@ -1318,7 +1318,7 @@ mod kani_proofs_2 {
     /// This ensures Taproot output scripts match the required format.
     #[kani::proof]
     fn kani_taproot_script_validation() {
-        let script: ByteString = kani::any();
+        let script = crate::kani_helpers::create_bounded_byte_string(10);
 
         // Bound for tractability
         kani::assume(script.len() <= 50);
@@ -1363,8 +1363,8 @@ mod kani_proofs_2 {
     #[kani::proof]
     #[kani::unwind(5)]
     fn kani_taproot_script_path_validation() {
-        let script: ByteString = kani::any();
-        let merkle_proof: Vec<Hash> = kani::any();
+        let script = crate::kani_helpers::create_bounded_byte_string(10);
+        let merkle_proof = crate::kani_helpers::create_bounded_hash_vec(10);
         let merkle_root: Hash = kani::any();
 
         // Bound for tractability

@@ -1027,7 +1027,7 @@ mod kani_proofs_2 {
                     script_pubkey: crate::kani_helpers::create_bounded_byte_string(10),
                     height: 0,
                 };
-                utxo_set.insert(input.prevout, utxo);
+                utxo_set.insert(input.prevout.clone(), utxo);
             }
         }
 
@@ -1089,7 +1089,7 @@ mod kani_proofs_2 {
                     script_pubkey: crate::kani_helpers::create_bounded_byte_string(10),
                     height: 0,
                 };
-                utxo_set.insert(input.prevout, utxo);
+                utxo_set.insert(input.prevout.clone(), utxo);
             }
         }
 
