@@ -230,15 +230,15 @@ mod kani_proofs {
     /// Mathematical specification:
     /// ∀ headers ∈ [BlockHeader]: get_median_time_past(headers) >= min(header.timestamp for header in headers)
     ///
-    /// NOTE: This proof is disabled due to sort_unstable() causing excessive unwinding.
-    /// The property is still verified by other BIP113 proofs.
+    /// NOTE: Using u8 for header_count to naturally bound it to 0-255, helping Kani prune paths early
     #[kani::proof]
-    #[kani::unwind(1)] // Minimal unwind - proof disabled due to sort_unstable complexity
-    #[allow(dead_code)] // Disabled but kept for documentation
+    #[kani::unwind(2)] // Very small unwind bound - sort_unstable() complexity handled by small input size
     fn kani_bip113_median_time_ge_minimum() {
-        // Proof disabled: sort_unstable() causes excessive unwinding (128+ iterations)
-        // This property is verified by kani_bip113_median_bounded_by_timestamps instead
-        kani::assume(false); // Explicitly disable this proof
+        // Use u8 to naturally bound header_count, helping Kani prune impossible paths early
+        let header_count_u8: u8 = kani::any();
+        kani::assume(header_count_u8 <= 2); // Very small bound to minimize sort_unstable unwinding
+        kani::assume(header_count_u8 > 0); // Ensure at least one header
+        let header_count = header_count_u8 as usize;
 
         let mut headers = Vec::new();
         let mut min_timestamp = u64::MAX;
