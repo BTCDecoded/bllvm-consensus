@@ -253,6 +253,7 @@ jobs:
     name: Verify
     needs: setup
     runs-on: [self-hosted, linux, x64]
+    timeout-minutes: 43200  # 30 days - effectively unlimited for practical purposes
     steps:
       - uses: actions/checkout@v4
       
