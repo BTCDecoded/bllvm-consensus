@@ -1049,6 +1049,9 @@ jobs:
             PUBLISH_STATUS_MSG="⚠️  Already exists"
           fi
           
+          # Get repository name for commit history link
+          REPO_NAME="${{ github.repository }}"
+          
           cat >> /tmp/release_notes.md << EOF
           
           ### 📝 Changes
@@ -1057,7 +1060,7 @@ jobs:
           
           **Published to crates.io**: $PUBLISH_STATUS_MSG
           
-          See [full commit history](https://github.com/${{ github.repository }}/compare/$COMMIT_RANGE) for details.
+          See [full commit history](https://github.com/${REPO_NAME}/compare/${COMMIT_RANGE}) for details.
           EOF
           
           # Add warning if publish failed
