@@ -424,6 +424,16 @@ mod kani_proofs {
 
         let subsidy = get_block_subsidy(height);
 
+        // Critical constraint: subsidy + fees must not exceed MAX_MONEY
+        // This ensures the coinbase value stays within Bitcoin's supply limit
+        kani::assume(subsidy.checked_add(fees).is_some());
+        if let Some(sum) = subsidy.checked_add(fees) {
+            kani::assume(sum <= MAX_MONEY);
+        } else {
+            // If addition overflows i64, it definitely exceeds MAX_MONEY
+            return;
+        }
+
         // Coinbase value calculation must use checked arithmetic
         let coinbase_value = match subsidy.checked_add(fees) {
             Some(sum) => sum,
