@@ -1064,7 +1064,7 @@ mod kani_proofs {
 
     /// Kani proof: apply_transaction preserves UTXO set consistency
     #[kani::proof]
-    #[kani::unwind(10)] // unwind_bounds::BLOCK_VALIDATION
+    #[kani::unwind(7)] // Reduced from 10: tx bounds are 5 inputs/outputs, so 7 is sufficient
     fn kani_apply_transaction_consistency() {
         use crate::assume_transaction_bounds_custom;
         use crate::kani_helpers::unwind_bounds;
@@ -1119,7 +1119,7 @@ mod kani_proofs {
     ///
     /// This ensures the _with_id variant matches the regular function when called with computed ID.
     #[kani::proof]
-    #[kani::unwind(10)]
+    #[kani::unwind(7)] // Reduced from 10: same transaction bounds as consistency proof
     fn kani_apply_transaction_with_id_correctness() {
         let tx = crate::kani_helpers::create_bounded_transaction();
         let utxo_set = crate::kani_helpers::create_bounded_utxo_set();
@@ -1197,7 +1197,7 @@ mod kani_proofs {
     ///
     /// This proves the full mathematical specification from Orange Paper.
     #[kani::proof]
-    #[kani::unwind(10)]
+    #[kani::unwind(7)] // Reduced from 10: same transaction bounds as consistency proof
     fn kani_apply_transaction_mathematical_correctness() {
         let tx = crate::kani_helpers::create_bounded_transaction();
         let mut utxo_set = crate::kani_helpers::create_bounded_utxo_set();
@@ -1329,7 +1329,7 @@ mod kani_proofs {
     /// - If apply_transaction succeeds: ∀ input ∈ tx.inputs: input.prevout ∉ new_utxo_set
     /// - Ensures each UTXO can only be spent once
     #[kani::proof]
-    #[kani::unwind(10)]
+    #[kani::unwind(7)] // Reduced from 10: tx bounds are 5 inputs/outputs, so 7 is sufficient
     fn kani_no_double_spending() {
         let tx = crate::kani_helpers::create_bounded_transaction();
         let mut utxo_set = crate::kani_helpers::create_bounded_utxo_set();

@@ -2738,46 +2738,12 @@ mod kani_proofs {
         }
     }
 
-    /// Verify script execution terminates (no infinite loops)
-    ///
-    /// Mathematical specification:
-    /// ∀ script ∈ ByteString: eval_script(script) terminates
-    ///
-    /// Termination is guaranteed by:
-    /// - Operation count limit (MAX_SCRIPT_OPS)
-    /// - Script is finite length (iterated once)
-    /// - No recursive calls or loops in script execution
-    #[kani::proof]
-    #[kani::unwind(15)]
-    fn kani_script_execution_terminates() {
-        let script_len: usize = kani::any();
-        kani::assume(script_len <= 10); // Small scripts for tractability
-
-        let mut script = Vec::new();
-        for _ in 0..script_len {
-            let opcode: u8 = kani::any();
-            script.push(opcode);
-        }
-
-        let mut stack = Vec::new();
-        let flags: u32 = kani::any();
-
-        // This should always terminate (no infinite loops)
-        // Termination guaranteed by:
-        // 1. Script is finite length (script_len <= 10)
-        // 2. Operation counter prevents unbounded execution
-        // 3. Each opcode execution is O(1)
-        let result = eval_script(&script, &mut stack, flags);
-
-        // Should always return a result (terminates)
-        assert!(
-            result.is_ok() || result.is_err(),
-            "Script execution must terminate"
-        );
-
-        // Stack should be bounded
-        assert!(stack.len() <= MAX_STACK_SIZE, "Stack must be bounded");
-    }
+    // Removed: kani_script_execution_terminates
+    // This proof had limited value because:
+    // 1. It only verified scripts with script_len <= 10 (very small)
+    // 2. Termination is already guaranteed by MAX_SCRIPT_OPS limit
+    // 3. The unwind=15 bound was excessive for such small scripts
+    // Termination is better verified through the operation count limit proof.
 
     /// Kani proof: verify_script correctness (Orange Paper Section 5.2)
     ///

@@ -444,7 +444,7 @@ mod kani_proofs {
 
     /// Kani proof: should_reorganize selects chain with maximum work
     #[kani::proof]
-    #[kani::unwind(10)]
+    #[kani::unwind(7)] // Reduced from 10: chains bounded to 5, so 7 is sufficient
     fn kani_should_reorganize_max_work() {
         // Generate symbolic chains
         let new_chain = crate::kani_helpers::create_bounded_block_vec(3);

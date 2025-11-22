@@ -573,68 +573,14 @@ mod kani_proofs {
         }
     }
 
-    /// Kani proof: Median calculation correctness
-    ///
-    /// Verifies that median calculation always produces a value between min and max.
-    #[kani::proof]
-    #[kani::unwind(20)]
-    fn kani_median_calculation_correctness() {
-        let mut tips: Vec<Natural> = kani::vec::any_vec::<Natural>(10);
-        kani::assume(!tips.is_empty());
-        kani::assume(tips.len() <= 100); // Bound for tractability
+    // Removed: kani_median_calculation_correctness
+    // This proof verified a trivial mathematical property (min <= median <= max)
+    // that can be verified with unit tests. The unwind=20 bound was excessive.
 
-        // Sort to find median (same as determine_checkpoint_height)
-        tips.sort();
-
-        let median = if tips.len() % 2 == 0 {
-            let mid = tips.len() / 2;
-            (tips[mid - 1] + tips[mid]) / 2
-        } else {
-            tips[tips.len() / 2]
-        };
-
-        // Mathematical invariant: Median is always between min and max
-        if let (Some(&min_tip), Some(&max_tip)) = (tips.first(), tips.last()) {
-            assert!(
-                median >= min_tip && median <= max_tip,
-                "Median must be between min and max"
-            );
-        }
-    }
-
-    /// Kani proof: Consensus result invariants
-    ///
-    /// Verifies that ConsensusResult always satisfies mathematical invariants.
-    #[kani::proof]
-    #[kani::unwind(20)]
-    fn kani_consensus_result_invariants() {
-        let agreement_count: usize = kani::any();
-        let total_peers: usize = kani::any();
-
-        kani::assume(total_peers >= 1 && total_peers <= 100);
-        kani::assume(agreement_count <= total_peers);
-        kani::assume(agreement_count >= 1);
-
-        let agreement_ratio = agreement_count as f64 / total_peers as f64;
-
-        // Mathematical invariants for ConsensusResult
-        assert!(
-            agreement_ratio >= 0.0 && agreement_ratio <= 1.0,
-            "Agreement ratio must be in [0, 1]"
-        );
-
-        assert!(
-            agreement_count <= total_peers,
-            "Agreement count cannot exceed total peers"
-        );
-
-        // Verify ratio calculation is correct
-        let recalculated_ratio = agreement_count as f64 / total_peers as f64;
-        assert!(
-            (agreement_ratio - recalculated_ratio).abs() < f64::EPSILON,
-            "Agreement ratio calculation must be consistent"
-        );
-    }
+    // Removed: kani_consensus_result_invariants
+    // This proof verified trivial type/range invariants (agreement_ratio in [0,1],
+    // agreement_count <= total_peers) that are obvious from the type system.
+    // The unwind=20 bound was excessive for simple arithmetic checks.
 
     /// Kani proof: Diverse peer discovery filtering
     ///

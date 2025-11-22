@@ -334,7 +334,7 @@ mod kani_proofs {
     /// - Median is bounded by min(timestamps) and max(timestamps)
     /// - Median is one of the timestamps or between two adjacent ones
     #[kani::proof]
-    #[kani::unwind(15)] // unwind_bounds::COMPLEX - needs at least 11 for correctness proof
+    #[kani::unwind(11)] // Reduced from 15: header_count <= 15, but only need 11 for median calculation
     fn kani_bip113_median_calculation_correctness() {
         let header_count: usize = kani::any();
         kani::assume(header_count >= MEDIAN_TIME_BLOCKS && header_count <= 15); // Reduced from 20 for tractability

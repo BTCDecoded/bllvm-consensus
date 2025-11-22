@@ -126,7 +126,7 @@ mod kani_proofs {
     /// - Median is monotonic: sorted_headers → median is middle value
     /// - CLTV timestamp validation uses median_time_past correctly
     #[kani::proof]
-    #[kani::unwind(12)]
+    #[kani::unwind(11)] // Reduced from 12: exactly 11 headers needed for BIP113 median
     fn kani_bip113_bip65_integration() {
         // Generate 11 block headers
         let mut headers = Vec::new();
@@ -263,7 +263,7 @@ mod kani_proofs {
     /// - validate_segwit_witness_structure(witness) checks element size limits
     /// - All elements must be <= MAX_SCRIPT_ELEMENT_SIZE (520 bytes per BIP141)
     #[kani::proof]
-    #[kani::unwind(10)]
+    #[kani::unwind(7)] // Reduced from 10: num_elements <= 5, so 7 is sufficient
     fn kani_witness_segwit_integration() {
         // Create witness with bounded size for tractability
         let num_elements: usize = kani::any();
@@ -306,7 +306,7 @@ mod kani_proofs {
     /// - Key path: single 64-byte signature
     /// - Script path: at least 2 elements, last element is control block (>= 33 bytes)
     #[kani::proof]
-    #[kani::unwind(10)]
+    #[kani::unwind(7)] // Reduced from 10: num_elements <= 5, so 7 is sufficient
     fn kani_witness_taproot_integration() {
         let num_elements: usize = kani::any();
         kani::assume(num_elements <= 5);
@@ -406,7 +406,7 @@ mod kani_proofs {
     /// - has_conflict_with_tx(tx1, tx2) = true ⟺ ∃ input ∈ tx1.inputs: input.prevout ∈ tx2.inputs.prevouts
     /// - RBF replacement requires conflict: replacement_checks(tx2, tx1) requires conflict
     #[kani::proof]
-    #[kani::unwind(10)]
+    #[kani::unwind(5)] // Reduced from 10: tx inputs <= 3, so 5 is sufficient
     fn kani_rbf_mempool_integration() {
         // Create two transactions
         let tx1_inputs: usize = kani::any();
@@ -513,7 +513,7 @@ mod kani_proofs {
     /// - verify_script_with_context_full uses transaction context correctly
     /// - Input index must be valid: input_index < tx.inputs.len()
     #[kani::proof]
-    #[kani::unwind(10)]
+    #[kani::unwind(7)] // Reduced from 10: num_inputs <= 5, so 7 is sufficient
     fn kani_script_transaction_integration() {
         // Create transaction
         let num_inputs: usize = kani::any();
