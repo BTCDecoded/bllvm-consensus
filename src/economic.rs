@@ -460,7 +460,7 @@ mod kani_proofs {
     #[kani::proof]
     #[kani::unwind(5)]
     fn kani_calculate_fee_correctness() {
-        let tx = crate::kani_helpers::create_bounded_transaction();
+        let mut tx = crate::kani_helpers::create_bounded_transaction();
         let mut utxo_set = crate::kani_helpers::create_bounded_utxo_set();
 
         // Bound for tractability
