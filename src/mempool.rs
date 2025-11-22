@@ -742,7 +742,7 @@ mod kani_proofs {
 
         // If transaction is already in mempool, it should be rejected
         if mempool.contains(&tx_id) {
-            let result = accept_to_memory_pool(&tx, &utxo_set, &mempool, height);
+            let result = accept_to_memory_pool(&tx, None, &utxo_set, &mempool, height);
             if result.is_ok() {
                 let mempool_result = result.unwrap();
                 assert!(
@@ -814,7 +814,7 @@ mod kani_proofs {
         // Calculate according to Orange Paper spec
         let spec_final = if tx.lock_time == 0 {
             true
-        } else if tx.lock_time < LOCKTIME_THRESHOLD {
+        } else if tx.lock_time < LOCKTIME_THRESHOLD as u64 {
             // Block height locktime
             height >= tx.lock_time as Natural
         } else {

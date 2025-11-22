@@ -105,7 +105,7 @@ mod kani_proofs {
 
             // Locktime value extraction (lower 16 bits)
             let locktime_value = locktime::extract_sequence_locktime_value(sequence_value);
-            let expected_value = (sequence_value & 0x0000ffff) as u32;
+            let expected_value = (sequence_value & 0x0000ffff) as u16;
 
             assert_eq!(
                 locktime_value, expected_value,
@@ -425,7 +425,7 @@ mod kani_proofs {
         for i in 0..tx1_inputs {
             tx1_inputs_vec.push(TransactionInput {
                 prevout: if i == 0 {
-                    shared_prevout
+                    shared_prevout.clone().clone()
                 } else {
                     OutPoint {
                         hash: kani::any(),
@@ -453,7 +453,7 @@ mod kani_proofs {
         for i in 0..tx2_inputs {
             tx2_inputs_vec.push(TransactionInput {
                 prevout: if i == 0 {
-                    shared_prevout
+                    shared_prevout.clone().clone()
                 } else {
                     OutPoint {
                         hash: kani::any(),

@@ -1030,7 +1030,7 @@ mod kani_proofs_2 {
 
         if result.is_ok() {
             let reorg_result = result.unwrap();
-            let new_utxo_set = reorg_result.utxo_set;
+            let new_utxo_set = reorg_result.new_utxo_set;
 
             // UTXO set consistency: no double-spending
             // All spent inputs from disconnected blocks should be removed

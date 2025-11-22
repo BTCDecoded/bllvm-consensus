@@ -2581,9 +2581,7 @@ mod kani_proofs {
     #[kani::proof]
     fn kani_script_size_boundary_enforcement() {
         use crate::transaction::check_transaction;
-        use crate::transaction::Transaction;
-        use crate::transaction::TransactionInput;
-        use crate::transaction::TransactionOutput;
+        use crate::types::{Transaction, TransactionInput, TransactionOutput};
         use crate::types::OutPoint;
 
         // Test: Transaction with script at exactly MAX_SCRIPT_SIZE

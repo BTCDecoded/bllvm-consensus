@@ -772,7 +772,7 @@ mod kani_proofs {
             inputs.push(TransactionInput {
                 prevout: OutPoint {
                     hash: [0; 32],
-                    index: i as u32,
+                    index: i as u64,
                 },
                 script_sig: script,
                 sequence: 0xffffffff,
@@ -1147,8 +1147,7 @@ mod property_tests {
 #[cfg(kani)]
 mod kani_proofs_2 {
     use super::*;
-    use crate::block::Block;
-    use crate::transaction::Transaction;
+    use crate::types::{Block, Transaction};
     use kani::*;
 
     /// Kani proof: Witness commitment validation (Orange Paper Section 11.1)

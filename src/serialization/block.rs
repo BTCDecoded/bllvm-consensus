@@ -298,7 +298,7 @@ mod tests {
 #[cfg(kani)]
 mod kani_proofs {
     use super::*;
-    use crate::block::BlockHeader;
+    use crate::types::BlockHeader;
     use kani::*;
 
     /// Kani proof: Block header serialization round-trip correctness (Orange Paper Section 13.3.2)
@@ -332,7 +332,7 @@ mod kani_proofs {
                 "Block header serialization round-trip: merkle_root must match"
             );
             assert_eq!(
-                deserialized.time, header.time,
+                deserialized.timestamp, header.timestamp,
                 "Block header serialization round-trip: time must match"
             );
             assert_eq!(

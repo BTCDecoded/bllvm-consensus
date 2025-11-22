@@ -528,7 +528,7 @@ mod tests {
 #[cfg(kani)]
 mod kani_proofs {
     use super::*;
-    use crate::transaction::Transaction;
+    use crate::types::Transaction;
     use kani::*;
 
     /// Kani proof: Transaction sighash determinism (Orange Paper Section 13.3.2)

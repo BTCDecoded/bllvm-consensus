@@ -921,7 +921,7 @@ mod kani_proofs {
             inputs.push(TransactionInput {
                 prevout: OutPoint {
                     hash: [0; 32],
-                    index: i as u32,
+                    index: i as u64,
                 },
                 script_sig: script,
                 sequence: 0xffffffff,
