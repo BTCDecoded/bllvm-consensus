@@ -85,33 +85,15 @@ jobs:
     needs: setup
     runs-on: [self-hosted, Linux, X64, builds]
     if: |
-      github.event_name != 'push' || github.event.head_commit == null || 
-      (!contains(github.event.head_commit.message, '[skip ci]') &&
-       !contains(github.event.head_commit.message, '[ci skip]') &&
-       !contains(github.event.head_commit.message, '[no ci]'))
+      (github.event_name != 'push' || github.event.head_commit == null || 
+       (!contains(github.event.head_commit.message, '[skip ci]') &&
+        !contains(github.event.head_commit.message, '[ci skip]') &&
+        !contains(github.event.head_commit.message, '[no ci]'))) &&
+      (github.event_name != 'workflow_dispatch' || github.event.inputs.skip_tests != 'true')
     steps:
-      - name: Check if tests should be skipped
-        id: skip_check
-        run: |
-          SKIP="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_tests == 'true' }}"
-          if [ "$SKIP" = "true" ]; then
-            echo "⚠️  Tests skipped via workflow input"
-            echo "skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-      
-      - name: Skip tests message
-        if: steps.skip_check.outputs.skip == 'true'
-        run: |
-          echo "✅ Test step skipped (untested release)"
-          exit 0
-      
       - uses: actions/checkout@v4
-        if: steps.skip_check.outputs.skip != 'true'
       
       - name: Cache
-        if: steps.skip_check.outputs.skip != 'true'
         run: |
           CACHE_ROOT="/tmp/runner-cache"
           CACHE_KEY="${{ needs.setup.outputs.cache-key }}"
@@ -119,7 +101,6 @@ jobs:
           echo "TARGET_CACHE_DIR=$CACHE_ROOT/target/$CACHE_KEY" >> $GITHUB_ENV
       
       - name: Restore registry
-        if: steps.skip_check.outputs.skip != 'true'
         run: |
           if [ -d "$CARGO_CACHE_DIR/registry" ] && [ "$(ls -A $CARGO_CACHE_DIR/registry 2>/dev/null)" ]; then
             mkdir -p "$HOME/.cargo/registry"
@@ -127,7 +108,6 @@ jobs:
           fi
       
       - name: Restore git
-        if: steps.skip_check.outputs.skip != 'true'
         run: |
           if [ -d "$CARGO_CACHE_DIR/git" ] && [ "$(ls -A $CARGO_CACHE_DIR/git 2>/dev/null)" ]; then
             mkdir -p "$HOME/.cargo/git"
@@ -135,27 +115,23 @@ jobs:
           fi
       
       - name: Restore target
-        if: steps.skip_check.outputs.skip != 'true'
         run: |
           if [ -d "$TARGET_CACHE_DIR" ] && [ "$(ls -A $TARGET_CACHE_DIR 2>/dev/null)" ]; then
             rsync -a --delete "$TARGET_CACHE_DIR/" ./target/ || true
           fi
       
       - name: Install Rust
-        if: steps.skip_check.outputs.skip != 'true'
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: 1.88.0
       
       - name: Run tests
-        if: steps.skip_check.outputs.skip != 'true'
         run: |
           # Run tests in parallel (default) with minimal output for speed
           # Use --lib --bins --tests to ensure all test types run
           cargo test --lib --bins --tests
       
       - name: Coverage
-        if: steps.skip_check.outputs.skip != 'true'
         id: coverage
         run: |
           cargo install cargo-tarpaulin --version 0.27.0
@@ -172,13 +148,12 @@ jobs:
           fi
       
       - name: Upload coverage
-        if: steps.skip_check.outputs.skip != 'true'
         uses: codecov/codecov-action@v3
         with:
           file: coverage/cobertura.xml
       
       - name: Capture test output hash
-        if: steps.skip_check.outputs.skip != 'true' && github.ref == 'refs/heads/main'
+ && github.ref == 'refs/heads/main'
         run: |
           # Capture test output and hash it
           TEST_OUTPUT_FILE="test_output.txt"
@@ -189,7 +164,7 @@ jobs:
           echo "Test output hash: $UNIT_TESTS_HASH"
       
       - name: Upload test data for attestation
-        if: steps.skip_check.outputs.skip != 'true' && github.ref == 'refs/heads/main'
+ && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: test-attestation-data
@@ -352,40 +327,20 @@ jobs:
     needs: setup
     runs-on: [self-hosted, Linux, X64, perf]
     if: |
-      github.event_name != 'push' || github.event.head_commit == null || 
-      (!contains(github.event.head_commit.message, '[skip ci]') &&
-       !contains(github.event.head_commit.message, '[ci skip]') &&
-       !contains(github.event.head_commit.message, '[no ci]'))
+      (github.event_name != 'push' || github.event.head_commit == null || 
+       (!contains(github.event.head_commit.message, '[skip ci]') &&
+        !contains(github.event.head_commit.message, '[ci skip]') &&
+        !contains(github.event.head_commit.message, '[no ci]'))) &&
+      (github.event_name != 'workflow_dispatch' || github.event.inputs.skip_verification != 'true')
     steps:
-      - name: Check if verification should be skipped
-        id: skip_check
-        run: |
-          SKIP="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_verification == 'true' }}"
-          if [ "$SKIP" = "true" ]; then
-            echo "⚠️  Verification skipped via workflow input"
-            echo "skip=true" >> $GITHUB_OUTPUT
-            exit 0
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-      
-      - name: Skip verification
-        if: steps.skip_check.outputs.skip == 'true'
-        run: |
-          echo "✅ Verification step skipped (unverified release)"
-          exit 0
-      
       - uses: actions/checkout@v4
-        if: steps.skip_check.outputs.skip != 'true'
       
       - name: Install Rust
-        if: steps.skip_check.outputs.skip != 'true'
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: 1.88.0
       
       - name: Verify Kani is available
-        if: steps.skip_check.outputs.skip != 'true'
         run: |
           echo "Checking for Kani model checker..."
           # Check if kani is available (should be pre-installed on runner)
@@ -404,7 +359,6 @@ jobs:
           fi
       
       - name: Determine proof tier
-        if: steps.skip_check.outputs.skip != 'true'
         id: proof_tier
         run: |
           # Determine which proofs to run based on event type
@@ -430,7 +384,7 @@ jobs:
           echo "Description: ${{ steps.proof_tier.outputs.description }}"
       
       - name: Run Kani proofs (Fast - every push)
-        if: steps.skip_check.outputs.skip != 'true' && steps.proof_tier.outputs.tier == 'fast'
+ && steps.proof_tier.outputs.tier == 'fast'
         run: |
           echo "⚡ Running Kani proofs - Fast tier (103 proofs, unwind <= 3)..."
           echo "Note: Running with minimal parallelism (2 jobs) to avoid OOM"
@@ -465,7 +419,7 @@ jobs:
           fi
       
       - name: Upload Kani output for attestation (Fast)
-        if: steps.skip_check.outputs.skip != 'true' && steps.proof_tier.outputs.tier == 'fast' && github.ref == 'refs/heads/main'
+ && steps.proof_tier.outputs.tier == 'fast' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: kani-attestation-data
@@ -473,7 +427,7 @@ jobs:
           retention-days: 90
       
       - name: Run Kani proofs (Fast + Medium - PRs)
-        if: steps.skip_check.outputs.skip != 'true' && steps.proof_tier.outputs.tier == 'fast_medium'
+ && steps.proof_tier.outputs.tier == 'fast_medium'
         run: |
           echo "🔍 Running Kani proofs - Fast + Medium tier (174 proofs, unwind <= 9)..."
           echo "Note: Running with minimal parallelism (2 jobs) to avoid OOM"
@@ -508,7 +462,7 @@ jobs:
           fi
       
       - name: Upload Kani output for attestation (Fast + Medium)
-        if: steps.skip_check.outputs.skip != 'true' && steps.proof_tier.outputs.tier == 'fast_medium' && github.ref == 'refs/heads/main'
+ && steps.proof_tier.outputs.tier == 'fast_medium' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: kani-attestation-data
@@ -516,7 +470,7 @@ jobs:
           retention-days: 90
       
       - name: Run Kani proofs (All - main branch)
-        if: steps.skip_check.outputs.skip != 'true' && steps.proof_tier.outputs.tier == 'all'
+ && steps.proof_tier.outputs.tier == 'all'
         run: |
           echo "🐌 Running Kani proofs - All tier (195 proofs, all unwind bounds)..."
           echo "Note: Running with minimal parallelism (2 jobs) to avoid OOM"
@@ -543,7 +497,7 @@ jobs:
           echo "Kani output hash: $KANI_OUTPUT_HASH"
       
       - name: Upload Kani output for attestation
-        if: steps.skip_check.outputs.skip != 'true' && steps.proof_tier.outputs.tier == 'all' && github.ref == 'refs/heads/main'
+ && steps.proof_tier.outputs.tier == 'all' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: kani-attestation-data
@@ -551,7 +505,6 @@ jobs:
           retention-days: 90
       
       - name: Run property tests with all features
-        if: steps.skip_check.outputs.skip != 'true'
         run: |
           echo "🧪 Running property-based tests with all features (35+ tests)..."
           # Property tests can run in parallel (they're designed to be independent)
@@ -563,7 +516,6 @@ jobs:
           echo "✅ All property tests passed"
       
       - name: MIRI undefined behavior checks
-        if: steps.skip_check.outputs.skip != 'true'
         continue-on-error: true
         run: |
           echo "🔍 Running MIRI checks for undefined behavior..."
