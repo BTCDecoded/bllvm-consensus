@@ -297,14 +297,19 @@ jobs:
           # cargo kani will discover all #[kani::proof] functions
           # Run with maximum parallelization for fastest verification
           # Use terse output format and filter noisy CBMC messages
-          cargo kani --features verify --output-format terse -j $PARALLEL_JOBS 2>&1 | grep -v "aborting path on assume(false)" || {
-            EXIT_CODE=${PIPESTATUS[0]}
-            if [ $EXIT_CODE -ne 0 ]; then
-              echo "❌ Kani verification failed"
-              echo "This is critical for consensus correctness - review proofs before release"
-              exit $EXIT_CODE
-            fi
-          }
+          # Capture output and exit code properly to avoid premature cancellation
+          # Use temporary file to capture output while preserving exit code
+          TEMP_OUTPUT=$(mktemp)
+          trap "rm -f $TEMP_OUTPUT" EXIT
+          set +e  # Temporarily disable exit on error to capture exit code
+          cargo kani --features verify --output-format terse -j $PARALLEL_JOBS 2>&1 | grep -v "aborting path on assume(false)" | tee "$TEMP_OUTPUT"
+          EXIT_CODE=${PIPESTATUS[0]}
+          set -e  # Re-enable exit on error
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "❌ Kani verification failed (exit code: $EXIT_CODE)"
+            echo "This is critical for consensus correctness - review proofs before release"
+            exit $EXIT_CODE
+          fi
           echo "✅ All Kani proofs verified successfully"
       
       - name: Run property tests with all features
