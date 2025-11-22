@@ -1402,8 +1402,10 @@ mod kani_proofs_2 {
         );
 
         // Critical invariant: vsize must be < (weight / 4) + 1
-        assert!((vsize as u64) < ((weight / 4) + 1),
-            "Weight to vsize conversion: vsize must be < (weight / 4) + 1");
+        assert!(
+            (vsize as u64) < ((weight / 4) + 1),
+            "Weight to vsize conversion: vsize must be < (weight / 4) + 1"
+        );
     }
 
     /// Kani proof: Witness merkle root integrity (Orange Paper Section 11.1)
