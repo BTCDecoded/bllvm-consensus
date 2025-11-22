@@ -981,16 +981,20 @@ jobs:
           
           ### 🔗 Links
           
-          # Only link to crates.io if publish succeeded
+          EOF
+          
+          # Add links conditionally based on publish status
           PUBLISH_STATUS="${{ steps.publish.outputs.published }}"
           if [ "$PUBLISH_STATUS" = "true" ]; then
-            echo "- **Crates.io**: [${CRATE_NAME} v${VERSION}](https://crates.io/crates/${CRATE_NAME}/${VERSION})"
-            echo "- **Documentation**: [docs.rs/${CRATE_NAME}/${VERSION}](https://docs.rs/${CRATE_NAME}/${VERSION})"
+            echo "- **Crates.io**: [${CRATE_NAME} v${VERSION}](https://crates.io/crates/${CRATE_NAME}/${VERSION})" >> /tmp/release_notes.md
+            echo "- **Documentation**: [docs.rs/${CRATE_NAME}/${VERSION}](https://docs.rs/${CRATE_NAME}/${VERSION})" >> /tmp/release_notes.md
           else
-            echo "- **Crates.io**: ⚠️  Not published (version may already exist or publish failed)"
-            echo "- **Documentation**: Not available (crate not published)"
+            echo "- **Crates.io**: ⚠️  Not published (version may already exist or publish failed)" >> /tmp/release_notes.md
+            echo "- **Documentation**: Not available (crate not published)" >> /tmp/release_notes.md
           fi
-          echo "- **Repository**: [GitHub](https://github.com/${{ github.repository }})"
+          echo "- **Repository**: [GitHub](https://github.com/${{ github.repository }})" >> /tmp/release_notes.md
+          
+          cat >> /tmp/release_notes.md << EOF
           
           ### 📝 Changes
           
@@ -998,7 +1002,13 @@ jobs:
           
           **Published to crates.io**: ${{ steps.publish.outputs.published == 'true' && '✅ Yes' || (steps.check-version.outputs.exists == 'true' && '⚠️  Already exists' || '❌ Failed or skipped') }}
           
-          ${{ steps.publish.outputs.published != 'true' && '⚠️  **Note**: This version was not published to crates.io. Check the workflow logs for details.' || '' }}
+          EOF
+          
+          # Add warning if publish failed
+          if [ "$PUBLISH_STATUS" != "true" ]; then
+            echo "" >> /tmp/release_notes.md
+            echo "⚠️  **Note**: This version was not published to crates.io. Check the workflow logs for details." >> /tmp/release_notes.md
+          fi
           
           See [full commit history](https://github.com/${{ github.repository }}/compare/$COMMIT_RANGE) for details.
           EOF
