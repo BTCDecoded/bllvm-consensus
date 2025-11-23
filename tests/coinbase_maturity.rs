@@ -7,7 +7,8 @@
 
 use bllvm_consensus::block::connect_block;
 use bllvm_consensus::types::{
-    Block, BlockHeader, Network, OutPoint, Transaction, TransactionInput, TransactionOutput, UtxoSet,
+    Block, BlockHeader, Network, OutPoint, Transaction, TransactionInput, TransactionOutput,
+    UtxoSet,
 };
 
 use bllvm_consensus::constants::COINBASE_MATURITY;
@@ -229,14 +230,7 @@ fn test_coinbase_maturity_block_validation() {
     // Block should be rejected if coinbase spending is immature
     // (This depends on actual validation implementation)
     let witnesses = vec![];
-    let result = connect_block(
-        &block,
-        &witnesses,
-        utxo_set,
-        height,
-        None,
-        Network::Mainnet,
-    );
+    let result = connect_block(&block, &witnesses, utxo_set, height, None, Network::Mainnet);
 
     // Result may be invalid due to immature coinbase
     assert!(result.is_ok() || result.is_err());
