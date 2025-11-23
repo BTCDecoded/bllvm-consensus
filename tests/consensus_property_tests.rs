@@ -9,6 +9,7 @@ use bllvm_consensus::economic;
 use bllvm_consensus::pow;
 use bllvm_consensus::transaction;
 use bllvm_consensus::types::*;
+use bllvm_consensus::Witness;
 use proptest::prelude::*;
 use sha2::{Digest, Sha256};
 
