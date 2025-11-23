@@ -251,7 +251,7 @@ fn test_locktime_soft_fork_interaction() {
     // BIP113 (median time-past) activated at block 481824
 
     // Test transaction before CLTV activation
-    let pre_cltv_height = 419327;
+    let _pre_cltv_height = 419327;
     let tx = Transaction {
         version: 1,
         inputs: vec![TransactionInput {
@@ -275,7 +275,7 @@ fn test_locktime_soft_fork_interaction() {
     assert_eq!(tx.lock_time, 0);
 
     // Test transaction after CLTV/CSV activation
-    let post_cltv_height = 419328;
+    let _post_cltv_height = 419328;
     // Same transaction should be valid with CLTV/CSV enabled
     assert_eq!(tx.lock_time, 0);
 }

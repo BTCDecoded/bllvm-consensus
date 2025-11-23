@@ -876,7 +876,6 @@ proptest! {
         height2 in 0u32..100u32
     ) {
         use bllvm_consensus::block;
-        use bllvm_consensus::segwit::Witness;
 
         // Ensure height2 > height1
         let height1 = height1;
@@ -934,7 +933,7 @@ proptest! {
         // Connect block1
         let mut utxo_set = UtxoSet::new();
         let witnesses1: Vec<Witness> = block1.transactions.iter().map(|_| Vec::new()).collect();
-        let result1 = block::connect_block(&block1, &witnesses1, utxo_set, height1 as u64, None, crate::types::Network::Mainnet);
+        let result1 = block::connect_block(&block1, &witnesses1, utxo_set, height1 as u64, None, Network::Mainnet);
 
         if let Ok((ValidationResult::Valid, utxo_set1)) = result1 {
             // Calculate supply after block1
@@ -946,7 +945,7 @@ proptest! {
 
             // Connect block2
             let witnesses2: Vec<Witness> = block2.transactions.iter().map(|_| Vec::new()).collect();
-            let result2 = block::connect_block(&block2, &witnesses2, utxo_set1, height2 as u64, None, crate::types::Network::Mainnet);
+            let result2 = block::connect_block(&block2, &witnesses2, utxo_set1, height2 as u64, None, Network::Mainnet);
 
             if let Ok((ValidationResult::Valid, utxo_set2)) = result2 {
                 // Calculate supply after block2
@@ -979,7 +978,6 @@ proptest! {
         new_chain_len in 1usize..5usize
     ) {
         use bllvm_consensus::reorganization;
-        use bllvm_consensus::segwit::Witness;
 
         // Create simple chains with coinbase blocks
         let mut current_chain = Vec::new();
@@ -1118,7 +1116,6 @@ proptest! {
         height2 in 0u32..100u32
     ) {
         use bllvm_consensus::block;
-        use bllvm_consensus::segwit::Witness;
         use bllvm_consensus::constants::MAX_MONEY;
 
         let height1 = height1;
@@ -1176,7 +1173,7 @@ proptest! {
         // Connect block1
         let mut utxo_set = UtxoSet::new();
         let witnesses1: Vec<Witness> = block1.transactions.iter().map(|_| Vec::new()).collect();
-        let result1 = block::connect_block(&block1, &witnesses1, utxo_set, height1 as u64, None, crate::types::Network::Mainnet);
+        let result1 = block::connect_block(&block1, &witnesses1, utxo_set, height1 as u64, None, Network::Mainnet);
 
         if let Ok((ValidationResult::Valid, utxo_set1)) = result1 {
             // Verify invariants after block1
@@ -1191,7 +1188,7 @@ proptest! {
 
             // Connect block2
             let witnesses2: Vec<Witness> = block2.transactions.iter().map(|_| Vec::new()).collect();
-            let result2 = block::connect_block(&block2, &witnesses2, utxo_set1, height2 as u64, None, crate::types::Network::Mainnet);
+            let result2 = block::connect_block(&block2, &witnesses2, utxo_set1, height2 as u64, None, Network::Mainnet);
 
             if let Ok((ValidationResult::Valid, utxo_set2)) = result2 {
                 // Verify invariants after block2 (composition)
@@ -1223,7 +1220,6 @@ proptest! {
     ) {
         use bllvm_consensus::block;
         use bllvm_consensus::reorganization;
-        use bllvm_consensus::segwit::Witness;
 
         // Create a block
         let block = Block {
@@ -1253,7 +1249,7 @@ proptest! {
         // Connect block
         let utxo_set_before = UtxoSet::new();
         let witnesses: Vec<Witness> = block.transactions.iter().map(|_| Vec::new()).collect();
-        let result = block::connect_block(&block, &witnesses, utxo_set_before.clone(), height as u64, None, crate::types::Network::Mainnet);
+        let result = block::connect_block(&block, &witnesses, utxo_set_before.clone(), height as u64, None, Network::Mainnet);
 
         if let Ok((ValidationResult::Valid, utxo_set_after_connect)) = result {
             // Simulate disconnect via reorganization (disconnect and reconnect same block)
@@ -1295,7 +1291,6 @@ proptest! {
         fee in 0i64..MAX_MONEY,
         size in 1usize..MAX_BLOCK_SIZE
     ) {
-        use bllvm_consensus::mempool;
 
         // Calculate fee rate using integer-based comparison
         // Avoid floating-point precision issues
@@ -1359,7 +1354,6 @@ proptest! {
         tx_count in 0usize..20000usize
     ) {
         use bllvm_consensus::mempool::Mempool;
-        use bllvm_consensus::types::Hash;
 
         let mut mempool = Mempool::new();
 
