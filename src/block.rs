@@ -226,8 +226,7 @@ pub fn connect_block(
     if !bip34_result {
         return Ok((
             ValidationResult::Invalid(format!(
-                "BIP34: Block height {} not correctly encoded in coinbase",
-                height
+                "BIP34: Block height {height} not correctly encoded in coinbase"
             )),
             utxo_set,
         ));

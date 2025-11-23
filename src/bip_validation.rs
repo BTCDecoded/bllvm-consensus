@@ -24,7 +24,7 @@ use crate::types::*;
 /// Activation: Block 0 (always active)
 pub fn check_bip30(block: &Block, utxo_set: &UtxoSet) -> Result<bool> {
     // Find coinbase transaction
-    let coinbase = block.transactions.get(0);
+    let coinbase = block.transactions.first();
     
     if let Some(tx) = coinbase {
         if !is_coinbase(tx) {
@@ -82,7 +82,7 @@ pub fn check_bip34(block: &Block, height: Natural, network: crate::types::Networ
     }
     
     // Find coinbase transaction
-    let coinbase = block.transactions.get(0);
+    let coinbase = block.transactions.first();
     
     if let Some(tx) = coinbase {
         if !is_coinbase(tx) {
@@ -129,7 +129,7 @@ fn extract_height_from_script_sig(script_sig: &[u8]) -> Result<Natural> {
     let first_byte = script_sig[0];
     
     // Handle direct push (0x01-0x4b)
-    if first_byte >= 1 && first_byte <= 0x4b {
+    if (1..=0x4b).contains(&first_byte) {
         let len = first_byte as usize;
         if script_sig.len() < 1 + len {
             return Err(ConsensusError::BlockValidation(
