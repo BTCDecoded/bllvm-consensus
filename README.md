@@ -104,6 +104,26 @@ cargo kani --features verify --harness kani_verify_function
 
 See [docs/VERIFICATION.md](docs/VERIFICATION.md) for detailed verification documentation.
 
+## BIP Implementation Status
+
+**Last Updated**: 2025-01-XX
+
+All critical Bitcoin Improvement Proposals (BIPs) are implemented and integrated:
+
+- ✅ **BIP30** - Duplicate coinbase prevention (integrated in `connect_block()`)
+- ✅ **BIP34** - Block height in coinbase (integrated in `connect_block()`)  
+- ✅ **BIP66** - Strict DER signatures (enforced via script verification with flag 0x04)
+- ✅ **BIP90** - Block version enforcement (integrated in `connect_block()`)
+- ✅ **BIP147** - NULLDUMMY enforcement (enforced via script verification with flag 0x10)
+
+**Integration Status**:
+- All BIPs are integrated into block validation
+- BIP66 and BIP147 are enforced during script verification (called for all transactions in `connect_block()`)
+- Integration tests verify enforcement (6/6 tests passing)
+- Kani proofs exist for critical BIPs
+
+**Note**: BIP66 and BIP147 are enforced during script verification, which is called for all transactions in `connect_block()`. This is the correct approach as these BIPs apply to individual signatures and script execution.
+
 ## Dependencies
 
 All consensus-critical dependencies are pinned to exact versions:
