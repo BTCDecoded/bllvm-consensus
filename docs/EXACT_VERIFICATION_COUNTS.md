@@ -1,16 +1,13 @@
 # Exact Verification Counts
 ## Bitcoin Commons Consensus Implementation
 
-**Date**: 2025-01-18  
-**Status**: Comprehensive verification coverage
-
----
+Comprehensive verification coverage statistics for the consensus implementation.
 
 ## Verification Statistics
 
 ### 1. Kani Formal Proofs
 
-**Total**: **184 proofs** across **25 files**
+**Total**: **201 proofs** in `src/` (210 total including 9 in `tests/`) across **25+ files**
 
 **Breakdown by Module**:
 - `src/block.rs`: 19 proofs
@@ -255,15 +252,15 @@ cargo +nightly miri test --test consensus_property_tests
 
 | Verification Technique | Count | Location |
 |----------------------|-------|----------|
-| **Kani Formal Proofs** | **184** | 25 files in `src/` |
+| **Kani Formal Proofs** | **201** | 201 in `src/`, 9 in `tests/` (210 total) |
 | **Property Tests (consensus_property_tests.rs)** | **35** | `tests/consensus_property_tests.rs` |
 | **Property Test Blocks (all files)** | **125** | Multiple test files |
 | **Property Test Functions (all files)** | **141** | Multiple test files |
-| **debug_assert! Statements** | **98** | `src/` |
-| **assert! Statements** | **757** | `src/` |
-| **Total Runtime Assertions** | **855** | `src/` |
+| **debug_assert! Statements** | **99** | `src/` |
+| **assert! Statements** | **814** | `src/` |
+| **Total Runtime Assertions** | **913** | `src/` (814 assert! + 99 debug_assert!) |
 | **Runtime Invariant Feature Flags** | **1** | `src/block.rs` |
-| **Fuzz Targets** | **12** | `fuzz/fuzz_targets/` |
+| **Fuzz Targets** | **13** | `fuzz/fuzz_targets/` |
 | **MIRI Integration** | **✅ Yes** | CI workflow |
 | **Mathematical Specifications** | **15+** | Documentation |
 
@@ -293,7 +290,9 @@ cargo +nightly miri test --test consensus_property_tests
 ```bash
 cd bllvm-consensus
 grep -r "#\[kani::proof\]" src/ --include="*.rs" | wc -l
-# Result: 184
+# Result: 201
+grep -r "#\[kani::proof\]" tests/ --include="*.rs" | wc -l
+# Result: 9 (210 total)
 ```
 
 ### Property Tests
@@ -307,16 +306,17 @@ cargo test --test consensus_property_tests --list | grep "^test " | wc -l
 ```bash
 cd bllvm-consensus
 grep -r "debug_assert!" src/ --include="*.rs" | wc -l
-# Result: 98
+# Result: 99
 grep -r "assert!" src/ --include="*.rs" | grep -v "debug_assert" | wc -l
-# Result: 757
+# Result: 814
+# Total: 913 runtime assertions
 ```
 
 ### Fuzz Targets
 ```bash
 cd bllvm-consensus
 ls -1 fuzz/fuzz_targets/*.rs | wc -l
-# Result: 12
+# Result: 13
 ```
 
 ---
@@ -324,11 +324,11 @@ ls -1 fuzz/fuzz_targets/*.rs | wc -l
 ## Conclusion
 
 **Total Verification Coverage**:
-- **184 Kani proofs** (formal verification)
+- **201 Kani proofs in src/** (210 total including 9 in tests/) (formal verification)
 - **35 property tests** (mathematical invariants)
 - **266 property test blocks** (all test files)
-- **855 runtime assertions** (invariant checks)
-- **12 fuzz targets** (edge case discovery)
+- **913 runtime assertions** (814 assert! + 99 debug_assert!) (invariant checks)
+- **13 fuzz targets** (edge case discovery)
 - **MIRI integration** (undefined behavior detection)
 - **15+ mathematical specifications** (formal documentation)
 

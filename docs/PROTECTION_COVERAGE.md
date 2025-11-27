@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides a comprehensive overview of all mathematical protections added across the consensus codebase.
+Comprehensive overview of all mathematical protections added across the consensus codebase.
 
 ## Protection Coverage by Module
 

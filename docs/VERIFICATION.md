@@ -2,11 +2,11 @@
 
 ## Overview
 
-The `consensus-proof` crate implements formal verification for Bitcoin consensus rules using a multi-layered approach that combines mathematical specifications, symbolic verification, and property-based testing. This creates a mathematically locked consensus layer that is auditable and tamper-evident.
+Implements formal verification for Bitcoin consensus rules using a multi-layered approach combining mathematical specifications, symbolic verification, and property-based testing. Creates a mathematically locked consensus layer that is auditable and tamper-evident.
 
 ## Verification Stack
 
-Our verification approach follows the principle: **"Rust + Tests + Math Specs = Source of Truth"**
+Verification approach follows: **"Rust + Tests + Math Specs = Source of Truth"**
 
 ### Layer 1: Empirical Testing (Required, Must Pass)
 - **Unit tests**: Comprehensive test coverage for all consensus functions

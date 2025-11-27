@@ -1,6 +1,6 @@
 # bllvm-consensus Documentation
 
-This directory contains documentation for the Bitcoin Commons consensus implementation.
+Documentation for the Bitcoin Commons consensus implementation.
 
 ## Core Documentation
 

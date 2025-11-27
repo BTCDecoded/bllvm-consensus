@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the comprehensive mathematical protections added to prevent consensus bugs, particularly around floating-point precision, integer arithmetic, and threshold calculations.
+Describes comprehensive mathematical protections added to prevent consensus bugs, particularly around floating-point precision, integer arithmetic, and threshold calculations.
 
 ## Protection Layers
 

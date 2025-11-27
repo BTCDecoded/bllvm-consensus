@@ -1,6 +1,6 @@
 # Bitcoin Commons Consensus Proof
 
-**Direct mathematical implementation of Bitcoin consensus rules from the Orange Paper.**
+Pure mathematical implementation of Bitcoin consensus rules from the Orange Paper with formal verification.
 
 > **For verified system status**: See [SYSTEM_STATUS.md](https://github.com/BTCDecoded/.github/blob/main/SYSTEM_STATUS.md) in the BTCDecoded organization repository.
 
@@ -8,15 +8,15 @@
 [![Kani Verification](https://img.shields.io/badge/Kani-Verified-green)](https://model-checking.github.io/kani/)
 [![Property Tests](https://img.shields.io/badge/Proptest-Covered-blue)](https://docs.rs/proptest/)
 
-This crate provides pure, side-effect-free functions that implement the mathematical specifications defined in the Orange Paper. It serves as the mathematical foundation for Bitcoin consensus validation with **formal verification** ensuring mathematical correctness.
+Provides pure, side-effect-free functions implementing Orange Paper mathematical specifications. Serves as the mathematical foundation for Bitcoin consensus validation with formal verification ensuring mathematical correctness.
 
 ## Architecture Position
 
-This is **Tier 2** of the 6-tier Bitcoin Commons architecture (BLLVM technology stack):
+Tier 2 of the 6-tier Bitcoin Commons architecture (BLLVM technology stack):
 
 ```
 1. bllvm-spec (Orange Paper - mathematical foundation)
-2. bllvm-consensus (pure math implementation) ← THIS CRATE
+2. bllvm-consensus (pure math implementation)
 3. bllvm-protocol (Bitcoin abstraction)
 4. bllvm-node (full node implementation)
 5. bllvm-sdk (developer toolkit)
@@ -25,7 +25,7 @@ This is **Tier 2** of the 6-tier Bitcoin Commons architecture (BLLVM technology 
 
 ## Core Functions
 
-This crate implements all major Bitcoin consensus functions from the Orange Paper:
+Implements all major Bitcoin consensus functions from the Orange Paper:
 
 ### Transaction Validation
 - Transaction structure and limit validation
@@ -70,9 +70,11 @@ This crate implements all major Bitcoin consensus functions from the Orange Pape
 5. **No Consensus Rule Interpretation**: Only mathematical implementation
 6. **Formal Verification**: Kani model checking and property-based testing ensure correctness
 
+See [docs/VERIFICATION.md](docs/VERIFICATION.md) for detailed verification documentation.
+
 ## Formal Verification
 
-This crate implements **mathematical verification** of Bitcoin consensus rules using:
+Implements mathematical verification of Bitcoin consensus rules using:
 
 - **Kani Model Checker**: Symbolic verification with bounded model checking
 - **Property-Based Testing**: Randomized testing with `proptest` to discover edge cases
@@ -97,32 +99,30 @@ cargo kani --features verify --harness kani_verify_function
 
 ### Verification Status
 
-✅ **Chain Selection**: `should_reorganize`, `calculate_chain_work` verified  
-✅ **Block Subsidy**: `get_block_subsidy` halving schedule verified  
-✅ **Proof of Work**: `check_proof_of_work`, target expansion verified  
-✅ **Transaction Validation**: `check_transaction` structure rules verified  
-✅ **Block Connection**: `connect_block` UTXO consistency verified  
-
-See [docs/VERIFICATION.md](docs/VERIFICATION.md) for detailed verification documentation.
+**Chain Selection**: `should_reorganize`, `calculate_chain_work` verified  
+**Block Subsidy**: `get_block_subsidy` halving schedule verified  
+**Proof of Work**: `check_proof_of_work`, target expansion verified  
+**Transaction Validation**: `check_transaction` structure rules verified  
+**Block Connection**: `connect_block` UTXO consistency verified  
 
 ## BIP Implementation Status
 
 
 All critical Bitcoin Improvement Proposals (BIPs) are implemented and integrated:
 
-- ✅ **BIP30** - Duplicate coinbase prevention (integrated in `connect_block()`)
-- ✅ **BIP34** - Block height in coinbase (integrated in `connect_block()`)  
-- ✅ **BIP66** - Strict DER signatures (enforced via script verification with flag 0x04)
-- ✅ **BIP90** - Block version enforcement (integrated in `connect_block()`)
-- ✅ **BIP147** - NULLDUMMY enforcement (enforced via script verification with flag 0x10)
+- **BIP30** - Duplicate coinbase prevention (integrated in `connect_block()`)
+- **BIP34** - Block height in coinbase (integrated in `connect_block()`)  
+- **BIP66** - Strict DER signatures (enforced via script verification with flag 0x04)
+- **BIP90** - Block version enforcement (integrated in `connect_block()`)
+- **BIP147** - NULLDUMMY enforcement (enforced via script verification with flag 0x10)
 
-**Integration Status**:
-- All BIPs are integrated into block validation
-- BIP66 and BIP147 are enforced during script verification (called for all transactions in `connect_block()`)
-- Integration tests verify enforcement (6/6 tests passing)
+**Integration**:
+- All BIPs integrated into block validation
+- BIP66 and BIP147 enforced during script verification (called for all transactions in `connect_block()`)
+- Integration tests verify enforcement
 - Kani proofs exist for critical BIPs
 
-**Note**: BIP66 and BIP147 are enforced during script verification, which is called for all transactions in `connect_block()`. This is the correct approach as these BIPs apply to individual signatures and script execution.
+BIP66 and BIP147 are enforced during script verification, which is called for all transactions in `connect_block()`. This is the correct approach as these BIPs apply to individual signatures and script execution.
 
 ## Dependencies
 
@@ -161,14 +161,14 @@ cargo kani --features verify
 
 ## Mathematical Lock
 
-This implementation is **mathematically locked** to the Orange Paper specification:
+Implementation is mathematically locked to the Orange Paper specification:
 
 - Every function implements a mathematical specification from the Orange Paper
 - Every critical function has a Kani proof verifying correctness
 - All proofs reference Orange Paper sections and theorems
 - No consensus rule can be changed without updating both spec and proof
 
-**This is NOVEL**: No other Bitcoin implementation has this level of formal verification linkage.
+Formal verification linkage level is unique among Bitcoin implementations.
 
 **Chain of Trust**:
 ```
@@ -176,20 +176,20 @@ Orange Paper (Math Spec) → Kani Proof → Implementation → Bitcoin Consensus
 ```
 
 **Why This Matters for Bitcoin**:
-- Consensus rules are **immutable** - once deployed, they cannot change
-- Network divergence is **catastrophic** - all nodes must agree
-- Security is **critical** - billions of dollars depend on correctness
-- Mathematical proof > human review
+- Consensus rules are immutable - once deployed, they cannot change
+- Network divergence is catastrophic - all nodes must agree
+- Security is critical - billions of dollars depend on correctness
+- Mathematical proof exceeds human review
 
 **Verification Statistics**:
-- **184 Kani proofs** verify all critical consensus functions
-- **35 property tests** verify mathematical invariants
-- **855 runtime assertions** catch edge cases
-- **12 fuzz targets** discover vulnerabilities
+- 201 Kani proofs verify all critical consensus functions (201 in `src/`, 9 in `tests/`)
+- 35 property tests verify mathematical invariants
+- 913 runtime assertions catch edge cases (814 `assert!` + 99 `debug_assert!`)
+- 13 fuzz targets discover vulnerabilities
 
 ## Orange Paper Compliance
 
-This implementation covers all major Orange Paper sections:
+Covers all major Orange Paper sections:
 
 - **Section 5**: Transaction and Block Validation
 - **Section 6**: Script System
@@ -201,7 +201,7 @@ This implementation covers all major Orange Paper sections:
 
 ## Security
 
-This crate implements **mathematically verified** Bitcoin consensus rules with:
+Implements mathematically verified Bitcoin consensus rules with:
 
 - **Formal Verification**: Kani model checking prevents consensus violations
 - **Property Testing**: Randomized testing discovers edge cases
