@@ -2,6 +2,21 @@
 
 This document covers repo-specific security boundaries. See the [BTCDecoded Security Policy](https://github.com/BTCDecoded/.github/blob/main/SECURITY.md) for organization-wide policy.
 
+## Dependency Version Pinning Strategy
+
+All consensus-critical cryptographic dependencies are pinned to exact versions for supply chain security:
+
+- **Consensus-critical cryptography**: Exact versions (`=`) for `secp256k1`, `k256`, `ripemd`, `bitcoin_hashes`
+- **Non-consensus utilities**: Exact versions for supply chain security (`serde`, `serde_json`, `anyhow`, `thiserror`)
+- **Formal verification tools**: Exact versions for reproducibility (`proptest`, `kani-verifier`)
+
+**Rationale**: Consensus-critical code must be deterministic and reproducible. Exact version pinning prevents:
+- Supply chain attacks through dependency updates
+- Non-deterministic behavior from dependency changes
+- Consensus divergence from dependency updates
+
+See `Cargo.toml` for complete dependency list with exact versions.
+
 ## Supported Versions
 
 | Version | Supported          |
